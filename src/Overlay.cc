@@ -87,10 +87,10 @@ void Overlay::modifyEvent( LCEvent * evt ) {
     
     if( !overlayEvent ) {
       lastEvent = true ;
-      std::cout << "Warning: last event read from overlay stream at event " 
-		<< evt->getEventNumber() 
-		<< " in run " << evt->getRunNumber() 
-		<< std::endl ;
+      streamlog_out( WARNING4 ) << " last event read from overlay stream at event " 
+				<< evt->getEventNumber() 
+				<< " in run " << evt->getRunNumber() 
+				<< std::endl ;
     } else {
 
 
