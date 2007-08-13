@@ -54,6 +54,10 @@ void Overlay::init() {
   
   
   _lcReader = LCFactory::getInstance()->createLCReader() ;
+
+
+  streamlog_out( DEBUG0 ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
+
   _lcReader->open( _fileNames  ) ; 
   
 
@@ -67,7 +71,7 @@ void Overlay::processRunHeader( LCRunHeader* run) {
   _nRun++ ;
 } 
 
-void Overlay::processEvent( LCEvent * evt ) { 
+void Overlay::modifyEvent( LCEvent * evt ) {
   
   static bool firstEvent = true ;
   static bool lastEvent = false ;

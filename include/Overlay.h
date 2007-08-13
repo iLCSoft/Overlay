@@ -2,6 +2,7 @@
 #define Overlay_h 1
 
 #include "marlin/Processor.h"
+#include "marlin/EventModifier.h"
 #include "lcio.h"
 #include <string>
 
@@ -17,7 +18,7 @@ using namespace marlin ;
  * Under developmwnt - no overlay yet....
  */
 
-class Overlay : public Processor {
+class Overlay : public Processor, public EventModifier {
   
  public:
   
@@ -26,6 +27,9 @@ class Overlay : public Processor {
   
   Overlay() ;
   
+  virtual void modifyEvent( LCEvent * evt ) ; 
+
+
   /** Called at the begin of the job before anything is read.
    * Use to initialize the processor, e.g. book histograms.
    */
@@ -37,7 +41,7 @@ class Overlay : public Processor {
   
   /** Called for every event - the working horse.
    */
-  virtual void processEvent( LCEvent * evt ) ; 
+  //  virtual void processEvent( LCEvent * evt ) ; 
   
   
   virtual void check( LCEvent * evt ) ; 
