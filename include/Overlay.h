@@ -27,6 +27,8 @@ class Overlay : public Processor, public EventModifier {
   
   Overlay() ;
   
+  virtual const std::string & name() const { return Processor::name() ; }
+  
   virtual void modifyEvent( LCEvent * evt ) ; 
 
 
@@ -57,6 +59,10 @@ class Overlay : public Processor, public EventModifier {
   /** Input file names.
    */
   StringVec _fileNames ;
+  double    _bgExpectation;
+  
+  StringVec _colVec;
+  std::map<std::string, std::string> _colMap;
 
   LCReader* _lcReader ;
 

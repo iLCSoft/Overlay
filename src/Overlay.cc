@@ -13,7 +13,10 @@
 #include <EVENT/MCParticle.h>
 #include "IO/LCReader.h"
 #include "UTIL/LCTOOLS.h"
+#include "Merger.h"
 
+#include "CLHEP/Random/RandPoisson.h"
+// #include <time.h>
 
 using namespace lcio ;
 using namespace marlin ;
@@ -32,12 +35,27 @@ Overlay::Overlay() : Processor("Overlay") {
   
   StringVec files ;
   files.push_back( "overlay.slcio" )  ;
-
+  
   registerProcessorParameter( "InputFileNames" , 
 			      "Name of the lcio input file(s)"  ,
 			      _fileNames ,
  			      files ) ;
+  
+  double exp;
+  exp = -1.;
+  
+  registerProcessorParameter( "BG-Expectation" , 
+                              "Expected number of background events (Poisson statistics)"  ,
+                              _bgExpectation ,
+                              exp ) ;
 
+  StringVec map;
+  
+  registerProcessorParameter( "CollectionMap" , 
+                              "Map containing pairs of collection to be merged (srcName, destName)"  ,
+                              _colVec ,
+                              map ) ;
+  
 }
 
 
@@ -49,6 +67,7 @@ void Overlay::init() {
  		    "  - please upgrade your LCIO version or disable the Overlay processor ! ") ;
   }
 
+  streamlog_out( MESSAGE ) << "here we go" << std::endl ;
   // usually a good idea to
   printParameters() ;
   
@@ -56,10 +75,26 @@ void Overlay::init() {
   _lcReader = LCFactory::getInstance()->createLCReader() ;
 
 
-  streamlog_out( DEBUG0 ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
+  streamlog_out( MESSAGE ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
 
   _lcReader->open( _fileNames  ) ; 
   
+  CLHEP::HepRandom::setTheSeed(time(NULL));
+  
+  StringVec::iterator it;
+  StringVec::iterator endIt = _colVec.end();
+
+  int oddNumOfCols = _colVec.size() & 0x1;
+  if (oddNumOfCols) { 
+    streamlog_out( WARNING ) << "Odd number of collection names, last collection ignored" << std::endl;
+    --endIt;
+  }
+
+  for (it=_colVec.begin(); it < endIt; ++it) {
+    std::string  key = (*it);
+    it++;
+    _colMap[key] = (*it);
+  }
 
   _nRun = 0 ;
   _nEvt = 0 ;
@@ -72,38 +107,44 @@ void Overlay::processRunHeader( LCRunHeader* run) {
 } 
 
 void Overlay::modifyEvent( LCEvent * evt ) {
-  
-  static bool firstEvent = true ;
-  static bool lastEvent = false ;
-  
-  // this gets called for every event 
-  // usually the working horse ...
-  
   LCEvent* overlayEvent ;
-
-  if( ! lastEvent ) {
+  long num;
   
-    overlayEvent = _lcReader->readNextEvent() ;
-    
+  if (_bgExpectation == -1.) {
+    num = 1;
+  } else {
+    num = CLHEP::RandPoisson::shoot(_bgExpectation);
+  }
+  streamlog_out( MESSAGE ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
+  
+  
+  for(long i=0; i < num  ; i++ ) {
+  
+    overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+  //     overlayEvent = _lcReader->readNextEvent() ;
+      
     if( !overlayEvent ) {
-      lastEvent = true ;
-      streamlog_out( WARNING4 ) << " last event read from overlay stream at event " 
-				<< evt->getEventNumber() 
-				<< " in run " << evt->getRunNumber() 
-				<< std::endl ;
-    } else {
-
-
-      // do the overlay here .....
-
-
+      _lcReader->close() ; 
+      _lcReader->open( _fileNames  ) ; 
+      
+      streamlog_out( WARNING4 ) << " ---- Overlay stream has been reset to first element ---- "
+                                << std::endl ;
+      
+      overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
     }
+      
+  //   LCTOOLS::dumpEvent( evt ); 
+    if (_colMap.size() == 0) {
+      Merger::merge(overlayEvent, evt);
+    } else {
+      Merger::merge(overlayEvent, evt, &_colMap);
+    }
+    
   }
 
+  
 #ifdef MARLIN_USE_AIDA
 #endif
-  
-  firstEvent = false ;
   _nEvt ++ ;
 }
 
