@@ -1,20 +1,20 @@
 #include "Merger.h"
-#include "Exceptions.h"
+// #include "Exceptions.h"
 #include "marlin/Processor.h"
 
-#include "lcio.h"
+// #include "lcio.h"
 #include "IMPL/LCCollectionVec.h"
 #include "IMPL/SimCalorimeterHitImpl.h"
-#include "IMPL/CalorimeterHitImpl.h"
-#include "IMPL/TrackerHitImpl.h" 
+// #include "IMPL/CalorimeterHitImpl.h"
+// #include "IMPL/TrackerHitImpl.h" 
 
-#include "IMPL/SimTrackerHitImpl.h" 
+// #include "IMPL/SimTrackerHitImpl.h" 
 
-using namespace EVENT ;
-using namespace IMPL ;
-using namespace marlin ;
+// using namespace EVENT ;
+// using namespace IMPL ;
+// using namespace marlin ;
 
-#include <iostream>
+// #include <iostream>
 using namespace std ;
 
   

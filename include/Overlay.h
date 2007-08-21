@@ -9,15 +9,15 @@
 #include "IO/LCReader.h"
 #include "IO/LCWriter.h"
 
-
 using namespace lcio ;
 using namespace marlin ;
 
-
-/** Overlay processor allows to overlay events from additional LCIO files.
- * Under developmwnt - no overlay yet....
+/** Overlay processor allows to overlay events from additional LCIO files 
+ * based on different criterias. Under developement. 
+ * 
+ * @author N. Chiapolini, DESY
+ * @version $Id: Overlay.h,v 1.4 2007-08-21 16:46:13 chiapoli Exp $
  */
-
 class Overlay : public Processor, public EventModifier {
   
  public:
@@ -59,7 +59,9 @@ class Overlay : public Processor, public EventModifier {
   /** Input file names.
    */
   StringVec _fileNames ;
+  int       _numOverlay;
   double    _bgExpectation;
+  
   
   StringVec _colVec;
   std::map<std::string, std::string> _colMap;

@@ -1,3 +1,5 @@
+#define BGNAME "BG-Expectation"
+
 #include "Overlay.h"
 #include <iostream>
 
@@ -35,22 +37,26 @@ Overlay::Overlay() : Processor("Overlay") {
   
   StringVec files ;
   files.push_back( "overlay.slcio" )  ;
-  
   registerProcessorParameter( "InputFileNames" , 
 			      "Name of the lcio input file(s)"  ,
 			      _fileNames ,
  			      files ) ;
   
+  int num;
+  num = 1;
+  registerProcessorParameter( "NumberOverlayEvents" , 
+                              "Overlay each event with this number of background events. (weak)" ,
+                              _numOverlay ,
+                              num ) ;
+ 
   double exp;
-  exp = -1.;
-  
-  registerProcessorParameter( "BG-Expectation" , 
-                              "Expected number of background events (Poisson statistics)"  ,
+  exp = 1.;
+  registerProcessorParameter( BGNAME , 
+                              "Overlay each event by a number of BG events according to a poisson distribution with this expectation value. (strong)" ,
                               _bgExpectation ,
                               exp ) ;
 
   StringVec map;
-  
   registerProcessorParameter( "CollectionMap" , 
                               "Map containing pairs of collection to be merged (srcName, destName)"  ,
                               _colVec ,
@@ -67,7 +73,6 @@ void Overlay::init() {
  		    "  - please upgrade your LCIO version or disable the Overlay processor ! ") ;
   }
 
-  streamlog_out( DEBUG ) << "here we go" << std::endl ;
   // usually a good idea to
   printParameters() ;
   
@@ -110,10 +115,10 @@ void Overlay::modifyEvent( LCEvent * evt ) {
   LCEvent* overlayEvent ;
   long num;
   
-  if (_bgExpectation == -1.) {
-    num = 1;
-  } else {
+  if (parameterSet(BGNAME)) {
     num = CLHEP::RandPoisson::shoot(_bgExpectation);
+  } else { 
+    num = _numOverlay;
   }
   streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
   

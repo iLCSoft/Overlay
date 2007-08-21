@@ -1,17 +1,17 @@
 #include "lcio.h"
-#include "IMPL/SimCalorimeterHitImpl.h"
-#include "IMPL/SimTrackerHitImpl.h" 
-#include "IMPL/LCEventImpl.h" 
+// #include "IMPL/SimCalorimeterHitImpl.h"
+// #include "IMPL/SimTrackerHitImpl.h" 
+#include "EVENT/LCEvent.h" 
 
 // #include <cstdlib>
 
-using namespace EVENT;
+using namespace lcio;
 
-  /**Basic utility for merging two collections. So far only 
+  /**Basic utility to merge two collections. So far only 
    * simulation collections are supported.
    * 
-   * @author chiapolini
-   * @version $Id: Merger.h,v 1.1 2007-08-21 14:34:32 chiapoli Exp $
+   * @author N. Chiapolini, DESY
+   * @version $Id: Merger.h,v 1.2 2007-08-21 16:46:13 chiapoli Exp $
    */
   class Merger{
     
@@ -23,8 +23,7 @@ using namespace EVENT;
          * The MC particle collection in srcEvent is merged with 
          * the collection named mcDestString. <br>
          * If more then one collection of type MCPARTICLE esists 
-         * in srcEvent the function returns 0 and exits. Otherwise
-         * it returns the number of collections merged.<br>
+         * in srcEvent the function exits without any action.<br>
          * 
          * calles mergeMC(LCEvent*, string, LCEvent*, string) internally
          */
@@ -36,8 +35,6 @@ using namespace EVENT;
          * The MC particle collection mcSrcString is merged with 
          * the collection named mcDestString. If this collection 
          * does not exist yet, a new collection is created.<br>
-         * 
-         * returns the number of merged collections.<br>
          * 
          * calles  merge(LCEvent*, LCEvent*) internally (after 
          * merging the MC collections and removing mcSrcString 
@@ -54,9 +51,9 @@ using namespace EVENT;
         /** merge function, Merges the collections of the two 
          * events according to the map<br> 
          * Map structure: (srcColName, destColName)<br>
-         * If srcCol does not exist, pair will be ignored, if destCol 
-         * does not exist, a new collection with the same type as 
-         * srcCol will be created.<br>
+         * If srcCol does not exist, the pair will be ignored, 
+         * if destCol does not exist, a new collection with the 
+         * same type as srcCol will be created.<br>
          * calles  merge(LCCollection*, LCCollection*) internally
          */
         static void merge(LCEvent *srcEvent, LCEvent *destEvent, std::map<std::string, std::string> *mergeMap);
@@ -76,7 +73,6 @@ using namespace EVENT;
          * 
          * !! It is the callers responsability to make sure the mcParticles
          * pointed to by the hits do exist !!<br>
-         * Returns 1 if error occured, 0 if terminated normally
          */
         static void merge(LCCollection* src, LCCollection* dest);
 
