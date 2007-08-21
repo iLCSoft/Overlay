@@ -134,11 +134,11 @@ using namespace std ;
       return;
     }
     
-    streamlog_out( MESSAGE ) << "merging collection of type: " << destType << " --- ";
+    streamlog_out( DEBUG ) << "merging collection of type: " << destType << " --- ";
         
     // ** SIMTRACKERHIT **
     if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::MCPARTICLE))  {
-      streamlog_out( MESSAGE ) << "merging" << endl;
+      streamlog_out( DEBUG ) << "merging" << endl;
       
       // running trough all the elements in the collection.
       nElementsSrc = src->getNumberOfElements();
@@ -153,7 +153,7 @@ using namespace std ;
     if (destType == LCIO::SIMCALORIMETERHIT ) {
       SimCalorimeterHitImpl *srcHit, *destHit;
     
-      streamlog_out( MESSAGE ) << "merging" << endl;
+      streamlog_out( DEBUG ) << "merging" << endl;
       nElementsSrc = src->getNumberOfElements();
       nElementsDest = dest->getNumberOfElements();
       
@@ -186,6 +186,6 @@ using namespace std ;
     }
     
     // ** DEFAULT **
-    streamlog_out( MESSAGE ) << "merge not possible for this type" << endl;
+    streamlog_out( DEBUG ) << "merge not possible for this type" << endl;
     return;
   }

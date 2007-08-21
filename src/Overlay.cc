@@ -67,7 +67,7 @@ void Overlay::init() {
  		    "  - please upgrade your LCIO version or disable the Overlay processor ! ") ;
   }
 
-  streamlog_out( MESSAGE ) << "here we go" << std::endl ;
+  streamlog_out( DEBUG ) << "here we go" << std::endl ;
   // usually a good idea to
   printParameters() ;
   
@@ -75,7 +75,7 @@ void Overlay::init() {
   _lcReader = LCFactory::getInstance()->createLCReader() ;
 
 
-  streamlog_out( MESSAGE ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
+  streamlog_out( DEBUG ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
 
   _lcReader->open( _fileNames  ) ; 
   
@@ -115,7 +115,7 @@ void Overlay::modifyEvent( LCEvent * evt ) {
   } else {
     num = CLHEP::RandPoisson::shoot(_bgExpectation);
   }
-  streamlog_out( MESSAGE ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
+  streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
   
   
   for(long i=0; i < num  ; i++ ) {
