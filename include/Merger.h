@@ -6,65 +6,81 @@
 // #include <cstdlib>
 
 using namespace lcio;
+using namespace std;
 
-  /**Basic utility to merge two collections. So far only 
+  /**Basic utility to merge two events or collections. So far only 
    * simulation collections are supported.
    * 
    * @author N. Chiapolini, DESY
-   * @version $Id: Merger.h,v 1.2 2007-08-21 16:46:13 chiapoli Exp $
+   * @version $Id: Merger.h,v 1.3 2007-08-22 18:49:17 chiapoli Exp $
    */
   class Merger{
     
     public:
     
-        /** merge function, takes two events and tries to merge
-         * collections with a name present in both events.<br>
-         * 
-         * The MC particle collection in srcEvent is merged with 
+        /** Tries to merge collections with a name present in both events (like merge(LCEvent*, LCEvent*)
+         * but the MC particle collection in srcEvent is merged with 
          * the collection named mcDestString. <br>
-         * If more then one collection of type MCPARTICLE esists 
-         * in srcEvent the function exits without any action.<br>
+         * 
+         * @param srcEvent source event.
+         * @param destEvent destination event
+         * @param mcDestString name of the collection that the MCPARTICLE collection should be merged with. If more then one 
+         * collection of type MCPARTICLE exists in srcEvent the function exits without any action.
          * 
          * calles mergeMC(LCEvent*, string, LCEvent*, string) internally
          */
-        static void mergeMC(LCEvent* srcEvent, LCEvent* destEvent, std::string mcDestString);
+        static void mergeMC(LCEvent* srcEvent, LCEvent* destEvent, string mcDestString);
       
         /** merge function, takes two events and tries to merge
          * collections with a name present in both events.<br>
-         * 
-         * The MC particle collection mcSrcString is merged with 
-         * the collection named mcDestString. If this collection 
-         * does not exist yet, a new collection is created.<br>
+         *
+         * @param srcEvent source event.
+         * @param destEvent destination event
+         * @param mcSrcString The MC particle collection in srcEvent 
+         * @param mcDestString The MC particle collection the source particles should be addet to. If this collection 
+         * does not exist, a new collection is created.<br>
          * 
          * calles  merge(LCEvent*, LCEvent*) internally (after 
          * merging the MC collections and removing mcSrcString 
          * from the srcEvent)
          */
-        static void mergeMC(LCEvent* srcEvent, std::string mcSrcString, LCEvent* destEvent, std::string mcDestString);
+        static void mergeMC(LCEvent* srcEvent, string mcSrcString, LCEvent* destEvent, string mcDestString);
         
-        /** merge function, takes two events and tries to merge
-         * collections with a name present in both events.<br>
+        /** Tries to merge collections with a name present in both events.
+         * 
+         * @param srcEvent source event.
+         * @param destEvent destination event
+         * 
          * calles  merge(LCCollection*, LCCollection*) internally
          */
         static void merge(LCEvent* srcEvent, LCEvent* destEvent);
         
-        /** merge function, Merges the collections of the two 
-         * events according to the map<br> 
+        /** Merges the collections of the two events according to a given map<br> 
+         * 
+         * @param srcEvent source event.
+         * @param destEvent destination event
+         * @param *mergeMap Map containing the src->dest association for the collection names <br>
          * Map structure: (srcColName, destColName)<br>
          * If srcCol does not exist, the pair will be ignored, 
          * if destCol does not exist, a new collection with the 
          * same type as srcCol will be created.<br>
+         * 
          * calles  merge(LCCollection*, LCCollection*) internally
          */
-        static void merge(LCEvent *srcEvent, LCEvent *destEvent, std::map<std::string, std::string> *mergeMap);
+        static void merge(LCEvent *srcEvent, LCEvent *destEvent, map<string, string> *mergeMap);
 
-        /** merge function, takes two events and the names of the 
-         * collections to merge<br>
+        /** Merges the two named collections in the given events 
+         * 
+         * @param srcEvent source event.
+         * @param srcString name of the source collection
+         * @param destEvent destination event
+         * @param destString name of the destination collection 
+         * 
          * calles  merge(LCCollection*, LCCollection*) internally
          */
-        static void merge(LCEvent* srcEvent, std::string srcString, LCEvent* destEvent, std::string destString);
+        static void merge(LCEvent* srcEvent, string srcString, LCEvent* destEvent, string destString);
     
-        /** merge function, takes two collections and addes the Elements
+        /** merge function, takes two collections and addes the elements
          * from src to dest. Both collections need to have same type!<br>
          * Types merged:
          *  - MCPARTICLE
@@ -73,6 +89,9 @@ using namespace lcio;
          * 
          * !! It is the callers responsability to make sure the mcParticles
          * pointed to by the hits do exist !!<br>
+         * 
+         * @param src Collection containing the entries that should be added to another collection.
+         * @param src Collection to which the new entries should be added.
          */
         static void merge(LCCollection* src, LCCollection* dest);
 

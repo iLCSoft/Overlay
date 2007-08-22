@@ -1,4 +1,4 @@
-#define BGNAME "BG-Expectation"
+#define BGNAME "expBG"
 
 #include "Overlay.h"
 #include <iostream>
@@ -45,20 +45,22 @@ Overlay::Overlay() : Processor("Overlay") {
   int num;
   num = 1;
   registerProcessorParameter( "NumberOverlayEvents" , 
-                              "Overlay each event with this number of background events. (weak)" ,
+                              "Overlay each event with this number of background events. (default 1)" ,
                               _numOverlay ,
                               num ) ;
  
   double exp;
   exp = 1.;
   registerProcessorParameter( BGNAME , 
-                              "Overlay each event by a number of BG events according to a poisson distribution with this expectation value. (strong)" ,
-                              _bgExpectation ,
+                              "Add additional background events according to a poisson distribution with this expectation value. (non, if parameter not set)" ,
+                              _expBG ,
                               exp ) ;
 
   StringVec map;
+  map.push_back( "mcParticles mcParticlesBG" );
+//   map.push_back( "" );
   registerProcessorParameter( "CollectionMap" , 
-                              "Map containing pairs of collection to be merged (srcName, destName)"  ,
+                              "Pairs of collection to be merged"  ,
                               _colVec ,
                               map ) ;
   
@@ -113,13 +115,12 @@ void Overlay::processRunHeader( LCRunHeader* run) {
 
 void Overlay::modifyEvent( LCEvent * evt ) {
   LCEvent* overlayEvent ;
-  long num;
+  long num = _numOverlay;
   
   if (parameterSet(BGNAME)) {
-    num = CLHEP::RandPoisson::shoot(_bgExpectation);
-  } else { 
-    num = _numOverlay;
+    num += CLHEP::RandPoisson::shoot(_expBG);
   }
+  
   streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
   
   

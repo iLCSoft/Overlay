@@ -12,11 +12,17 @@
 using namespace lcio ;
 using namespace marlin ;
 
-/** Overlay processor allows to overlay events from additional LCIO files 
- * based on different criterias. Under developement. 
+/** Overlay processor allows to overlay an event with background events from 
+ * additional LCIO files based on different criterias.
  * 
  * @author N. Chiapolini, DESY
- * @version $Id: Overlay.h,v 1.4 2007-08-21 16:46:13 chiapoli Exp $
+ * @version $Id: Overlay.h,v 1.5 2007-08-22 18:49:17 chiapoli Exp $
+ * 
+ * @param InputFileNames list of files that contain the background events
+ * @param NumberOverlayEvents Overlay each event with this number of background events. (default 1)
+ * @param expBG Add additional background events to NumberOverlayEvents according to a poisson 
+ * distribution with this expectation value.
+ * @param CollectionMap Pairs of source and destination collections to be merged. (this order, multiple pairs possible)
  */
 class Overlay : public Processor, public EventModifier {
   
@@ -60,7 +66,7 @@ class Overlay : public Processor, public EventModifier {
    */
   StringVec _fileNames ;
   int       _numOverlay;
-  double    _bgExpectation;
+  double    _expBG;
   
   
   StringVec _colVec;

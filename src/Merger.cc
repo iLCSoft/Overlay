@@ -15,7 +15,7 @@
 // using namespace marlin ;
 
 // #include <iostream>
-using namespace std ;
+// using namespace std ;
 
   
   inline long long cellID2long(int id0, int id1) { return ((long long) id0 << 32) | id1; }
@@ -34,7 +34,6 @@ using namespace std ;
       }
     }
     if (numMCcollections == 1) {
-//TRY?
       Merger::mergeMC(srcEvent, mcSrcString, destEvent, mcDestString);
     } else { 
       streamlog_out( WARNING ) << "Source collection number of MC Collections != 1" << endl;
