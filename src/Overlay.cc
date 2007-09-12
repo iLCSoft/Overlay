@@ -43,11 +43,19 @@ Overlay::Overlay() : Processor("Overlay") {
  			      files ) ;
   
   int num;
-  num = 1;
+  num = 0;
   registerProcessorParameter( "NumberOverlayEvents" , 
-                              "Overlay each event with this number of background events. (default 1)" ,
+                              "Overlay each event with this number of background events. (default 0)" ,
                               _numOverlay ,
                               num ) ;
+  
+  bool runOverlay;
+  runOverlay = false;
+  registerProcessorParameter( "runOverlay" , 
+                              "Overlay each event with the content of one run." ,
+                              _runOverlay ,
+                              runOverlay ) ;
+ 
  
   double exp;
   exp = 1.;
@@ -93,8 +101,15 @@ void Overlay::init() {
 
   int oddNumOfCols = _colVec.size() & 0x1;
   if (oddNumOfCols) { 
-    streamlog_out( WARNING ) << "Odd number of collection names, last collection ignored" << std::endl;
+    streamlog_out( WARNING ) << "Odd number of collection names, last collection ignored." << std::endl;
     --endIt;
+  }
+  
+  if (_runOverlay) {
+    _numOverlay = 1;
+    if (parameterSet(BGNAME) || parameterSet("NumberOverlayEvents")) {
+      streamlog_out( WARNING4 ) << "Using runOverlay, NumberOverlayEvents and expBG get ignored." << std::endl;
+    }
   }
 
   for (it=_colVec.begin(); it < endIt; ++it) {
@@ -114,38 +129,52 @@ void Overlay::processRunHeader( LCRunHeader* run) {
 } 
 
 void Overlay::modifyEvent( LCEvent * evt ) {
-  LCEvent* overlayEvent ;
+  static LCEvent* overlayEvent ;
   long num = _numOverlay;
   
-  if (parameterSet(BGNAME)) {
+  if( isFirstEvent() ) {
+    overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+    _activeRunNumber = overlayEvent->getRunNumber();
+  } 
+  
+  if (parameterSet(BGNAME) && !_runOverlay) {
     num += CLHEP::RandPoisson::shoot(_expBG);
   }
   
   streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
   
   
-  for(long i=0; i < num  ; i++ ) {
   
-    overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
-  //     overlayEvent = _lcReader->readNextEvent() ;
-      
-    if( !overlayEvent ) {
-      _lcReader->close() ; 
-      _lcReader->open( _fileNames  ) ; 
-      
-      streamlog_out( WARNING4 ) << " ---- Overlay stream has been reset to first element ---- "
-                                << std::endl ;
-      
-      overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
-    }
-      
-  //   LCTOOLS::dumpEvent( evt ); 
+  for(long i=0; i < num  ; i++ ) {
+
+    streamlog_out( DEBUG ) << "loop: " << i << std::endl;
     if (_colMap.size() == 0) {
       Merger::merge(overlayEvent, evt);
     } else {
       Merger::merge(overlayEvent, evt, &_colMap);
     }
-    
+
+    overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;  
+    if( !overlayEvent ) {
+      _lcReader->close() ; 
+      _lcReader->open( _fileNames  ) ; 
+
+      streamlog_out( WARNING4 ) << "Overlay stream has been reset to first element."
+          << std::endl ;
+
+      overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+      _activeRunNumber = overlayEvent->getRunNumber();
+      i = num;
+    }
+
+    if (_runOverlay) {
+      i--;
+      int runNumber = overlayEvent->getRunNumber();
+      if (runNumber != _activeRunNumber) {
+        _activeRunNumber = runNumber;
+        i=num;
+      }
+    }
   }
 
   

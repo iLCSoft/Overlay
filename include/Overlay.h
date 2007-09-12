@@ -16,10 +16,10 @@ using namespace marlin ;
  * additional LCIO files based on different criterias.
  * 
  * @author N. Chiapolini, DESY
- * @version $Id: Overlay.h,v 1.5 2007-08-22 18:49:17 chiapoli Exp $
+ * @version $Id: Overlay.h,v 1.6 2007-09-12 08:43:10 chiapoli Exp $
  * 
  * @param InputFileNames list of files that contain the background events
- * @param NumberOverlayEvents Overlay each event with this number of background events. (default 1)
+ * @param NumberOverlayEvents Overlay each event with this number of background events. (default 0)
  * @param expBG Add additional background events to NumberOverlayEvents according to a poisson 
  * distribution with this expectation value.
  * @param CollectionMap Pairs of source and destination collections to be merged. (this order, multiple pairs possible)
@@ -67,13 +67,14 @@ class Overlay : public Processor, public EventModifier {
   StringVec _fileNames ;
   int       _numOverlay;
   double    _expBG;
-  
+  bool      _runOverlay;
   
   StringVec _colVec;
   std::map<std::string, std::string> _colMap;
 
   LCReader* _lcReader ;
 
+  int _activeRunNumber;
   int _nRun ;
   int _nEvt ;
 } ;
