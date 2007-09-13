@@ -14,15 +14,16 @@ using namespace marlin ;
 
 /** Overlay processor allows to overlay an event with background events from 
  * additional LCIO files based on different criterias.
+ * See Merger.cc for the collection types that can be merged.
  * 
  * @author N. Chiapolini, DESY
- * @version $Id: Overlay.h,v 1.6 2007-09-12 08:43:10 chiapoli Exp $
+ * @version $Id: Overlay.h,v 1.7 2007-09-13 20:22:50 chiapoli Exp $
  * 
- * @param InputFileNames list of files that contain the background events
- * @param NumberOverlayEvents Overlay each event with this number of background events. (default 0)
- * @param expBG Add additional background events to NumberOverlayEvents according to a poisson 
- * distribution with this expectation value.
- * @param CollectionMap Pairs of source and destination collections to be merged. (this order, multiple pairs possible)
+ * @param InputFileNames (StringVec) The names (with absolute or relative pathes) of the files from which the background should be read. Multiple files can be given by a white spaces separated list or by setting this parameter multiple times. If the end of the last file is reached, before all events have been processed, a warning will be printed and reading restarted with the first file.
+ * @param CollectionMap (StringVec) Pairs of collection names. The input collection (given first) will be merged into the output collection. If the output collection does not exist, it will be created. It is recommended to set this parameter once for each collection pair. If this parameter is not set, all collections with the same name and type will be merged. 
+ * @param NumberOverlayEvents (int) Fixed number of background events that should be added to each physics event. (default 0)
+ * @param expBG (double) If this value is set, a random number of background will be added to each physics event. The Random numbers will be thrown according to a Poisson distribution with this expectation value. If set, NumberOverlayEvents will be added to the random number.
+ * @param runOverlay (bool) If true, NumberOverlayEvents and expBG will be ignored. Instead one run of background events will be added to each physics event.\\
  */
 class Overlay : public Processor, public EventModifier {
   

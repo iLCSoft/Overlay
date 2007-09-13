@@ -12,7 +12,7 @@ using namespace std;
    * simulation collections are supported.
    * 
    * @author N. Chiapolini, DESY
-   * @version $Id: Merger.h,v 1.3 2007-08-22 18:49:17 chiapoli Exp $
+   * @version $Id: Merger.h,v 1.4 2007-09-13 20:22:50 chiapoli Exp $
    */
   class Merger{
     
@@ -86,6 +86,8 @@ using namespace std;
          *  - MCPARTICLE
          *  - SIMTRACKERHIT
          *  - SIMCALORIMETERHIT
+         *  - TRACKERHIT
+         *  - CALORIMETERHIT
          * 
          * !! It is the callers responsability to make sure the mcParticles
          * pointed to by the hits do exist !!<br>

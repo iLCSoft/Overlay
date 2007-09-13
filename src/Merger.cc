@@ -5,6 +5,7 @@
 // #include "lcio.h"
 #include "IMPL/LCCollectionVec.h"
 #include "IMPL/SimCalorimeterHitImpl.h"
+#include "IMPL/CalorimeterHitImpl.h"
 // #include "IMPL/CalorimeterHitImpl.h"
 // #include "IMPL/TrackerHitImpl.h" 
 
@@ -135,8 +136,8 @@
     
     streamlog_out( DEBUG ) << "merging collection of type: " << destType << " --- ";
         
-    // ** SIMTRACKERHIT **
-    if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::MCPARTICLE))  {
+    // ** GENERAL **
+    if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::MCPARTICLE) || (destType == LCIO::TRACKERHIT))  {
       streamlog_out( DEBUG ) << "merging" << endl;
       
       // running trough all the elements in the collection.
@@ -178,6 +179,36 @@
           }
           
           delete srcHit;
+        }
+        src->removeElementAt(i);
+      }
+      return;
+    }
+    
+    // ** CALORIMETERHIT **
+    if (destType == LCIO::CALORIMETERHIT ) {
+      CalorimeterHitImpl *srcHit, *destHit;
+    
+      streamlog_out( DEBUG ) << "merging" << endl;
+      nElementsSrc = src->getNumberOfElements();
+      nElementsDest = dest->getNumberOfElements();
+      
+      // create a map of dest Collection
+      map<long long, CalorimeterHitImpl *> destMap;
+      map<long long, CalorimeterHitImpl *>::iterator destMapIt;
+      pair<map<long long, CalorimeterHitImpl *>::iterator,bool> res;
+      for (int i=0; i<nElementsDest; i++) {
+        destHit = dynamic_cast<CalorimeterHitImpl *> ( dest->getElementAt(i) );
+        res = destMap.insert( pair<long long, CalorimeterHitImpl *>(cellID2long(destHit->getCellID0(), destHit->getCellID1()), destHit) );
+      }
+
+      // process the src collection and merge with dest
+      for (int i=nElementsSrc-1; i>=0 ; i--) {
+        srcHit = dynamic_cast<CalorimeterHitImpl *> ( src->getElementAt(i) );
+        if ((destMapIt = destMap.find(cellID2long(srcHit->getCellID0(), srcHit->getCellID1()))) == destMap.end()) {
+          dest->addElement( srcHit );
+        } else {
+          destMapIt->second->setEnergy( destMapIt->second->getEnergy() + srcHit->getEnergy() );
         }
         src->removeElementAt(i);
       }

@@ -75,6 +75,7 @@ Overlay::Overlay() : Processor("Overlay") {
 }
 
 
+
 void Overlay::init() { 
   
 
@@ -86,25 +87,34 @@ void Overlay::init() {
   // usually a good idea to
   printParameters() ;
   
-  
+  // opening background input
   _lcReader = LCFactory::getInstance()->createLCReader() ;
-
-
   streamlog_out( DEBUG ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
-
   _lcReader->open( _fileNames  ) ; 
-  
+
+
+  // initalisation of random number generator
   CLHEP::HepRandom::setTheSeed(time(NULL));
-  
+
+
+  // preparing colleciton map for merge
   StringVec::iterator it;
   StringVec::iterator endIt = _colVec.end();
-
+  
   int oddNumOfCols = _colVec.size() & 0x1;
   if (oddNumOfCols) { 
     streamlog_out( WARNING ) << "Odd number of collection names, last collection ignored." << std::endl;
     --endIt;
   }
   
+  for (it=_colVec.begin(); it < endIt; ++it) {  // treating pairs of collection names
+    std::string  key = (*it);  //src
+    ++it;
+    _colMap[key] = (*it);// src -> dest
+  }
+
+
+  // handle runOverlay parameter
   if (_runOverlay) {
     _numOverlay = 1;
     if (parameterSet(BGNAME) || parameterSet("NumberOverlayEvents")) {
@@ -112,31 +122,34 @@ void Overlay::init() {
     }
   }
 
-  for (it=_colVec.begin(); it < endIt; ++it) {
-    std::string  key = (*it);
-    it++;
-    _colMap[key] = (*it);
-  }
-
+  
+  
   _nRun = 0 ;
   _nEvt = 0 ;
   
 }
+
+
 
 void Overlay::processRunHeader( LCRunHeader* run) { 
   
   _nRun++ ;
 } 
 
+
+
+
 void Overlay::modifyEvent( LCEvent * evt ) {
   static LCEvent* overlayEvent ;
   long num = _numOverlay;
   
+  // initialise static event storage overlay Event
   if( isFirstEvent() ) {
     overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
     _activeRunNumber = overlayEvent->getRunNumber();
   } 
   
+
   if (parameterSet(BGNAME) && !_runOverlay) {
     num += CLHEP::RandPoisson::shoot(_expBG);
   }
@@ -144,9 +157,12 @@ void Overlay::modifyEvent( LCEvent * evt ) {
   streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
   
   
-  
+  // core - add correct number of bg events to EVT
+  // if runs are added, the loop counter i will be 
+  // reset to zero in every pass
   for(long i=0; i < num  ; i++ ) {
 
+    // merge event from storage with EVT
     streamlog_out( DEBUG ) << "loop: " << i << std::endl;
     if (_colMap.size() == 0) {
       Merger::merge(overlayEvent, evt);
@@ -154,6 +170,7 @@ void Overlay::modifyEvent( LCEvent * evt ) {
       Merger::merge(overlayEvent, evt, &_colMap);
     }
 
+    // load new event into storage, restart input "stream" if necessary
     overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;  
     if( !overlayEvent ) {
       _lcReader->close() ; 
@@ -167,8 +184,10 @@ void Overlay::modifyEvent( LCEvent * evt ) {
       i = num;
     }
 
+    // if processing runs: 
+    // check exit criteria and reset loop counter if necessary
     if (_runOverlay) {
-      i--;
+      i=0;
       int runNumber = overlayEvent->getRunNumber();
       if (runNumber != _activeRunNumber) {
         _activeRunNumber = runNumber;
