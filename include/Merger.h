@@ -12,7 +12,7 @@ using namespace std;
    * simulation collections are supported.
    * 
    * @author N. Chiapolini, DESY
-   * @version $Id: Merger.h,v 1.4 2007-09-13 20:22:50 chiapoli Exp $
+   * @version $Id: Merger.h,v 1.5 2007-09-14 23:52:46 chiapoli Exp $
    */
   class Merger{
     
@@ -88,6 +88,15 @@ using namespace std;
          *  - SIMCALORIMETERHIT
          *  - TRACKERHIT
          *  - CALORIMETERHIT
+         * 
+         * Algorithm:
+         * MCPARTICLE, SIMTRACKERHIT, TRACKERHIT: All Hits from the source 
+         * collection are copied into the destination collection.
+         * SIMCALORIMETERHIT, CALORIMETERHIT}: If the destination collection 
+         * contains a hit with the same cellID, the energy of the source hit 
+         * will be added to it. Otherwiese the hit will be copied into the 
+         * destination collection. (In case of simulated data the MCParticle 
+         * contributions will be preserved.)
          * 
          * !! It is the callers responsability to make sure the mcParticles
          * pointed to by the hits do exist !!<br>
