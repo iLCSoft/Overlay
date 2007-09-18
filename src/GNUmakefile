@@ -12,7 +12,7 @@
 #---------- user variables ---------------------------------------------------
 
 # name of the program
-PROGNAME = MyMarlin
+PROGNAME = Overlay
 
 
 
