@@ -7,6 +7,29 @@
 #  F.Gaede, 08/2007
 ####################################################
 
+ The Overlay processor can be used to overlay background 
+ events from an additonal set of LCIO files in a Marlin job.
 
- under development .....
+ It requires Marlin v00-09-09 and LCIO v01-08-04 or higher.
 
+ For details see ./doc/Overlay.pdf and the doxygen API doc.
+
+
+ Build instructions:
+ -------------------
+
+ edit BuildSetup.cmake
+ mkdir build 
+ cd build 
+ make install
+
+
+ or use the ilcinstall script to install together with the ilcsoft release.
+
+
+ Versions:
+
+ ______ 
+|v00-01|   initial version
+ ------
+      
