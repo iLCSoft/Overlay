@@ -14,6 +14,10 @@
 
  For details see ./doc/Overlay.pdf and the doxygen API doc.
 
+The JoinEvents processor can be used to join events on a collection basis,
+i.e events from an additional input file  are read and all 
+collections are added to the current event (provided they have a 
+name that is different from all collections in the current event).
 
  Build instructions:
  -------------------
