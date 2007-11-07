@@ -16,21 +16,25 @@
 #############################################################################
 
 # ILC_HOME
-SET( ILC_HOME "/afs/desy.de/group/it/ilcsoft/v01-01"
+SET( ILC_HOME "/afs/desy.de/group/it/ilcsoft/v01-03"
     CACHE PATH "Path to ILC Software" FORCE )
 
 # Path to Marlin
-SET( Marlin_HOME "${ILC_HOME}/Marlin/HEAD"
+SET( Marlin_HOME "${ILC_HOME}/Marlin/v00-09-10"
     CACHE PATH "Path to Marlin" FORCE )
 
 # Path to LCIO
-SET( LCIO_HOME "${ILC_HOME}/lcio/HEAD"
+SET( LCIO_HOME "${ILC_HOME}/lcio/v01-08-05"
     CACHE PATH "Path to LCIO" FORCE )
 
 # CMake Modules Path
-SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-01"
+SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-04"
     CACHE PATH "Path to CMake Modules" FORCE )
 
+
+# Path to CLHEP
+SET( CLHEP_HOME "${ILC_HOME}/CLHEP/2.0.2.2"
+    CACHE PATH "Path to CLHEP" FORCE )
 
 #############################################################################
 # Optional packages
