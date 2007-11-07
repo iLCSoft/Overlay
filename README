@@ -34,6 +34,11 @@ name that is different from all collections in the current event).
  Versions:
 
  ______ 
+|v00-02|   
+ ------
+     - added JoinEvents processor      
+
+ ______ 
 |v00-01|   initial version
  ------
       
