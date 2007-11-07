@@ -13,13 +13,15 @@ using namespace marlin ;
 
 /** JoinEvents processor allows join events (based on the run number and event number) from a different file.
  *  All collections in the  event are added to the current event, provided their collection name does not yet exist in the
- *  event.
+ *  event. If the collection names are the same the user can optionally specify a post fix that is added to all
+ *  collection names from the joined event in order to avoid name clashes.
  * 
  * @author F. Gaede, DESY
- * @version $Id: JoinEvents.h,v 1.1 2007-10-17 17:19:22 gaede Exp $
+ * @version $Id: JoinEvents.h,v 1.2 2007-11-07 20:24:10 gaede Exp $
  * 
  * @param InputFileName: the names (with absolute or relative pathes) of the one input file that 
  * is searched for events with the same run and event number.
+ * @param ColNamePostFix: optional post fix that is added to all collection names
  */
 class JoinEvents : public Processor {
   
@@ -56,9 +58,11 @@ class JoinEvents : public Processor {
   
  protected:
 
-  /** Input file names.
-   */
+  /** Input file names. */
   std::string _fileName ;
+
+  /** post fix for collection names. */
+  std::string _postFix ;
 
   LCReader* _lcReader ;
 
