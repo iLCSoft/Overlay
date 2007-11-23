@@ -27,14 +27,13 @@ SET( Marlin_HOME "${ILC_HOME}/Marlin/v00-09-10"
 SET( LCIO_HOME "${ILC_HOME}/lcio/v01-09"
     CACHE PATH "Path to LCIO" FORCE )
 
-# CMake Modules Path
-SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-04"
-    CACHE PATH "Path to CMake Modules" FORCE )
-
-
 # Path to CLHEP
-SET( CLHEP_HOME "${ILC_HOME}/CLHEP/2.0.2.2"
+SET( CLHEP_HOME "${ILC_HOME}/CLHEP/2.0.3.1"
     CACHE PATH "Path to CLHEP" FORCE )
+
+# CMake Modules Path
+SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-04-01"
+    CACHE PATH "Path to CMake Modules" FORCE )
 
 #############################################################################
 # Optional packages
