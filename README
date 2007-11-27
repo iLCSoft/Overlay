@@ -37,6 +37,9 @@ name that is different from all collections in the current event).
 |v00-02|   
  ------
      - added JoinEvents processor      
+         (requires LCIO v01-08-05 or higher )
+
+       recommended Marlin v00-09-10, LCIO v01-09
 
  ______ 
 |v00-01|   initial version
