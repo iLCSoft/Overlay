@@ -17,6 +17,7 @@
 
 // #include <iostream>
 // using namespace std ;
+#include <algorithm>
 
   
   inline long long cellID2long(int id0, int id1) { return ((long long) id0 << 32) | id1; }
