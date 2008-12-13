@@ -46,7 +46,7 @@ void JoinEvents::init() {
   printParameters() ;
   
   // opening input file
-  _lcReader = LCFactory::getInstance()->createLCReader() ;
+  _lcReader = LCFactory::getInstance()->createLCReader( LCReader::directAccess ) ;
 
   streamlog_out( DEBUG ) << " opening file for joining events : " << _fileName << std::endl ;
   
