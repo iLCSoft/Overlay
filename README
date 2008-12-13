@@ -34,6 +34,10 @@ name that is different from all collections in the current event).
  Versions:
 
  ______ 
+|v00-04|   
+ ------
+    - use optional direct access in LCIO - requires v01-11 or higher
+ ______ 
 |v00-03|   
  ------
     - made gcc 4.3 compliant
