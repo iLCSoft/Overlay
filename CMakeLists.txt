@@ -25,7 +25,7 @@ PROJECT( Overlay )
 
 # project version
 SET( ${PROJECT_NAME}_MAJOR_VERSION 0 )
-SET( ${PROJECT_NAME}_MINOR_VERSION 4 )
+SET( ${PROJECT_NAME}_MINOR_VERSION 5 )
 SET( ${PROJECT_NAME}_PATCH_LEVEL 0 )
 
 
@@ -38,7 +38,7 @@ OPTION( INSTALL_DOC "Set to OFF to skip build/install Documentation" ON )
 
 # project dependencies
 # e.g. SET( ${PROJECT_NAME}_DEPENDS "Marlin MarlinUtil LCIO GEAR CLHEP GSL RAIDA ROOT" )
-SET( ${PROJECT_NAME}_DEPENDS "Marlin LCIO CLHEP" )
+SET( ${PROJECT_NAME}_DEPENDS "Marlin GEAR LCIO CLHEP" )
 
 # set default cmake build type to RelWithDebInfo
 # possible options are: None Debug Release RelWithDebInfo MinSizeRel

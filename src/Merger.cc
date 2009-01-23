@@ -6,6 +6,8 @@
 #include "IMPL/LCCollectionVec.h"
 #include "IMPL/SimCalorimeterHitImpl.h"
 #include "IMPL/CalorimeterHitImpl.h"
+
+#include "UTIL/LCTOOLS.h"
 // #include "IMPL/CalorimeterHitImpl.h"
 // #include "IMPL/TrackerHitImpl.h" 
 
@@ -95,16 +97,58 @@
       try {
         srcCol = srcEvent->getCollection((*it).first);
       } catch (DataNotAvailableException& e) {
-        streamlog_out( WARNING ) << "Source collection " << (*it).first << " does not exist." << endl;
+
+
+	// streamlog_out( DEBUG ) << "The source collection " << (*it).first 
+	//                        << " does not exist." << endl;
+
         continue;
       }
       
       try {
+
         destCol = destEvent->getCollection((*it).second);
+
       } catch (DataNotAvailableException& e) {
-        streamlog_out( WARNING ) << "Destination collection " << (*it).second  << " was created." << endl;
+
+        streamlog_out( DEBUG ) << "destination collection " << (*it).second  << " was created." << endl;
+	
         destCol = new LCCollectionVec( srcCol->getTypeName() ) ;
-        destEvent->addCollection( destCol , (*it).second ) ;
+
+	// fg: we need to copy all collection parameters from the source collection  
+	
+	//fg: does not work :	destCol->parameters() = srcCol->getParameters() ;
+	// -> do it 'manually':
+
+	StringVec stringKeys ;
+	srcCol->getParameters().getStringKeys( stringKeys ) ;
+	for(unsigned i=0; i< stringKeys.size() ; i++ ){
+	  StringVec vals ;
+	  srcCol->getParameters().getStringVals(  stringKeys[i] , vals ) ;
+	  destCol->parameters().setValues(  stringKeys[i] , vals ) ;   
+	}
+	StringVec intKeys ;
+	srcCol->getParameters().getIntKeys( intKeys ) ;
+	for(unsigned i=0; i< intKeys.size() ; i++ ){
+	  IntVec vals ;
+	  srcCol->getParameters().getIntVals(  intKeys[i] , vals ) ;
+	  destCol->parameters().setValues(  intKeys[i] , vals ) ;   
+	}
+	StringVec floatKeys ;
+	srcCol->getParameters().getFloatKeys( floatKeys ) ;
+	for(unsigned i=0; i< floatKeys.size() ; i++ ){
+	  FloatVec vals ;
+	  srcCol->getParameters().getFloatVals(  floatKeys[i] , vals ) ;
+	  destCol->parameters().setValues(  floatKeys[i] , vals ) ;   
+	}
+	
+	streamlog_out( DEBUG ) <<  " copied collection parameters ... " << std::endl ;
+	streamlog_message( DEBUG , 
+			   LCTOOLS::printParameters( srcCol->getParameters() ) ;
+			   LCTOOLS::printParameters( destCol->getParameters() ) ;
+			   ,"\n" ;  ) ;
+	  
+	destEvent->addCollection( destCol , (*it).second ) ;
       }
       
       Merger::merge(srcCol, destCol);
