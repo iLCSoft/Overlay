@@ -316,13 +316,10 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
       } catch( DataNotAvailableException& e) {}
       
 
-      try { 
-
-	LCCollection* mcpBGCol = olEvt->getCollection( "MCParticle" ) ;
-	
-	Merger::merge( mcpBGCol,  mcpCol  )  ;
- 
-      } catch( DataNotAvailableException& e) {}
+//       try { 
+//  	LCCollection* mcpBGCol = olEvt->getCollection( "MCParticle" ) ;
+//  	Merger::merge( mcpBGCol,  mcpCol  )  ;
+//       } catch( DataNotAvailableException& e) {}
 
 
 
@@ -337,6 +334,9 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
   streamlog_out( DEBUG ) << " total number of VXD bg hits: " << nVXDHits 
 			 << std::endl ;
 	
+
+  LCTOOLS::dumpEvent( evt ) ;
+
 
   _nEvt ++ ;
 }
