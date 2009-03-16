@@ -13,8 +13,9 @@
 #include <EVENT/LCCollection.h>
 #include <IMPL/LCCollectionVec.h>
 #include <EVENT/MCParticle.h>
-#include <EVENT/SimTrackerHit.h>
 #include "IO/LCReader.h"
+//#include <EVENT/SimTrackerHit.h>
+#include <IMPL/SimTrackerHitImpl.h>
 #include "UTIL/LCTOOLS.h"
 #include "Merger.h"
 
@@ -67,7 +68,7 @@ OverlayBX::OverlayBX() : Processor("OverlayBX") {
 			      files ) ;
 
   registerProcessorParameter( "NumberOfEventsPerBX" , 
-			      "Fixed number of background events that are used for one bunch crossing." ,
+			      "Fixed number of bg events that are used for one bunch crossing. If 0 read complete file" ,
 			      _eventsPerBX ,
 			      int(0) ) ;
 
@@ -148,9 +149,8 @@ void OverlayBX::init() {
 
     _lcReaders[i] = LCFactory::getInstance()->createLCReader() ;
 
-    streamlog_out( DEBUG4 ) << " opening file for overlay : " << _inputFileNames[i]  << std::endl ;
-
-    _lcReaders[i]->open( _inputFileNames[i]  ) ; 
+//     streamlog_out( DEBUG4 ) << " opening file for overlay : " << _inputFileNames[i]  << std::endl ;
+//     _lcReaders[i]->open( _inputFileNames[i]  ) ; 
   }
 
   // initalisation of random number generator
@@ -210,6 +210,44 @@ void OverlayBX::processRunHeader( LCRunHeader* run) {
 
 
 
+LCEvent*  OverlayBX::readNextEvent( int bxNum ){
+  
+  static int lastBXNum = -1 ; // fixme: make this a class variable....
+  static int currentRdr = -1 ;
+  
+  if( bxNum != lastBXNum ) {
+    
+    // open a new reader .....
+    
+    int nRdr = _lcReaders.size() ;
+    int iRdr = (int) ( CLHEP::RandFlat::shoot() * nRdr ) ; 
+    
+    if( currentRdr != -1 ) {
+      
+      _lcReaders[currentRdr]->close() ; 
+      
+      streamlog_out( DEBUG4 ) << " >>>> closing reader " << currentRdr 
+			     << " of " << nRdr  << std::endl ;
+    }
+
+    streamlog_out( DEBUG4 ) << " >>>> reading next BX  from reader " << iRdr 
+			   << " of " << nRdr  
+			   << " for BX : " << bxNum 
+			   << std::endl ;
+    
+
+    currentRdr = iRdr ;
+    _lcReaders[currentRdr]->open( _inputFileNames[currentRdr]  ) ; 
+    
+    lastBXNum = bxNum ;
+  }
+
+  return  _lcReaders[currentRdr]->readNextEvent( LCIO::UPDATE ) ;
+    
+}
+
+
+
 LCEvent*  OverlayBX::readNextEvent(){
   
   int nRdr = _lcReaders.size() ;
@@ -219,6 +257,7 @@ LCEvent*  OverlayBX::readNextEvent(){
 			 << " of " << nRdr  << std::endl ;
 
   //FIXME: need to read random events from this file
+  // -> makes no sense as guinea pig files are ordered !!!!
 
   LCEvent* evt = _lcReaders[iRdr]->readNextEvent( LCIO::UPDATE ) ;
 
@@ -240,39 +279,44 @@ LCEvent*  OverlayBX::readNextEvent(){
 
 void OverlayBX::modifyEvent( LCEvent * evt ) {
   
-  // require the MCParticle collection to be available
-  LCCollection* mcpCol = 0 ; 
-  try { 
+//   // require the MCParticle collection to be available
+//   LCCollection* mcpCol = 0 ; 
+//   try { 
+//     mcpCol = evt->getCollection( "MCParticle" ) ; // FIXME; make this a parameter
+//   } catch( DataNotAvailableException& e){ 
+//     streamlog_out( ERROR ) << " No MCParticle collection in event nr " << evt->getRunNumber() 
+// 			   << " - " << evt->getEventNumber() 
+// 			   << "  can't overlay backgrund ..." << std::endl ;
+//     return ;
+//   }
 
-    mcpCol = evt->getCollection( "MCParticle" ) ; // FIXME; make this a parameter
-
-  } catch( DataNotAvailableException& e){ 
-
-    streamlog_out( ERROR ) << " No MCParticle collection in event nr " << evt->getRunNumber() 
-			   << " - " << evt->getEventNumber() 
-			   << "  can't overlay backgrund ..." << std::endl ;
-    return ;
-  }
-
-
-
-
-
-  long num = _eventsPerBX;
-
+  
+  //  long num = _eventsPerBX;
   // get number of BX as max from VXD layers:
   int numBX = 1 ;
   for( unsigned i=0 ; i < _vxdLayers.size() ; ++i){
     if( _vxdLayers[i].nBX > numBX ) 
       numBX = _vxdLayers[i].nBX ;
   }
-  //  numBX = 10 ; // FIXME: debug
-
-
-  streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() 
-			 << "\n overlaying " << numBX << " bunchcrossings with " 
-			 << num << " background events each." << std::endl;
   
+  
+  if( _eventsPerBX != 0 ){ 
+
+    streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() 
+			   << "\n overlaying " << numBX << " bunchcrossings with " 
+			   << _eventsPerBX << " background events each." << std::endl;
+  }else{
+
+    
+    _eventsPerBX =  ( 0x1 << 30 )  ;
+
+    streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() 
+			   << "\n overlaying " << numBX << " bunchcrossings from complete files ! " 
+			   << " (_eventsPerBX = " << _eventsPerBX << " ) "
+			   << std::endl;
+
+
+  }
   
   LCCollection* vxdCol = 0 ; 
 
@@ -296,12 +340,15 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
   
   //  for(int i = -numBX  ; i <=numBX  ; i++ ) { 
   for(int i = 0  ; i <numBX  ; i++ ) {
-    
     // loop over events in one BX ......
-    for(long j=0; j < num  ; j++ ) {
+    for(long j=0; j < _eventsPerBX  ; j++ ) {
+
+      LCEvent* olEvt  = readNextEvent(i) ;
       
-      LCEvent* olEvt  = readNextEvent() ;
-      
+      if( olEvt == 0 ) 
+	break ;
+
+
       streamlog_out( DEBUG ) << " merge bg event for BX  " << i << " :" 
 			     << olEvt->getRunNumber()  << "  - "
 			     << olEvt->getEventNumber()  
@@ -320,7 +367,6 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 //  	LCCollection* mcpBGCol = olEvt->getCollection( "MCParticle" ) ;
 //  	Merger::merge( mcpBGCol,  mcpCol  )  ;
 //       } catch( DataNotAvailableException& e) {}
-
 
 
 
@@ -344,8 +390,10 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 
 int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol , int bxNum ) {
   
-  // FIXME: here we should shift the hits in r-phi along the ladder 
-  // ... to be done ....
+  // the hits are simply overlaid - no shift in r-phi along the ladder 
+  // is applied; this should be ok if the ladders are not read out along z
+  // - in reality the innermost ladders will have faster readout than outermost ladders
+  //   and thus shifting the hits might help reducing ghost tracks...
   
   const string destType = vxdCol->getTypeName();
   int nHits = 0 ;
@@ -369,14 +417,17 @@ int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol
       
       SimTrackerHit* sth = dynamic_cast<SimTrackerHit*>(  vxdBGCol->getElementAt(i) ) ;
 
-      LCObject* bgHit = vxdBGCol->getElementAt(i) ;
+      //LCObject* bgHit = vxdBGCol->getElementAt(i) ;
+      SimTrackerHitImpl* bgHit = dynamic_cast<SimTrackerHitImpl*>( vxdBGCol->getElementAt(i) ) ;
 
       vxdBGCol->removeElementAt(i);
 
       int layer = ( sth->getCellID() & 0xff )  ;
       
       if( bxNum < _vxdLayers[ layer-1 ].nBX  ) {
-
+	
+	// explicitly set a null pointer as MCParticle collection is not merged 
+	bgHit->setMCParticle( 0 ) ;
 	vxdCol->addElement( bgHit );
 
       } else {
@@ -457,6 +508,10 @@ void OverlayBX::check( LCEvent * evt ) {
 
     int nH = vxdCol->getNumberOfElements() ;
     
+
+    streamlog_out( MESSAGE4 ) <<  "  ++++ " << evt->getEventNumber() << "  " <<  nH << std::endl ; 
+
+
     for(int i=0; i<nH ; ++i){
       
       SimTrackerHit* sth = dynamic_cast<SimTrackerHit*>(  vxdCol->getElementAt(i) ) ;
@@ -487,8 +542,7 @@ void OverlayBX::check( LCEvent * evt ) {
     }
     
 
-  } catch( DataNotAvailableException& e) {
-  }
+  } catch( DataNotAvailableException& e) {}
   
 #ifdef MARLIN_USE_AIDA
   _hist1DVec[ H1D::hitsLayer1 ]->fill( nHitL1 ) ;
@@ -504,10 +558,10 @@ void OverlayBX::check( LCEvent * evt ) {
 
 void OverlayBX::end(){ 
   
-  // close all open input files
-  for( unsigned i=0 ; i < _lcReaders.size() ; ++i ) {
-    _lcReaders[i]->close() ;
-  }
+//   // close all open input files
+//   for( unsigned i=0 ; i < _lcReaders.size() ; ++i ) {
+//     _lcReaders[i]->close() ;
+//   }
 
   streamlog_out( MESSAGE ) << " overlayed pair background in VXD detector : " << std::endl ;
 

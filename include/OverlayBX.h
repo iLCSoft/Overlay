@@ -49,7 +49,7 @@ typedef std::vector< VXDLayer >  VXDLayers ;
  *  For all other detectors high time resolution is assumed and only one bunch crosing will be overalayd.
  * 
  *  @author F. Gaede DESY (based on Overlay processor by N. Chiapolini)
- *  @version $Id: OverlayBX.h,v 1.1 2009-01-23 16:36:38 gaede Exp $
+ *  @version $Id: OverlayBX.h,v 1.2 2009-03-16 16:15:00 gaede Exp $
  * 
  *  @param InputFileNames (StringVec) The names (with absolute or relative pathes) of the files from 
  *  which the background should be read. Events are read in random order from the files in the list with 
@@ -119,8 +119,11 @@ class OverlayBX : public Processor, public EventModifier {
   
  protected:
   
-  /** helper function for (randomly reading the next event) */
+  /** helper function for (randomly) reading the next event */
   LCEvent*  readNextEvent() ;
+  /** helper function for reading the next event of BX bxNum */
+  LCEvent*  readNextEvent(int bxNum) ;
+
   /** helper function */
   void init_geometry() ;
   /** helper function */
