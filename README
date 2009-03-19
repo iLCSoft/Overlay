@@ -32,6 +32,11 @@ name that is different from all collections in the current event).
 
 
  Versions:
+ __________ 
+|v00-06-01 |   
+ ----------
+   - bug fix for overlaying exactly 1 BX for the VXD 
+
 
  _______ 
 |v00-06 |   
