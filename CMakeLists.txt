@@ -26,7 +26,7 @@ PROJECT( Overlay )
 # project version
 SET( ${PROJECT_NAME}_MAJOR_VERSION 0 )
 SET( ${PROJECT_NAME}_MINOR_VERSION 6 )
-SET( ${PROJECT_NAME}_PATCH_LEVEL 0 )
+SET( ${PROJECT_NAME}_PATCH_LEVEL 1 )
 
 
 ### SETTINGS #################################################################

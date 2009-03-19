@@ -213,7 +213,13 @@ void OverlayBX::processRunHeader( LCRunHeader* run) {
 LCEvent*  OverlayBX::readNextEvent( int bxNum ){
   
   static int lastBXNum = -1 ; // fixme: make this a class variable....
+  static int lastEvent = -1 ; 
   static int currentRdr = -1 ;
+  
+  streamlog_out( DEBUG2 ) << " >>>> readNextEvent( " <<  bxNum << ") called; "
+			  << " lastBXNum  " << lastBXNum  
+			  << " currentRdr  " << currentRdr  
+			  << std::endl ;
   
   if( bxNum != lastBXNum ) {
     
@@ -242,8 +248,13 @@ LCEvent*  OverlayBX::readNextEvent( int bxNum ){
     lastBXNum = bxNum ;
   }
 
-  return  _lcReaders[currentRdr]->readNextEvent( LCIO::UPDATE ) ;
+  LCEvent* evt =  _lcReaders[currentRdr]->readNextEvent( LCIO::UPDATE ) ;
     
+  if( evt == 0 ) {
+    lastBXNum = -1 ;
+  }
+
+  return evt ;
 }
 
 
@@ -279,6 +290,9 @@ LCEvent*  OverlayBX::readNextEvent(){
 
 void OverlayBX::modifyEvent( LCEvent * evt ) {
   
+  if( streamlog::out.write< streamlog::DEBUG3 >() ) 
+    LCTOOLS::dumpEvent( evt ) ;
+  
 //   // require the MCParticle collection to be available
 //   LCCollection* mcpCol = 0 ; 
 //   try { 
@@ -301,20 +315,20 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
   
   
   if( _eventsPerBX != 0 ){ 
-
-    streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() 
-			   << "\n overlaying " << numBX << " bunchcrossings with " 
-			   << _eventsPerBX << " background events each." << std::endl;
+    
+    streamlog_out( DEBUG1 ) << "** Processing event nr " << evt->getEventNumber() 
+			    << "\n overlaying " << numBX << " bunchcrossings with " 
+			    << _eventsPerBX << " background events each." << std::endl;
   }else{
-
+    
     
     _eventsPerBX =  ( 0x1 << 30 )  ;
 
-    streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() 
-			   << "\n overlaying " << numBX << " bunchcrossings from complete files ! " 
-			   << " (_eventsPerBX = " << _eventsPerBX << " ) "
-			   << std::endl;
-
+    streamlog_out( DEBUG1 ) << "** Processing event nr " << evt->getEventNumber() 
+			    << "\n overlaying " << numBX << " bunchcrossings from complete files ! " 
+			    << " (_eventsPerBX = " << _eventsPerBX << " ) "
+			    << std::endl;
+    
 
   }
   
@@ -327,8 +341,8 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
   } catch( DataNotAvailableException& e) {
     
     // make sure there is a VXD collection in the event
-    streamlog_out( DEBUG ) << " created new vxd hit collection " <<  _vxdCollection 
-			   << std::endl ;
+    streamlog_out( DEBUG1 ) << " created new vxd hit collection " <<  _vxdCollection 
+			    << std::endl ;
     
     vxdCol = new LCCollectionVec( LCIO::SIMTRACKERHIT )  ;
     evt->addCollection(  vxdCol , _vxdCollection  ) ;
@@ -377,11 +391,12 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
     }
   }
 
-  streamlog_out( DEBUG ) << " total number of VXD bg hits: " << nVXDHits 
-			 << std::endl ;
-	
+  streamlog_out( DEBUG3 ) << " total number of VXD bg hits: " << nVXDHits 
+			  << std::endl ;
+  
 
-  LCTOOLS::dumpEvent( evt ) ;
+  if( streamlog::out.write< streamlog::DEBUG3 >() ) 
+    LCTOOLS::dumpEvent( evt ) ;
 
 
   _nEvt ++ ;
@@ -410,7 +425,7 @@ int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol
     // running trough all the elements in the collection.
     nHits = vxdBGCol->getNumberOfElements();
     
-    streamlog_out( DEBUG ) << " merging VXD hits from bg : " << nHits << endl;
+    streamlog_out( DEBUG1 ) << " merging VXD hits from bg : " << nHits << endl;
     
     for (int i=nHits-1; i>=0; i--){ 
       // loop from back in order to remove vector elements from end ...
