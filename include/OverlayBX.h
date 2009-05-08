@@ -40,21 +40,28 @@ struct VXDLayer{
 typedef std::vector< VXDLayer >  VXDLayers ;
 
 
+/** Helper struct for TPC parameters */
+struct TPCParameters{
+};
+
 
 /** OverlayBX processor for overlaying (pair) background from many bunch crossings.
  *  SimTrackerHits from the TPC and the VXD detectors are overlayed for the number of 
  *  bunchcrossings that will be visible for a given physics event, according to the bunch 
  *  crossing frequency and the corresponding readout characteristics (drift time) of the devices. 
- *  Hits from different bunch crossings are shifted in z (TPC) and r-phi (along the ladders) in the VXD.
- *  For all other detectors high time resolution is assumed and only one bunch crosing will be overalayd.
+ *  Hits from different bunch crossings are shifted in z for the TPC accordingly.
+ *  No shift in  r-phi (along the ladders) is applied for the VXD so far.
+ *  For all other detectors high time resolution is assumed and only one bunch crosing will be overalayd.<br>
+ *  <b>Note: code assumes that background files contain exactly one bunch crossing - this is necesassary as 
+ *     guineapig files are ordered.</b>
  * 
  *  @author F. Gaede DESY (based on Overlay processor by N. Chiapolini)
- *  @version $Id: OverlayBX.h,v 1.2 2009-03-16 16:15:00 gaede Exp $
+ *  @version $Id: OverlayBX.h,v 1.3 2009-05-08 15:13:10 gaede Exp $
  * 
- *  @param InputFileNames (StringVec) The names (with absolute or relative pathes) of the files from 
+ *  @param BackgroundFileNames (StringVec) The names (with absolute or relative pathes) of the files from 
  *  which the background should be read. Events are read in random order from the files in the list with 
- *  possible dublication.
- *  It is the users responsibility to provide sufficient statistics for the signal sample under study.
+ *  possible dublication. It is the users responsibility to provide sufficient statistics for the signal 
+ *  sample under study.
  * 
  *  @param BunchCrossingTime [s] (float) - default 3.0e-7 (300 ns) 
  *  
@@ -63,7 +70,9 @@ typedef std::vector< VXDLayer >  VXDLayers ;
  *  @param MaxBXsTPC (int) - maximum of BXs to be overlayed for the TPC; -1: 
  *                           compute from length and BXtime; default 10
  * 
- *  @param TPCCollection  collection of TPC SimTrackerHits  
+ *  @param TPCCollections  pairs of collection names with TPC SimTrackerHits  to be overlaid.
+ *  The input collection (given first) will be merged into the output collection. If the output 
+ *  collectiondoes not exist, it will be created. 
  * 
  *  @param VXDLayerReadOutTimes [us] (FloatVec) - default "50. 50. 200. 200. 200. 200."
  * 
@@ -76,9 +85,9 @@ typedef std::vector< VXDLayer >  VXDLayers ;
  *  The input collection (given first) will be merged into the output collection. If the output 
  *  collectiondoes not exist, it will be created. 
  * 
- *  @param NumberOfEventsPerBX (int) 
- *  Fixed number of background events that are used for one bunch crossing.
- * 
+ *  @param MaxNumberOfEventsPerFile (int) 
+ *  Maximum number of background events to be read from one file. Default: -1, i.e. read one file per BX.
+ *  This option is essentially for testing. 
  */
 
 class OverlayBX : public Processor, public EventModifier {
@@ -120,7 +129,8 @@ class OverlayBX : public Processor, public EventModifier {
  protected:
   
   /** helper function for (randomly) reading the next event */
-  LCEvent*  readNextEvent() ;
+  //  LCEvent*  readNextEvent() ;
+
   /** helper function for reading the next event of BX bxNum */
   LCEvent*  readNextEvent(int bxNum) ;
 
@@ -128,21 +138,30 @@ class OverlayBX : public Processor, public EventModifier {
   void init_geometry() ;
   /** helper function */
   int mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol , int bxNum )  ;
+  /** helper function */
+  int mergeTPCColsFromBX( LCCollection* tpcCol , LCCollection* tpcBGCol , float zPosShift ) ;
 
-  // variables for processor parameters 
+  // ---- variables for processor parameters ----- 
   StringVec   _inputFileNames ;
   int         _eventsPerBX;
   float       _bxTime_s ;
   float       _tpcVdrift_mm_s ;
   int         _maxBXsTPC ;
   FloatVec    _vxdLayerReadOutTimes ;
-  std::string _tpcCollection ;
+
+  StringVec   _tpcCollections ;
+  //  std::string _tpcCollection ;
+  
   std::string _vxdCollection ;
   StringVec   _mergeCollections ;
   int         _ranSeed  ;
 
-  // class member variables
-  std::map<std::string, std::string> _colMap;
+  //---- class member variables ------
+  typedef std::map<std::string, std::string> StrMap ;
+  StrMap _tpcMap;
+  StrMap _colMap;
+   //  std::map<std::string, std::string> _colMap;
+
   std::vector< LCReader* > _lcReaders ;
   int _maxBXs ;
   int _nRun ;
