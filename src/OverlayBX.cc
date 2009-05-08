@@ -512,8 +512,8 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 	  
 	  //overlay TPC hits shifted by nBX * drLenBX
 	  if( i < nTPCBX )
-	    //	    nTPCHits += mergeTPCColsFromBX( tpcCol , tpcBGCol ,  zShiftStart + i * drLenBX   )  ;
-	    nTPCHits += mergeTPCColsFromBX( tpcCol , tpcBGCol ,  0  )  ; // no z shift for testing
+	      nTPCHits += mergeTPCColsFromBX( tpcCol , tpcBGCol ,  zShiftStart + i * drLenBX   )  ;
+	    //nTPCHits += mergeTPCColsFromBX( tpcCol , tpcBGCol ,  0  )  ; // no z shift for testing
 	  
 	} catch( DataNotAvailableException& e) {}
 	
