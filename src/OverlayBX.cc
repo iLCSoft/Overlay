@@ -494,7 +494,7 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 	
 	LCCollection* vxdBGCol = olEvt->getCollection( _vxdCollection ) ;
 	
-	if( i < nVXDHits )
+	if( i < nVXDBX )
 	  nVXDHits += mergeVXDColsFromBX( vxdCol , vxdBGCol , i )  ;
  
       } catch( DataNotAvailableException& e) {}
@@ -824,16 +824,16 @@ void OverlayBX::end(){
 
     double area =  _vxdLayers[i].ladderArea * _vxdLayers[i].nLadders ;
 
+
 #ifdef MARLIN_USE_AIDA
+
     streamlog_out( MESSAGE ) << " -> average number of hits:  " 
 			     <<  _hist1DVec[ i ]->mean() 
 			     << " -    hits/ mm " <<  _hist1DVec[ i ]->mean() / area  
 			     << " -    occupancy (25mu) " << _hist1DVec[ i ]->mean() / area / 160. 
 			     << std::endl ;
+
 #endif
-
-    
-
 
   }
   
