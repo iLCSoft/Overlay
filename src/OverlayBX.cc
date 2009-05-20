@@ -25,6 +25,9 @@
 #include <gear/VXDLayerLayout.h>
 #include <gear/TPCParameters.h>
 
+#include <gearimpl/Vector3D.h>
+
+
 
 #include "CLHEP/Random/RandFlat.h"
 // #include "CLHEP/Vector/TwoVector.h"
@@ -86,6 +89,11 @@ OverlayBX::OverlayBX() : Processor("OverlayBX") {
 			      " and BXtime; default 10" ,
 			      _maxBXsTPC ,
 			      int(10) ) ;
+
+  registerProcessorParameter( "PhiRotateTPCHits" , 
+			      "if true, rotate the bg events by a random azimuthal angle - default false" ,
+			      _phiRotateTPCHits ,
+			      false) ;
 
   FloatVec vxdTimes ;
   vxdTimes.push_back( 50. ) ;
@@ -620,7 +628,14 @@ int OverlayBX::mergeTPCColsFromBX( LCCollection* tpcCol , LCCollection* tpcBGCol
     streamlog_out( WARNING ) << "merge not possible, collections of different type" << endl;
     return nHits ;
   }
-  
+
+  double phiRot = 0.0 ;
+
+  if( _phiRotateTPCHits ){
+
+    phiRot  =  CLHEP::RandFlat::shoot() * 2.* M_PI  ; 
+  }
+
   if ( destType == LCIO::SIMTRACKERHIT  )  {
     
     // running trough all the elements in the collection.
@@ -639,12 +654,23 @@ int OverlayBX::mergeTPCColsFromBX( LCCollection* tpcCol , LCCollection* tpcBGCol
 
       //******************************************************
       
-      double const * pos =  bgHit->getPosition() ;
+      const double* pos =  bgHit->getPosition() ;
+
+      gear::Vector3D posV( pos[0] , pos[1], pos[2] ) ;
+
+
+      if( _phiRotateTPCHits ){
+
+	gear::Vector3D rotV( posV.rho() , posV.phi() + phiRot , posV.z() , gear::Vector3D::cylindrical ) ; 
+
+	posV = rotV ;
+
+      }
 
       double newPos[3] ;
-      newPos[0] = pos[0] ;
-      newPos[1] = pos[1] ;
-      newPos[2] = pos[2] ;
+      newPos[0] = posV[0] ;
+      newPos[1] = posV[1] ;
+      newPos[2] = posV[2] ;
 
 
       if( newPos[2] >  0 ) { // positive z

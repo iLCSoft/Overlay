@@ -56,7 +56,7 @@ struct TPCParameters{
  *     guineapig files are ordered.</b>
  * 
  *  @author F. Gaede DESY (based on Overlay processor by N. Chiapolini)
- *  @version $Id: OverlayBX.h,v 1.3 2009-05-08 15:13:10 gaede Exp $
+ *  @version $Id: OverlayBX.h,v 1.4 2009-05-20 09:18:34 gaede Exp $
  * 
  *  @param BackgroundFileNames (StringVec) The names (with absolute or relative pathes) of the files from 
  *  which the background should be read. Events are read in random order from the files in the list with 
@@ -73,6 +73,9 @@ struct TPCParameters{
  *  @param TPCCollections  pairs of collection names with TPC SimTrackerHits  to be overlaid.
  *  The input collection (given first) will be merged into the output collection. If the output 
  *  collectiondoes not exist, it will be created. 
+ * 
+ *  @param PhiRotateTPCHits  - if set to true the bg events are rotated in azimuth by a random angle 
+ *                             allows to re-use the same bg events more often
  * 
  *  @param VXDLayerReadOutTimes [us] (FloatVec) - default "50. 50. 200. 200. 200. 200."
  * 
@@ -147,6 +150,9 @@ class OverlayBX : public Processor, public EventModifier {
   float       _bxTime_s ;
   float       _tpcVdrift_mm_s ;
   int         _maxBXsTPC ;
+
+  bool        _phiRotateTPCHits ;
+
   FloatVec    _vxdLayerReadOutTimes ;
 
   StringVec   _tpcCollections ;
