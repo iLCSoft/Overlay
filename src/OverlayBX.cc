@@ -16,6 +16,7 @@
 #include "IO/LCReader.h"
 //#include <EVENT/SimTrackerHit.h>
 #include <IMPL/SimTrackerHitImpl.h>
+#include <IMPL/LCFlagImpl.h>
 #include "UTIL/LCTOOLS.h"
 #include "Merger.h"
 
@@ -474,6 +475,11 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 			      << std::endl ;
       
       tpcCol = new LCCollectionVec( LCIO::SIMTRACKERHIT )  ;
+      
+      LCFlagImpl thFlag(0) ;
+      thFlag.setBit( LCIO::THBIT_MOMENTUM ) ;
+      tpcCol->setFlag( thFlag.getFlag()  ) ;
+
       evt->addCollection(  tpcCol , tpcName  ) ;
     }
   }
