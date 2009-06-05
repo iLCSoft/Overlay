@@ -16,6 +16,7 @@
 #include "IO/LCReader.h"
 //#include <EVENT/SimTrackerHit.h>
 #include <IMPL/SimTrackerHitImpl.h>
+#include <IMPL/SimCalorimeterHitImpl.h>
 #include <IMPL/LCFlagImpl.h>
 #include "UTIL/LCTOOLS.h"
 #include "Merger.h"
@@ -58,7 +59,7 @@ OverlayBX::OverlayBX() : Processor("OverlayBX") {
   //   std::string _vxdCollection ;
   //   StringVec   _mergeCollections ;
   //   int         _ranSeed  ;
-  //   std::map<std::string, std::string> _colMap;
+  //   ;
   //   std::vector< LCReader* > _lcReaders ;
   //   int _nRun ;
   //   int _nEvt ;
@@ -533,8 +534,45 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 	
       }
 
-
       if( i==0 ) { // -----    merge hits of detectors w/ high time resolution for one  BX -------
+	
+	//fg: as we drop the MCParticle, we have to set the Pointers to 0 
+
+	for(StrMap::iterator it=_colMap.begin() ; it!= _colMap.end() ; ++it ) {
+
+	  LCCollection *srcCol = 0 ;
+	  
+	  try {
+	    
+	    srcCol = olEvt->getCollection((*it).first);
+	    
+	    std::string type = srcCol->getTypeName() ;
+	    
+	    if( type == LCIO::SIMTRACKERHIT ) {
+	      int nHits = srcCol->getNumberOfElements();
+	      
+	      streamlog_out( DEBUG1 ) << " --- setting MCParticle to 0 for : " << nHits  
+				      << " hits from collection " << (*it).first << endl;
+	      
+	      for (int i=0; i<nHits; i++){
+		SimTrackerHitImpl* bgHit = dynamic_cast<SimTrackerHitImpl*>( srcCol->getElementAt(i) ) ;
+		bgHit->setMCParticle( 0 ) ;
+	      }
+	    }
+	    // FIXME .....	  
+	    // 	  if( type == LCIO::SIMCALORIMETERHIT ) {
+	    // 	    SimCalorimeterHitImpl* bgHit = dynamic_cast<SimCalorimeterHitImpl*>( srcCol->getElementAt(i) ) ;
+	    // 	    //fg: this is more complicated...	    bgHit->setMCParticle( 0 ) ;
+	    // 	  }
+	    
+	  } catch (DataNotAvailableException& e) {
+	    // streamlog_out( DEBUG ) << "The source collection " << (*it).first 
+	    //                        << " does not exist." << endl;
+	  }
+
+	}
+
+
 	Merger::merge( olEvt, evt, &_colMap ) ;
       }
       
