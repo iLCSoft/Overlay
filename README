@@ -32,6 +32,17 @@ name that is different from all collections in the current event).
 
 
  Versions:
+
+ _______ 
+|v00-07 |   
+ -------
+   - added overlay of many bunch crossings for TPC hits, 
+     properly shifted in z according to time structure.
+   - introduced random rotation of TPC hits in azimuthal angle    
+   - added LCIO::THBIT_MOMENTUM for newly created TPC collections
+   - MCParticle pointer set to 0 for non-VXD SimTrackerhits
+   - bug fix: nVXDBX for nVXDHits
+
  __________ 
 |v00-06-01 |   
  ----------
