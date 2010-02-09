@@ -33,6 +33,11 @@ name that is different from all collections in the current event).
 
  Versions:
 
+ __________ 
+|v00-07-01 |   
+ ----------
+   - bug fix: incorrect library version numbers
+
  _______ 
 |v00-07 |   
  -------
