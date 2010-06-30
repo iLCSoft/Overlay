@@ -34,6 +34,18 @@ name that is different from all collections in the current event).
  Versions:
 
  __________ 
+|v00-07-02 |   
+ ----------
+   - minor fixes and improvements 
+
+        - CMakeLists.txt: 
+          - BUILD_32BIT_COMPATIBLE set per default to OFF
+          - added exclude pattern for .svn dirs
+          - added ctest
+
+        - fixed doxygen documentation
+
+ __________ 
 |v00-07-01 |   
  ----------
    - bug fix: incorrect library version numbers
