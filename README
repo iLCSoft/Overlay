@@ -32,6 +32,10 @@ name that is different from all collections in the current event).
 
 
  Versions:
+ __________ 
+|v00-07-04 |   
+ ----------
+       - same as v00-07-03 with fix for built on MacOS (streamlog)
 
  __________ 
 |v00-07-03 |   
