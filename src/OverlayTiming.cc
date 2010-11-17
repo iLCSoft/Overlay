@@ -407,7 +407,7 @@ void OverlayTiming::define_time_windows(std::string& Collection_name)
    else if ( Collection_name == "MuonBarrelCollection")              {this_stop = _MuonBarrel_int;              TPC_hits = false;} 
    else if ( Collection_name == "MuonEndCapCollection")              {this_stop = _MuonEndCap_int;              TPC_hits = false;} 
    else if ( Collection_name == "SETCollection")                     {this_stop = _SET_int;                     TPC_hits = false;} 
-   else if ( Collection_name == "VXDCollection")                     {this_stop = _VXD_int;                     TPC_hits = false;} 
+   else if ( Collection_name == "SITCollection")                     {this_stop = _SIT_int;                     TPC_hits = false;} 
    else if ( Collection_name == "VXDCollection")                     {this_stop = _VXD_int;                     TPC_hits = false;} 
    else if ( Collection_name =="TPCCollection")                      {this_start = -_TPC_int/2;                     this_stop =  _TPC_int/2; TPC_hits = true;} 
    else if ( Collection_name =="TPCSpacePointCollection")            {this_start = -_TPCSpacePoint_int/2; this_stop =  _TPCSpacePoint_int/2; TPC_hits = true;} 
