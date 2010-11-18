@@ -14,6 +14,7 @@
 
 #include <EVENT/ReconstructedParticle.h>
 
+#include <algorithm>
 
 
 // ----- include for verbosity dependend logging ---------
