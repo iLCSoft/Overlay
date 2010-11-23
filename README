@@ -22,20 +22,33 @@ name that is different from all collections in the current event).
  Build instructions:
  -------------------
 
- edit BuildSetup.cmake
- mkdir build 
- cd build 
- make install
+   . path_to_ilcsoft_installation/v01-XX/init_ilcsoft.sh
+
+   mkdir build 
+   cd build 
+
+   cmake -C $ILCSOFT/ILCSoft.cmake ..
+
+   make install
 
 
  or use the ilcinstall script to install together with the ilcsoft release.
 
 
  Versions:
+
+
+ _______ 
+|v00-08 |   
+ -------
+     - added new processor OverlayTimimg (P.Schade)
+       for CLIC related bg studies
+
+
  __________ 
 |v00-07-04 |   
  ----------
-       - same as v00-07-03 with fix for built on MacOS (streamlog)
+       - same as v00-07-03 with fix for build on MacOS (streamlog)
 
  __________ 
 |v00-07-03 |   
