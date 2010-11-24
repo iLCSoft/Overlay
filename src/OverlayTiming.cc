@@ -328,7 +328,7 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 	      //And we are only interested in Calorimeter or Trackerhits.
   
 	      if ((this_stop > (BX_number_in_train - _BX_phys)*_T_diff ) &&
-		  Collection_in_overlay_Evt ->getTypeName () == (LCIO::SIMCALORIMETERHIT) ||   Collection_in_overlay_Evt ->getTypeName () == (LCIO::SIMTRACKERHIT) )
+		  (Collection_in_overlay_Evt ->getTypeName () == (LCIO::SIMCALORIMETERHIT) ||   Collection_in_overlay_Evt ->getTypeName () == (LCIO::SIMTRACKERHIT)) )
 		
 		
 		//Open the same collection in the physics event -- we use take here to get the
@@ -339,7 +339,7 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 		  }
 		catch (DataNotAvailableException& e)
 		  {
-		    // streamlog_out(DEBUG) << "Add new Collection" << Collection_in_overlay_Evt->getTypeName() << " with name " << Collection_name <<  std::endl;
+		    streamlog_out(DEBUG) << "Add new Collection" << Collection_in_overlay_Evt->getTypeName() << " with name " << Collection_name <<  std::endl;
 		    LCCollectionVec* new_collection = new  LCCollectionVec(Collection_in_overlay_Evt->getTypeName());
 		    
 		    StringVec stringKeys ;
@@ -347,21 +347,21 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 		    for(unsigned i=0; i< stringKeys.size() ; i++ ){
 		      StringVec vals ;
 		      Collection_in_overlay_Evt->getParameters().getStringVals(  stringKeys[i] , vals ) ;
-		      Collection_in_Physics_Evt->parameters().setValues(  stringKeys[i] , vals ) ;   
+		      new_collection->parameters().setValues(  stringKeys[i] , vals ) ;   
 		    }
 		    StringVec intKeys ;
 		    Collection_in_overlay_Evt->getParameters().getIntKeys( intKeys ) ;
 		    for(unsigned i=0; i< intKeys.size() ; i++ ){
 		      IntVec vals ;
 		      Collection_in_overlay_Evt->getParameters().getIntVals(  intKeys[i] , vals ) ;
-		      Collection_in_Physics_Evt->parameters().setValues(  intKeys[i] , vals ) ;   
+		      new_collection->parameters().setValues(  intKeys[i] , vals ) ;   
 		    }
 		    StringVec floatKeys ;
 		    Collection_in_overlay_Evt->getParameters().getFloatKeys( floatKeys ) ;
 		    for(unsigned i=0; i< floatKeys.size() ; i++ ){
 		      FloatVec vals ;
 		      Collection_in_overlay_Evt->getParameters().getFloatVals(  floatKeys[i] , vals ) ;
-		      Collection_in_Physics_Evt->parameters().setValues(  floatKeys[i] , vals ) ;   
+		      new_collection->parameters().setValues(  floatKeys[i] , vals ) ;   
 		    }
 		    
 		    //there is a special Treatment for the TPC Hits in Frank's Processor... don't know why, I just do the same
@@ -410,8 +410,8 @@ void OverlayTiming::define_time_windows(std::string& Collection_name)
    else if ( Collection_name == "SETCollection")                     {this_stop = _SET_int;                     TPC_hits = false;} 
    else if ( Collection_name == "SITCollection")                     {this_stop = _SIT_int;                     TPC_hits = false;} 
    else if ( Collection_name == "VXDCollection")                     {this_stop = _VXD_int;                     TPC_hits = false;} 
-   else if ( Collection_name =="TPCCollection")                      {this_start = -_TPC_int/2;                     this_stop =  _TPC_int/2; TPC_hits = true;} 
-   else if ( Collection_name =="TPCSpacePointCollection")            {this_start = -_TPCSpacePoint_int/2; this_stop =  _TPCSpacePoint_int/2; TPC_hits = true;} 
+   else if ( Collection_name == "TPCCollection")                     {this_start = -_TPC_int/2;                     this_stop =  _TPC_int/2; TPC_hits = true;} 
+   else if ( Collection_name == "TPCSpacePointCollection")           {this_start = -_TPCSpacePoint_int/2; this_stop =  _TPCSpacePoint_int/2; TPC_hits = true;} 
 }
 
 
