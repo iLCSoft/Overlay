@@ -268,21 +268,21 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
     {   
 
       BX_number_in_train = permutation -> at(i);
-      int NOverlay_this_event;
+      int NOverlay_to_this_BX;
       
 	if (_Poisson) 
 	  {
-	    NOverlay_this_event = int(CLHEP::RandPoisson::shoot(_NOverlay));
+	    NOverlay_to_this_BX = int(CLHEP::RandPoisson::shoot(_NOverlay));
 	  }
 	else
 	  {
-	    NOverlay_this_event = int(_NOverlay);
+	    NOverlay_to_this_BX = int(_NOverlay);
 	  };
 	
-	streamlog_out(DEBUG) << "Will overlay " << NOverlay_this_event << " events to BX number " << BX_number_in_train+_BX_phys << std::endl;
+	streamlog_out(DEBUG) << "Will overlay " << NOverlay_to_this_BX << " events to BX number " << BX_number_in_train+_BX_phys << std::endl;
      
       
-      for (int k =0 ; k<NOverlay_this_event ; ++k)
+      for (int k =0 ; k<NOverlay_to_this_BX ; ++k)
 	{
 
 	  //the overlay event file reader shall open the next event
@@ -390,7 +390,8 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 
 void OverlayTiming::define_time_windows(std::string& Collection_name)
 {
-   this_start =  0; 
+  this_start = -0.25; //the integration time shall start shortly before the BX with the physics event to avoid timing problems
+                      //the value of -0.25 is a arbitrary number for the moment but should be sufficient -- corresponds to 7.5cm of flight at c
    if ( Collection_name == "BeamCalCollection")                      {this_stop = _BeamCal_int;                 TPC_hits = false;} 
    else if ( Collection_name == "ETDCollection")                     {this_stop = _ETD_int;                     TPC_hits = false;} 
    else if ( Collection_name == "EcalBarrelCollection")              {this_stop = _EcalBarrel_int;              TPC_hits = false;} 
@@ -412,7 +413,10 @@ void OverlayTiming::define_time_windows(std::string& Collection_name)
    else if ( Collection_name == "VXDCollection")                     {this_stop = _VXD_int;                     TPC_hits = false;} 
    else if ( Collection_name == "TPCCollection")                     {this_start = -_TPC_int/2;                     this_stop =  _TPC_int/2; TPC_hits = true;} 
    else if ( Collection_name == "TPCSpacePointCollection")           {this_start = -_TPCSpacePoint_int/2; this_stop =  _TPCSpacePoint_int/2; TPC_hits = true;} 
+
 }
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,6 +426,7 @@ void OverlayTiming::crop_collection (LCCollection* collection)
  
   if (collection -> getNumberOfElements() >0)
     {
+
 
       float _time_of_flight;
       int number_of_elements = collection -> getNumberOfElements ();
@@ -457,9 +462,11 @@ void OverlayTiming::crop_collection (LCCollection* collection)
 	      for( int j=0 ; j < CalorimeterHit->getNMCContributions(); ++j)
 		{
 		  //we need to shift the time window to account for the time of flight of the particle...
+
 		  if (!(CalorimeterHit->getTimeCont(j) > (this_start + _time_of_flight) && CalorimeterHit->getTimeCont(j) < (this_stop + _time_of_flight)))
 		    {
 		      ++ not_within_time_window;
+		      //std::cout << " calo hit : " << j << " Time : " << CalorimeterHit->getTimeCont(j) << " ?> " << this_start + _time_of_flight << " ?< " << this_stop + _time_of_flight << std::endl; 
 		    }
 		}     
 
