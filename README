@@ -10,7 +10,7 @@
  The Overlay processor can be used to overlay background 
  events from an additonal set of LCIO files in a Marlin job.
 
- It requires Marlin v00-09-09 and LCIO v01-08-04 or higher.
+ It requires Marlin v01-00 or higher.
 
  For details see ./doc/Overlay.pdf and the doxygen API doc.
 
@@ -18,6 +18,8 @@ The JoinEvents processor can be used to join events on a collection basis,
 i.e events from an additional input file  are read and all 
 collections are added to the current event (provided they have a 
 name that is different from all collections in the current event).
+
+
 
  Build instructions:
  -------------------
@@ -35,7 +37,17 @@ name that is different from all collections in the current event).
  or use the ilcinstall script to install together with the ilcsoft release.
 
 
+
+
  Versions:
+ ---------
+
+ _______ 
+|v00-09 |   
+ -------
+     - minor modifications
+        -- timing window start time set to small negative value
+        -- simplified cmake files
 
 
  _______ 
