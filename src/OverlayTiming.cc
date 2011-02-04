@@ -197,13 +197,13 @@ void OverlayTiming::init() {
   printParameters() ;
  
   overlay_Eventfile_reader = LCFactory::getInstance()->createLCReader() ;
-  overlay_Eventfile_reader -> open (_inputFileNames.at(0));
-  overlay_file_list = 0;
-
-  streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(0) << std::endl;
+  
+  streamlog_out(WARNING) << "Attention! There are " << _inputFileNames.size() 
+			 << " files in the list of backkround files to overlay. Make sure that the total number of background events is sufficiently large for your needs!!" 
+			 << std::endl;
 
   CLHEP::HepRandom::setTheSeed( _ranSeed ) ;
- 
+
   _nRun = 0 ;
   _nEvt = 0 ;
 }
@@ -230,6 +230,10 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
   for (int i= -(_BX_phys - 1); i<_nBunchTrain-(_BX_phys-1) ; ++i) permutation->push_back(i);
   random_shuffle(permutation->begin(), permutation->end()) ;
   
+  int random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size()-1));
+  overlay_Eventfile_reader -> open (_inputFileNames.at(random_file));
+  streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
+
   //streamlog_out(DEBUG) << "Permutated order of the events: " << std::endl;
   //calculate Time Windows of the different subdetectors
   
@@ -285,27 +289,18 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
       for (int k =0 ; k<NOverlay_to_this_BX ; ++k)
 	{
 
-	  //the overlay event file reader shall open the next event
 	  overlay_Evt = overlay_Eventfile_reader -> readNextEvent(LCIO::UPDATE);
 	  
 	  //if there are no events left in the actual file, open the next one.
 	  if ( overlay_Evt == 0)
 	    {
 	      overlay_Eventfile_reader -> close();
-	      ++overlay_file_list; 
-	      if (overlay_file_list < _inputFileNames.size())
-		{  
-		  streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(overlay_file_list) << std::endl;
-		}
-	      else
-		{
-		  std::cout << "WARNING!!! Background Events exhausted. I will start from the beginning. Extend the List of background files!" << std::endl;
-		  overlay_file_list = 0;
-		}
-	      overlay_Eventfile_reader -> open (_inputFileNames.at(overlay_file_list));
+	      random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size()-1));
+	      overlay_Eventfile_reader -> open (_inputFileNames.at(random_file));
 	      overlay_Evt = overlay_Eventfile_reader -> readNextEvent(LCIO::UPDATE);
+	      streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
 	    }
-	  
+
 	  // the overaly_Event is now open, start to merge its collections with the ones of the accumulated overlay events collections
 	  // all the preperatoty work has been done now....
 	  // first, let's see which collections are in the event
@@ -382,6 +377,9 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 	    }
 	}
     }
+  delete permutation;
+  overlay_Eventfile_reader -> close();
+
   ++_nEvt;  
 }
 
