@@ -199,7 +199,7 @@ void OverlayTiming::init() {
   overlay_Eventfile_reader = LCFactory::getInstance()->createLCReader() ;
   
   streamlog_out(WARNING) << "Attention! There are " << _inputFileNames.size() 
-			 << " files in the list of backkround files to overlay. Make sure that the total number of background events is sufficiently large for your needs!!" 
+			 << " files in the list of background files to overlay. Make sure that the total number of background events is sufficiently large for your needs!!" 
 			 << std::endl;
 
   CLHEP::HepRandom::setTheSeed( _ranSeed ) ;
@@ -438,6 +438,7 @@ void OverlayTiming::crop_collection (LCCollection* collection)
 	      if (!(TrackerHit ->getTime() > this_start + _time_of_flight &&  TrackerHit ->getTime() < this_stop +  _time_of_flight))
 		{
 		  collection  ->removeElementAt(k);
+		  delete TrackerHit;
 		}
 	    }
 	  
@@ -471,7 +472,7 @@ void OverlayTiming::crop_collection (LCCollection* collection)
 	      //if one and not all MC contribution is not within the time window....
 	      if ( not_within_time_window == 0)
 		{
-		  destMap.insert( std::pair<long long, SimCalorimeterHit*>(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()), CalorimeterHit) );
+		  destMap.insert( DestMap::value_type(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()), CalorimeterHit) );
 		}
 	      else if (not_within_time_window > 0 && not_within_time_window < CalorimeterHit->getNMCContributions())
 		{
@@ -485,20 +486,23 @@ void OverlayTiming::crop_collection (LCCollection* collection)
 			  newCalorimeterHit->addMCParticleContribution(  CalorimeterHit ->getParticleCont(j),  CalorimeterHit ->getEnergyCont(j),  CalorimeterHit ->getTimeCont(j), CalorimeterHit ->getPDGCont(j));
 			}
 		    }
-		  
+
 		  newCalorimeterHit -> setCellID0 (CalorimeterHit->getCellID0 ());
 		  newCalorimeterHit -> setCellID1 (CalorimeterHit->getCellID1 ());
 		  float ort[3] = {CalorimeterHit -> getPosition ()[0],CalorimeterHit -> getPosition ()[1], CalorimeterHit -> getPosition ()[2]};
 		  newCalorimeterHit -> setPosition (ort);
-		  collection -> addElement ( newCalorimeterHit );
-		  destMap.insert( std::pair<long long, SimCalorimeterHit*>(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()), newCalorimeterHit) );
 
-		  collection  ->removeElementAt(i);
+		  collection->removeElementAt(i);
+		  delete CalorimeterHit;
+
+		  collection->addElement(newCalorimeterHit);
+		  destMap.insert( DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit) );
 		}
 	      else if (not_within_time_window == CalorimeterHit->getNMCContributions())
 		{
-		  collection  ->removeElementAt(i);
-		}	          
+		  collection->removeElementAt(i);
+		  delete CalorimeterHit;
+		}
 	    }
       	}
     }
@@ -579,7 +583,7 @@ void OverlayTiming::merge_collections (LCCollection* source_collection, LCCollec
       else if (source_collection->getTypeName () == (LCIO::SIMCALORIMETERHIT))
 	{ 
 	  // create a map of dest Collection
-	  std::map<long long, SimCalorimeterHit*>::iterator destMapIt;
+	  DestMap::const_iterator destMapIt;
 
 	  SimCalorimeterHit* CalorimeterHit;
 	  SimCalorimeterHitImpl* newCalorimeterHit;
@@ -615,7 +619,7 @@ void OverlayTiming::merge_collections (LCCollection* source_collection, LCCollec
 		      float ort[3] = {CalorimeterHit -> getPosition ()[0],CalorimeterHit -> getPosition ()[1], CalorimeterHit -> getPosition ()[2]};
 		      newCalorimeterHit -> setPosition (ort);
 		      dest_collection -> addElement ( newCalorimeterHit );
-		      destMap.insert( std::pair<long long, SimCalorimeterHit*>(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit) );
+		      destMap.insert( DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit) );
 		    }
 		}
 	      else 

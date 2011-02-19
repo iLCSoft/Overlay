@@ -110,7 +110,9 @@ class OverlayTiming : public Processor, public EventModifier {
   float _tpcVdrift_mm_ns ;
   bool _randomBX, _Poisson;
 
-  std::map<long long, SimCalorimeterHit*> destMap;
+  typedef std::map<long long, SimCalorimeterHit*> DestMap;
+  DestMap destMap;
+
   inline long long cellID2long(int id0, int id1) { return ((long long) id0 << 32) | id1; };
 
 
