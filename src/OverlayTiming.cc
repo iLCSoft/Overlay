@@ -231,8 +231,11 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
   random_shuffle(permutation->begin(), permutation->end()) ;
   
   int random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size()-1));
-  overlay_Eventfile_reader -> open (_inputFileNames.at(random_file));
-  streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
+  //Make sure we have filenames to open and that we really want to overlay something
+  if(random_file > -1 && _NOverlay > 0.0){
+    overlay_Eventfile_reader -> open (_inputFileNames.at(random_file));
+    streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
+  }
 
   //streamlog_out(DEBUG) << "Permutated order of the events: " << std::endl;
   //calculate Time Windows of the different subdetectors
@@ -267,6 +270,7 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
     }
   
 
+  if(_inputFileNames.size() > 0 && _NOverlay > 0.0){
   //Now overlay the background evnts to each bunchcrossing in the bunch train
   for(int i=0 ; i < _nBunchTrain ; ++i ) 
     {   
@@ -377,8 +381,9 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 	    }
 	}
     }
+    overlay_Eventfile_reader -> close();
+  }//If we have any files, and more than 0 events to overlay end 
   delete permutation;
-  overlay_Eventfile_reader -> close();
 
   ++_nEvt;  
 }
