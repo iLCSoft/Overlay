@@ -285,7 +285,7 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 	else
 	  {
 	    NOverlay_to_this_BX = int(_NOverlay);
-	  };
+	  }
 	
 	streamlog_out(DEBUG) << "Will overlay " << NOverlay_to_this_BX << " events to BX number " << BX_number_in_train+_BX_phys << std::endl;
      
@@ -625,7 +625,9 @@ void OverlayTiming::merge_collections (LCCollection* source_collection, LCCollec
 		      newCalorimeterHit -> setPosition (ort);
 		      dest_collection -> addElement ( newCalorimeterHit );
 		      destMap.insert( DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit) );
-		    }
+		    } else {
+		    delete newCalorimeterHit;
+		  }
 		}
 	      else 
 		{
