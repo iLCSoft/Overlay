@@ -1,5 +1,5 @@
 ########################################################
-# cmake file for building Marlin example Package
+# cmake file for building Overlay Package
 # @author Jan Engels, Desy IT
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 ########################################################
@@ -12,7 +12,7 @@ PROJECT( Overlay )
 # project version
 SET( ${PROJECT_NAME}_VERSION_MAJOR 0 )
 SET( ${PROJECT_NAME}_VERSION_MINOR 9 )
-SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
+SET( ${PROJECT_NAME}_VERSION_PATCH 1 )
 
 
 
