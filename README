@@ -42,6 +42,18 @@ name that is different from all collections in the current event).
  Versions:
  ---------
 
+ -----------
+| v00-09-01 |
+ -----------
+
+    - Fixed address memory management issues associated with removing elements from an LCIO collection. When an element is removed, it is the user's
+        responsibility to take care of the memory management, e.g. by deleting the object or by adding it to another collection in the LCEvent.
+        Cosmetic change: added a typedef for "std::map<long long, SimCalorimeterHit*>" to improve readability. (J. Marshall)
+
+    - Make OverlayTiming runable without specifying files. Do not run overlay loop if nothing is supposed to be overlaid. (A. Sailer)
+
+    - Modified file handling, minor improvements (P. Shade)
+
  _______ 
 |v00-09 |   
  -------
