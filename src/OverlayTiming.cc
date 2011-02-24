@@ -234,7 +234,7 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
 
     int random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size() - 1));
     //Make sure we have filenames to open and that we really want to overlay something
-    if (random_file > -1 && _NOverlay > 0.0)
+    if ((random_file > -1) && (_NOverlay > 0.))
     {
         overlay_Eventfile_reader->open(_inputFileNames.at(random_file));
         streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
@@ -255,7 +255,7 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
         }
     }
 
-    if (_inputFileNames.size() > 0 && _NOverlay > 0.0)
+    if ((_inputFileNames.size() > 0) && (_NOverlay > 0.))
     {
         //Now overlay the background evnts to each bunchcrossing in the bunch train
         for (int i = 0; i < _nBunchTrain; ++i)
@@ -263,7 +263,7 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
             const int BX_number_in_train = permutation->at(i);
             int NOverlay_to_this_BX = 0;
 
-            if (_Poisson) 
+            if (_Poisson)
             {
                 NOverlay_to_this_BX = int(CLHEP::RandPoisson::shoot(_NOverlay));
             }
@@ -315,9 +315,9 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
                     define_time_windows(Collection_name);
 
                     //the event can only make contributions to the readout, if the bx does not happen after the integration time stopped.
-                    //And we are only interested in Calorimeter or Trackerhits.
+                    //and we are only interested in Calorimeter or Trackerhits.
 
-                    if ((this_stop > (BX_number_in_train - _BX_phys) * _T_diff ) &&
+                    if ((this_stop > (BX_number_in_train - _BX_phys) * _T_diff) &&
                     ((Collection_in_overlay_Evt->getTypeName() == LCIO::SIMCALORIMETERHIT) || (Collection_in_overlay_Evt->getTypeName() == LCIO::SIMTRACKERHIT)) )
                     {
                         //Open the same collection in the physics event
@@ -384,7 +384,7 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
 void OverlayTiming::define_time_windows(const std::string &Collection_name)
 {
     this_start = -0.25; //the integration time shall start shortly before the BX with the physics event to avoid timing problems
-                      //the value of -0.25 is a arbitrary number for the moment but should be sufficient -- corresponds to 7.5cm of flight at c
+                        //the value of -0.25 is a arbitrary number for the moment but should be sufficient -- corresponds to 7.5cm of flight at c
 
     this_stop = std::numeric_limits<float>::max(); // provide default values for collections not named below;
     TPC_hits = false;
@@ -426,7 +426,7 @@ void OverlayTiming::crop_collection (EVENT::LCCollection *collection)
             {
                 SimTrackerHit *TrackerHit = dynamic_cast<SimTrackerHit*>(collection->getElementAt(k));
                 const float _time_of_flight = time_of_flight(TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
-                if (!(TrackerHit->getTime() > this_start + _time_of_flight &&  TrackerHit->getTime() < this_stop + _time_of_flight))
+                if (!((TrackerHit->getTime() > (this_start + _time_of_flight)) && (TrackerHit->getTime() < (this_stop + _time_of_flight))))
                 {
                     collection ->removeElementAt(k);
                     delete TrackerHit;
@@ -447,7 +447,7 @@ void OverlayTiming::crop_collection (EVENT::LCCollection *collection)
                 for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
                 {
                     //we need to shift the time window to account for the time of flight of the particle...
-                    if (!(CalorimeterHit->getTimeCont(j) > (this_start + _time_of_flight) && CalorimeterHit->getTimeCont(j) < (this_stop + _time_of_flight)))
+                    if (!((CalorimeterHit->getTimeCont(j) > (this_start + _time_of_flight)) && (CalorimeterHit->getTimeCont(j) < (this_stop + _time_of_flight))))
                     {
                         ++ not_within_time_window;
                         //std::cout << " calo hit : " << j << " Time : " << CalorimeterHit->getTimeCont(j) << " ?> " << this_start + _time_of_flight << " ?< " << this_stop + _time_of_flight << std::endl; 
@@ -459,13 +459,13 @@ void OverlayTiming::crop_collection (EVENT::LCCollection *collection)
                 {
                     destMap.insert(DestMap::value_type(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()), CalorimeterHit));
                 }
-                else if (not_within_time_window > 0 && not_within_time_window < CalorimeterHit->getNMCContributions())
+                else if ((not_within_time_window > 0) && (not_within_time_window < CalorimeterHit->getNMCContributions()))
                 {
                     SimCalorimeterHitImpl *newCalorimeterHit = new SimCalorimeterHitImpl();
 
                     for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
                     {
-                        if ((CalorimeterHit->getTimeCont(j)) > (this_start + _time_of_flight) && (CalorimeterHit->getTimeCont(j)) < (this_stop + _time_of_flight))
+                        if ((CalorimeterHit->getTimeCont(j) > (this_start + _time_of_flight)) && (CalorimeterHit->getTimeCont(j) < (this_stop + _time_of_flight)))
                         {
                             newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j));
                         }
@@ -513,14 +513,14 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
                 source_collection->removeElementAt(i);
             }
         }
-        else if ((source_collection->getTypeName() == LCIO::SIMTRACKERHIT) && (std::fabs(time_offset) < std::numeric_limits<float>::epsilon() || !TPC_hits))
+        else if ((source_collection->getTypeName() == LCIO::SIMTRACKERHIT) && ((std::fabs(time_offset) < std::numeric_limits<float>::epsilon()) || !TPC_hits))
         {
             for (int k = number_of_elements - 1; k >= 0; --k)
             {
                 SimTrackerHitImpl *TrackerHit = dynamic_cast<SimTrackerHitImpl*>(source_collection->getElementAt(k));
                 const float _time_of_flight = time_of_flight(TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
 
-                if ((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight) && (TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight))
+                if (((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight)) && ((TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight)))
                 {
                     TrackerHit->setTime( TrackerHit->getTime() + time_offset);
                     dest_collection->addElement(TrackerHit);
@@ -533,14 +533,14 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
             for (int k = number_of_elements - 1; k >= 0; --k) 
             {
                 SimTrackerHitImpl *TrackerHit = dynamic_cast<SimTrackerHitImpl*>(source_collection->getElementAt (k));
-                const float _time_of_flight = time_of_flight (TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
+                const float _time_of_flight = time_of_flight(TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
 
-                if ((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight) && (TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight))
+                if (((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight)) && ((TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight)))
                 {
                     TrackerHit->setTime(TrackerHit->getTime() + time_offset);
-                    double ort[3] = {TrackerHit->getPosition()[0],TrackerHit->getPosition()[1], 0};
-                    if (TrackerHit->getPosition()[2] <= 0)
-                    { 
+                    double ort[3] = {TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], 0};
+                    if (TrackerHit->getPosition()[2] <= 0.)
+                    {
                         ort[2] = TrackerHit->getPosition()[2] - time_offset * _tpcVdrift_mm_ns;
                     }
                     else
@@ -549,7 +549,7 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
                     }
                     TrackerHit->setPosition(ort);
                     dest_collection->addElement(TrackerHit);
-                    source_collection->removeElementAt (k);
+                    source_collection->removeElementAt(k);
                 }
             }
         }
@@ -559,7 +559,7 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
             for (int k =  number_of_elements - 1; k >= 0; --k) 
             {
                 SimCalorimeterHit *CalorimeterHit = dynamic_cast<SimCalorimeterHit*>(source_collection->getElementAt(k));
-                const float _time_of_flight = time_of_flight (CalorimeterHit->getPosition()[0], CalorimeterHit->getPosition()[1], CalorimeterHit->getPosition()[2]);
+                const float _time_of_flight = time_of_flight(CalorimeterHit->getPosition()[0], CalorimeterHit->getPosition()[1], CalorimeterHit->getPosition()[2]);
 
                 //check whether there is already a hit at this position 
                 DestMap::const_iterator destMapIt = destMap.find(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()));
@@ -572,7 +572,7 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
 
                     for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
                     {
-                        if ((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight) && (CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight))
+                        if (((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight)) && ((CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight)))
                         {
                             add_Hit = true;
                             newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j) + time_offset);
@@ -598,7 +598,7 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
                     SimCalorimeterHitImpl *newCalorimeterHit = dynamic_cast <SimCalorimeterHitImpl*>(destMapIt->second);
                     for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
                     {
-                        if ((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight) && (CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight))
+                        if (((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight)) && ((CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight)))
                         {
                             newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j) + time_offset);
                         }
