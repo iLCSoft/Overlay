@@ -71,9 +71,9 @@ class OverlayTiming : public Processor, public EventModifier {
 
   virtual void check( LCEvent * evt ) ; 
 
-  virtual float time_of_flight(float x, float y, float z);
+  virtual float time_of_flight(float x, float y, float z) const;
 
-  virtual void define_time_windows(std::string& Collection_name);
+  virtual void define_time_windows(const std::string& Collection_name);
 
   virtual void crop_collection (LCCollection* collection);
   
@@ -105,6 +105,8 @@ class OverlayTiming : public Processor, public EventModifier {
   float this_stop;
   int _ranSeed;
 
+  std::string _mcParticleCollectionName;
+
   bool TPC_hits;
 
   float _tpcVdrift_mm_ns ;
@@ -117,6 +119,15 @@ class OverlayTiming : public Processor, public EventModifier {
 
 
 } ;
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+inline float OverlayTiming::time_of_flight(float x, float y, float z) const
+{
+  //returns the time of flight to the radius in ns
+  // mm/m/s = 10^{-3}s = 10^6 ns d.h. 299 mm/ns
+  return std::sqrt((x * x) + (y * y) + (z * z))/299.792458;
+}
 
 #endif
  
