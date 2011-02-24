@@ -390,7 +390,7 @@ void OverlayTiming::modifyEvent( LCEvent * evt )
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void OverlayTiming::define_time_windows(const std::string& Collection_name)
+void OverlayTiming::define_time_windows(const std::string &Collection_name)
 {
   this_start = -0.25; //the integration time shall start shortly before the BX with the physics event to avoid timing problems
                       //the value of -0.25 is a arbitrary number for the moment but should be sufficient -- corresponds to 7.5cm of flight at c
@@ -482,7 +482,7 @@ void OverlayTiming::crop_collection (LCCollection* collection)
                     {
 		      if ((CalorimeterHit->getTimeCont(j)) > (this_start + _time_of_flight) && (CalorimeterHit->getTimeCont(j)) < (this_stop + _time_of_flight))
                         {
-			  newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j), CalorimeterHit->getPDGCont(j));
+			  newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j));
                         }
                     }
 
@@ -594,8 +594,7 @@ void OverlayTiming::merge_collections (LCCollection* source_collection, LCCollec
 		      if ((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight) && (CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight))
                         {
 			  add_Hit = true;
-			  newCalorimeterHit->addMCParticleContribution(  CalorimeterHit ->getParticleCont(j),  CalorimeterHit ->getEnergyCont(j),  CalorimeterHit ->getTimeCont(j)+  time_offset, 
-									 CalorimeterHit ->getPDGCont(j));
+			  newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j) + time_offset);
                         }
                     }
 		  if (add_Hit)
@@ -618,8 +617,7 @@ void OverlayTiming::merge_collections (LCCollection* source_collection, LCCollec
                     {
 		      if ((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight) && (CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight))
                         {
-			  newCalorimeterHit->addMCParticleContribution(  CalorimeterHit ->getParticleCont(j),  CalorimeterHit ->getEnergyCont(j),  CalorimeterHit ->getTimeCont(j)
-									 +  time_offset, CalorimeterHit ->getPDGCont(j));
+			  newCalorimeterHit->addMCParticleContribution(CalorimeterHit->getParticleCont(j), CalorimeterHit->getEnergyCont(j), CalorimeterHit->getTimeCont(j) + time_offset);
                         }
                     }
                 }
