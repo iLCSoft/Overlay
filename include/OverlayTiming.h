@@ -2,18 +2,14 @@
 #define OverlayTiming_h 1
 
 #include "marlin/Processor.h"
-#include "marlin/EventModifier.h" 
+#include "marlin/EventModifier.h"
+
 #include "lcio.h"
-#include <string>
-#include <iostream>
+
 #include <cmath>
 
-#include <EVENT/SimCalorimeterHit.h>
-#include <EVENT/LCCollection.h>
-#include <IO/LCReader.h>
-#include <IMPL/LCCollectionVec.h>
-using namespace lcio ;
-using namespace marlin ;
+using namespace lcio;
+using namespace marlin;
 
 /** OverlayTiming processor for overlaying background to each bunch crossing of a bunch train.
  * 
@@ -48,89 +44,95 @@ using namespace marlin ;
  *  @param RandomSeed (int) random seed - default 42
  * 
  */
+class OverlayTiming : public Processor, public EventModifier
+{
+public:
+    virtual Processor*  newProcessor();
 
+    OverlayTiming();
 
-class OverlayTiming : public Processor, public EventModifier {  
-      
- public:
-  
-  virtual Processor*  newProcessor() { return new OverlayTiming ; }
-  
-  
-  OverlayTiming() ;
-  
-  /** Called at the begin of the job before anything is read.
-   * Use to initialize the processor, e.g. book histograms.
-   */
-  virtual void init() ;
-  virtual const std::string & name() const { return Processor::name() ; }   
+    virtual void init();
 
-  virtual void processRunHeader( LCRunHeader* run ) ;
-  
-  virtual void modifyEvent( LCEvent * evt ) ; 
+    virtual const std::string &name() const;
 
-  virtual void check( LCEvent * evt ) ; 
+    virtual void processRunHeader(EVENT::LCRunHeader *run) ;
 
-  virtual float time_of_flight(float x, float y, float z) const;
+    virtual void modifyEvent(EVENT::LCEvent *evt);
 
-  virtual void define_time_windows(const std::string& Collection_name);
+    virtual void check(EVENT::LCEvent *evt);
 
-  virtual void crop_collection (LCCollection* collection);
-  
-  virtual void merge_collections (LCCollection* source_collection, LCCollection* dest_collection, float time_offset);
- 
-  virtual void end() ;
+    virtual void end();
 
- protected:
-  std::string _colMC;
-  std::string _colRECO;
+protected:
+    float time_of_flight(float x, float y, float z) const;
 
-  float _T_diff;
-  int _nBunchTrain;
+    void define_time_windows(const std::string &Collection_name);
 
-  unsigned int _nRun ;
-  unsigned int _nEvt ;
-  StringVec _inputFileNames ; 
+    void crop_collection(EVENT::LCCollection *collection);
 
-  int _BX_phys;
-  float _NOverlay;
-  unsigned int overlay_file_list;
-  float _BeamCal_int,_ETD_int, _EcalBarrel_int, _EcalBarrelPreShower_int, _EcalEndcap_int, _EcalEndcapPreShower_int, _EcalEndcapRing_int, _EcalEndcapRingPreShower_int;
-  float	_FTD_int, _HcalBarrelReg_int, _HcalEndCapRings_int, _HcalEndCaps_int, _LHcal_int, _LumiCal_int, _MuonBarrel_int, _MuonEndCap_int, _SET_int, _SIT_int, _VXD_int;
-  float _TPC_int, _TPCSpacePoint_int;
+    void merge_collections(EVENT::LCCollection *source_collection, EVENT::LCCollection *dest_collection, float time_offset);
 
-  LCReader* overlay_Eventfile_reader;
+    long long cellID2long(int id0, int id1) const;
 
-  float this_start;
-  float this_stop;
-  int _ranSeed;
+    float _T_diff;
+    int _nBunchTrain;
 
-  std::string _mcParticleCollectionName;
+    unsigned int _nRun ;
+    unsigned int _nEvt ;
+    StringVec _inputFileNames ; 
 
-  bool TPC_hits;
+    int _BX_phys;
+    float _NOverlay;
+    unsigned int overlay_file_list;
+    float _BeamCal_int,_ETD_int, _EcalBarrel_int, _EcalBarrelPreShower_int, _EcalEndcap_int, _EcalEndcapPreShower_int, _EcalEndcapRing_int, _EcalEndcapRingPreShower_int;
+    float _FTD_int, _HcalBarrelReg_int, _HcalEndCapRings_int, _HcalEndCaps_int, _LHcal_int, _LumiCal_int, _MuonBarrel_int, _MuonEndCap_int, _SET_int, _SIT_int, _VXD_int;
+    float _TPC_int, _TPCSpacePoint_int;
 
-  float _tpcVdrift_mm_ns ;
-  bool _randomBX, _Poisson;
+    IO::LCReader* overlay_Eventfile_reader;
 
-  typedef std::map<long long, SimCalorimeterHit*> DestMap;
-  DestMap destMap;
+    float this_start;
+    float this_stop;
+    int _ranSeed;
 
-  inline long long cellID2long(int id0, int id1) { return ((long long) id0 << 32) | id1; };
+    std::string _mcParticleCollectionName;
 
+    bool TPC_hits;
 
-} ;
+    float _tpcVdrift_mm_ns ;
+    bool _randomBX, _Poisson;
+
+    typedef std::map<long long, EVENT::SimCalorimeterHit*> DestMap;
+    DestMap destMap;
+};
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+Processor *OverlayTiming::newProcessor()
+{
+    return new OverlayTiming;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+const std::string &OverlayTiming::name() const
+{
+    return Processor::name();
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 inline float OverlayTiming::time_of_flight(float x, float y, float z) const
 {
-  //returns the time of flight to the radius in ns
-  // mm/m/s = 10^{-3}s = 10^6 ns d.h. 299 mm/ns
-  return std::sqrt((x * x) + (y * y) + (z * z))/299.792458;
+    //returns the time of flight to the radius in ns
+    // mm/m/s = 10^{-3}s = 10^6 ns d.h. 299 mm/ns
+    return std::sqrt((x * x) + (y * y) + (z * z))/299.792458;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+inline long long OverlayTiming::cellID2long(int id0, int id1) const
+{
+    return ((long long) id0 << 32) | id1;
 }
 
 #endif
- 
-
-
-
