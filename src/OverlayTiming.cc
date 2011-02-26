@@ -377,6 +377,8 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
 
     delete permutation;
     ++_nEvt;
+    //we clear the map of calorimeter hits for the next event
+    destMap.clear();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -620,8 +622,6 @@ void OverlayTiming::check(EVENT::LCEvent *evt)
         streamlog_out(DEBUG) << "Collection " << collection_names_in_evt->at(i) << " has now " << evt->getCollection(collection_names_in_evt->at(i))->getNumberOfElements() << " elements" << std::endl;
     }
 
-    //we clear the map of calorimeter hits for the next event
-    destMap.clear();
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
