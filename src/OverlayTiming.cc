@@ -248,9 +248,11 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
     {
         const std::string Collection_name = collection_names_in_Evt->at(j);
         LCCollection *Collection_in_Physics_Evt = evt->getCollection(Collection_name);
-        if ((Collection_in_Physics_Evt->getTypeName() == LCIO::SIMCALORIMETERHIT) || (Collection_in_Physics_Evt->getTypeName() == LCIO::SIMTRACKERHIT))
+	currentDest = Collection_name;
+	if ((Collection_in_Physics_Evt->getTypeName() == LCIO::SIMCALORIMETERHIT) || (Collection_in_Physics_Evt->getTypeName() == LCIO::SIMTRACKERHIT))
         {
             define_time_windows(Collection_name);
+	    streamlog_out(DEBUG) << "Cropping collection: " << Collection_name << std::endl;
             crop_collection(Collection_in_Physics_Evt);
         }
     }
@@ -295,7 +297,10 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
                 //first include the MCParticles into the physics event
                 try
                 {
-                    merge_collections(overlay_Evt->getCollection(_mcParticleCollectionName), evt->getCollection(_mcParticleCollectionName), 0);
+		    //Do Not Need DestMap, because this is only MCParticles
+		    currentDest=_mcParticleCollectionName;
+		    streamlog_out(DEBUG) << "Merging MCParticles " << std::endl;
+		    merge_collections(overlay_Evt->getCollection(_mcParticleCollectionName), evt->getCollection(_mcParticleCollectionName), 0);
                 }
                 catch (DataNotAvailableException& e)
                 {
@@ -365,8 +370,13 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
                             evt->addCollection(new_collection, Collection_name);
                             Collection_in_Physics_Evt = evt->getCollection(Collection_name);
                         }
-
-                        //Now we merge the collections
+			
+			//Set DestMap back to the one for the Collection Name...
+			currentDest=Collection_name;
+			streamlog_out(DEBUG) << "Now overlaying collection " << Collection_name 
+					     << " And we have " << collDestMap[currentDest].size() << " Hits in destMap"
+					     << std::endl;
+			//Now we merge the collections
                         merge_collections(Collection_in_overlay_Evt, Collection_in_Physics_Evt, BX_number_in_train * _T_diff);
                     }
                 }
@@ -378,7 +388,14 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
     delete permutation;
     ++_nEvt;
     //we clear the map of calorimeter hits for the next event
-    destMap.clear();
+    collDestMap.clear();
+    const std::vector<std::string> *collection_names_in_evt = evt->getCollectionNames();
+
+    for (unsigned int i = 0; i < collection_names_in_evt->size(); ++i)
+    {
+        streamlog_out(DEBUG) << "Collection " << collection_names_in_evt->at(i) << " has now " << evt->getCollection(collection_names_in_evt->at(i))->getNumberOfElements() << " elements" << std::endl;
+    }
+
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -459,7 +476,7 @@ void OverlayTiming::crop_collection (EVENT::LCCollection *collection)
                 //if one and not all MC contribution is not within the time window....
                 if (not_within_time_window == 0)
                 {
-                    destMap.insert(DestMap::value_type(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()), CalorimeterHit));
+		     collDestMap[currentDest].insert(DestMap::value_type(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()), CalorimeterHit));
                 }
                 else if ((not_within_time_window > 0) && (not_within_time_window < CalorimeterHit->getNMCContributions()))
                 {
@@ -482,7 +499,7 @@ void OverlayTiming::crop_collection (EVENT::LCCollection *collection)
                     delete CalorimeterHit;
 
                     collection->addElement(newCalorimeterHit);
-                    destMap.insert(DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit));
+		    collDestMap[currentDest].insert(DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit));
                 }
                 else if (not_within_time_window == CalorimeterHit->getNMCContributions())
                 {
@@ -502,7 +519,8 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
     // time offset is the time of the physics event, after the start of the bunch train
     // adding the time offset shall move the background event relative to the physics event...
     const int number_of_elements = source_collection->getNumberOfElements();
-
+    int mergedN = 0;
+    streamlog_out(DEBUG) << "We are starting the merge with " << dest_collection->getNumberOfElements() << std::endl;
     if (number_of_elements > 0)
     {
         if (source_collection->getTypeName() == LCIO::MCPARTICLE)
@@ -564,9 +582,9 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
                 const float _time_of_flight = time_of_flight(CalorimeterHit->getPosition()[0], CalorimeterHit->getPosition()[1], CalorimeterHit->getPosition()[2]);
 
                 //check whether there is already a hit at this position 
-                DestMap::const_iterator destMapIt = destMap.find(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()));
+                DestMap::const_iterator destMapIt =  collDestMap[currentDest].find(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()));
 
-                if (destMapIt == destMap.end())
+                if (destMapIt == collDestMap[currentDest].end())
                 {
                     // There is no Hit at this position -- the new hit can be added, if it is not outside the window
                     SimCalorimeterHitImpl *newCalorimeterHit = new SimCalorimeterHitImpl();
@@ -587,7 +605,7 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
                         float ort[3] = {CalorimeterHit->getPosition()[0],CalorimeterHit->getPosition()[1], CalorimeterHit->getPosition()[2]};
                         newCalorimeterHit->setPosition(ort);
                         dest_collection->addElement(newCalorimeterHit);
-                        destMap.insert(DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit));
+			collDestMap[currentDest].insert(DestMap::value_type(cellID2long(newCalorimeterHit->getCellID0(), newCalorimeterHit->getCellID1()), newCalorimeterHit));
                     }
                     else
                     {
@@ -596,9 +614,31 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
                 }
                 else
                 {
-                    // there is already a hit at this position.... 
-                    SimCalorimeterHitImpl *newCalorimeterHit = dynamic_cast <SimCalorimeterHitImpl*>(destMapIt->second);
-                    for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
+		  // there is already a hit at this position.... 
+		  SimCalorimeterHitImpl *newCalorimeterHit = dynamic_cast <SimCalorimeterHitImpl*>(destMapIt->second);
+		  ++mergedN;
+		  if((newCalorimeterHit->getPosition()[0]-CalorimeterHit->getPosition()[0])*
+		     (newCalorimeterHit->getPosition()[0]-CalorimeterHit->getPosition()[0])+
+		     (newCalorimeterHit->getPosition()[1]-CalorimeterHit->getPosition()[1])*
+		     (newCalorimeterHit->getPosition()[1]-CalorimeterHit->getPosition()[1])+
+		     (newCalorimeterHit->getPosition()[2]-CalorimeterHit->getPosition()[2])*
+		     (newCalorimeterHit->getPosition()[2]-CalorimeterHit->getPosition()[2]) > 10) {
+                      streamlog_out(ERROR) << "HITS DO NOT MATCH in " << currentDest << "!!!" << std::endl;
+		      streamlog_out(ERROR) << "X New  " << newCalorimeterHit->getPosition()[0] 
+					   << "  Old  " << CalorimeterHit->getPosition()[0] << std::endl;
+		      streamlog_out(ERROR) << "Y New  " << newCalorimeterHit->getPosition()[1] 
+					   << "  Old  " << CalorimeterHit->getPosition()[1] << std::endl;
+		      streamlog_out(ERROR) << "Z New  " << newCalorimeterHit->getPosition()[2] 
+					   << "  Old  " << CalorimeterHit->getPosition()[2] << std::endl;
+		      streamlog_out(ERROR) << "ID0New  " << newCalorimeterHit->getCellID0() 
+					   << "   Old  " << CalorimeterHit->getCellID0() << std::endl;
+		      streamlog_out(ERROR) << "ID1New  " << newCalorimeterHit->getCellID1() 
+					   << "   Old  " << CalorimeterHit->getCellID1() << std::endl;
+		    
+		    
+		    //		      std::exit(1);
+		  }
+		  for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
                     {
                         if (((CalorimeterHit->getTimeCont(j) + time_offset) > (this_start + _time_of_flight)) && ((CalorimeterHit->getTimeCont(j) + time_offset) < (this_stop + _time_of_flight)))
                         {
@@ -609,18 +649,16 @@ void OverlayTiming::merge_collections(EVENT::LCCollection *source_collection, EV
             }
         }
     }
+    streamlog_out(DEBUG) << "We are ending the merge with " << dest_collection->getNumberOfElements() 
+    << " and we merged " << mergedN << "  others  "
+    << std::endl;
+
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 void OverlayTiming::check(EVENT::LCEvent *evt)
 {
-    const std::vector<std::string> *collection_names_in_evt = evt->getCollectionNames();
-
-    for (unsigned int i = 0; i < collection_names_in_evt->size(); ++i)
-    {
-        streamlog_out(DEBUG) << "Collection " << collection_names_in_evt->at(i) << " has now " << evt->getCollection(collection_names_in_evt->at(i))->getNumberOfElements() << " elements" << std::endl;
-    }
 
 }
 

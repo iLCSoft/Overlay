@@ -95,14 +95,15 @@ protected:
     int _ranSeed;
 
     std::string _mcParticleCollectionName;
-
+    std::string currentDest;
     bool TPC_hits;
 
     float _tpcVdrift_mm_ns ;
     bool _randomBX, _Poisson;
 
     typedef std::map<long long, EVENT::SimCalorimeterHit*> DestMap;
-    DestMap destMap;
+    typedef std::map<std::string, DestMap> CollDestMap;
+    CollDestMap collDestMap;
 };
 
 //------------------------------------------------------------------------------------------------------------------------------------------
