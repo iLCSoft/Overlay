@@ -95,6 +95,7 @@ protected:
     int _ranSeed;
 
     std::string _mcParticleCollectionName;
+    std::string _mcPhysicsParticleCollectionName;
     std::string currentDest;
     bool TPC_hits;
 

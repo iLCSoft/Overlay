@@ -79,6 +79,11 @@ OverlayTiming::OverlayTiming() : Processor("OverlayTiming")
                  _mcParticleCollectionName,
                  std::string("MCParticle"));
 
+    registerProcessorParameter("MCPhysicsParticleCollectionName",
+                 "The output MC Particle Collection Name for the physics event" ,
+                 _mcPhysicsParticleCollectionName,
+                 std::string("MCPhysicsParticles"));
+
     //Collections with Integration Times
     registerProcessorParameter("BeamCalCollection_IntegrationTime",
                  "Integration time for the BeamCalCollection",
@@ -254,6 +259,23 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
             define_time_windows(Collection_name);
 	    streamlog_out(DEBUG) << "Cropping collection: " << Collection_name << std::endl;
             crop_collection(Collection_in_Physics_Evt);
+        }
+
+        // copy MCParticles for physics event into a new collection
+        if (Collection_in_Physics_Evt->getTypeName() == LCIO::MCPARTICLE)
+        {
+            const int number_of_elements = Collection_in_Physics_Evt->getNumberOfElements();
+            if (number_of_elements > 0)
+            {
+                LCCollectionVec *colPhysicsMc = new LCCollectionVec(LCIO::MCPARTICLE);
+                colPhysicsMc->setSubset(true);
+                for (int k = 0; k < number_of_elements; ++k)
+                {
+                    MCParticle *pMc = dynamic_cast<MCParticle*>(Collection_in_Physics_Evt->getElementAt(k));
+                    colPhysicsMc->addElement(pMc);
+                }
+                evt->addCollection(colPhysicsMc,_mcPhysicsParticleCollectionName.c_str());
+            }
         }
     }
 
