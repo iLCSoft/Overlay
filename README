@@ -43,6 +43,35 @@ name that is different from all collections in the current event).
  ---------
 
  -----------
+| v00-10-00 |
+ -----------
+
+    - Several code improvements and corrections to OverlayTiming processor (J. Marshall, A. Sailer)
+
+        - Delete Calorimeter hits that are not added to the collection
+
+        - Timing window is extended so that it runs from -0.25ns to numeric_limits<float>::max() ns if an unrecognized collection name is specified.
+
+        - Time of flight function is now inline, its use of pow() has been removed and any unnecessary calls to this function have also gone.
+
+        - Made MCParticle collection name configurable
+
+        - Setting "lcioDetailedShowerMode false" is now default (see http://indico.cern.ch/conferenceDisplay.py?confId=107327),
+            so calls to "CalorimeterHit->getPDGCont(j)" do not make sense. Remove these calls to avoid logic based on uninitialized variables.
+        
+        - Clear DestMap at the end of ModifyEvent, do not only run this in Check() as this can be suppressed.
+
+        - Use one destMap per collection to avoid adding calorimeterHits from one subDetector to a different.
+
+        - Copy MCParticles for physics event into a new collection.
+
+        - Tidied-up code with an emphasis on removing risk posed by uninitialized variables e.g.
+            create stack pointers within for loops, rather than re-using single pointer declared outside loop, etc.
+            Removed unused member variables, tidied header file includes, improved const-correctness and removed tab characters.
+            Use of parentheses to clarify logic in if statements
+
+
+ -----------
 | v00-09-01 |
  -----------
 
