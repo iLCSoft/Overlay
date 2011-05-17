@@ -12,6 +12,7 @@
 // #include "IMPL/TrackerHitImpl.h" 
 
 // #include "IMPL/SimTrackerHitImpl.h" 
+#include "FPCCDData.h"
 
 // using namespace EVENT ;
 // using namespace IMPL ;
@@ -180,7 +181,7 @@
     }
     
     streamlog_out( DEBUG ) << "merging collection of type: " << destType << " --- ";
-        
+    
     // ** GENERAL **
     if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::MCPARTICLE) || (destType == LCIO::TRACKERHIT))  {
       streamlog_out( DEBUG ) << "merging" << endl;
@@ -194,10 +195,35 @@
       return;
     }
     
+    // ** LCGENERICOBJECT-VTXPixelHits **
+    if( destType == LCIO::LCGENERICOBJECT){
+      streamlog_out( DEBUG ) << "merging" << endl;
+      int nLayer = 6;
+      int maxLadder = 17;
+      FPCCDData srcData( nLayer, maxLadder);
+      FPCCDData destData( nLayer, maxLadder);
+      
+      int nSrcHits = srcData.unpackPixelHits( *src );
+      int nDestHits = destData.unpackPixelHits( *dest );
+      
+      destData.Add(srcData);
+      srcData.clear();
+      int nElementsDest = dest->getNumberOfElements();
+      for(int i=nElementsDest-1 ; i>=0 ; i--){
+	dest->removeElementAt(i);
+      }
+      int nElementsSrc = src->getNumberOfElements();
+      for(int i=nElementsSrc-1 ; i>=0 ; i--){
+	src->removeElementAt(i);
+      }
+      destData.packPixelHits( *dest );
+      return;
+    }
+    
     // ** SIMCALORIMETERHIT **
     if (destType == LCIO::SIMCALORIMETERHIT ) {
       SimCalorimeterHitImpl *srcHit, *destHit;
-    
+      
       streamlog_out( DEBUG ) << "merging" << endl;
       nElementsSrc = src->getNumberOfElements();
       nElementsDest = dest->getNumberOfElements();
