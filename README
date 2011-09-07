@@ -42,9 +42,15 @@ name that is different from all collections in the current event).
  Versions:
  ---------
 
- -----------
-|    HEAD   |
- -----------
+ ----------
+|  v00-11  |
+ ----------
+
+    - New processor (OverlayEvents) to merge a number of events in a LCIO file into one event.
+
+    - First version of background overlay processor for FPCCD (FPCCDOverlayBX)
+
+    - Added dependency to MarlinReco
 
 
  -----------
