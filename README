@@ -50,7 +50,7 @@ name that is different from all collections in the current event).
 
     - First version of background overlay processor for FPCCD (FPCCDOverlayBX)
 
-    - Added dependency to MarlinReco
+    - Added dependency to Marlinutil (needed by FPCCOverlay ) 
 
 
  -----------
