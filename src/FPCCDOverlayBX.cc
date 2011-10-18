@@ -253,8 +253,8 @@ void FPCCDOverlayBX::modifyEvent( LCEvent * evt ) {
   _tmpInputFileNames = _inputFileNames;
   
   int nVXDHits = 0 ;
-  FPCCDData::FPCCDData theSignal(_nLayer,_maxLadder);
-  FPCCDData::FPCCDData theBkg(_nLayer,_maxLadder);
+  FPCCDData theSignal(_nLayer,_maxLadder);
+  FPCCDData theBkg(_nLayer,_maxLadder);
   
   int nSignalhit;
   int nBkghit;
