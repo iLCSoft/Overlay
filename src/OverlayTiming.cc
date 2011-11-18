@@ -322,7 +322,7 @@ void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
 		    //Do Not Need DestMap, because this is only MCParticles
 		    currentDest=_mcParticleCollectionName;
 		    streamlog_out(DEBUG) << "Merging MCParticles " << std::endl;
-		    merge_collections(overlay_Evt->getCollection(_mcParticleCollectionName), evt->getCollection(_mcParticleCollectionName), 0);
+		    merge_collections(overlay_Evt->getCollection(_mcParticleCollectionName), evt->getCollection(_mcParticleCollectionName), BX_number_in_train * _T_diff);
                 }
                 catch (DataNotAvailableException& e)
                 {
