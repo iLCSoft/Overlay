@@ -42,6 +42,15 @@ name that is different from all collections in the current event).
  Versions:
  ---------
 
+ -----------
+| v00-11-01 |
+ -----------
+
+    - bug fixes:
+
+        - OverlayTiming.cc: fixed correct particle time for background MCParticles based on their BX (M. Killenberg)
+
+        - FPCCDOverlayBX.cc: fixed gcc 4.5 issue (D. Kamai)
 
  ----------
 |  v00-11  |
