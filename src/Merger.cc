@@ -203,8 +203,10 @@
       FPCCDData srcData( nLayer, maxLadder);
       FPCCDData destData( nLayer, maxLadder);
       
-      //int nSrcHits = srcData.unpackPixelHits( *src );
-      //int nDestHits = destData.unpackPixelHits( *dest );
+      int nSrcHits = srcData.unpackPixelHits( *src );
+      int nDestHits = destData.unpackPixelHits( *dest );
+
+      streamlog_out( DEBUG ) << "number of pixel hits : src-" << nSrcHits << ", dest-" << nDestHits << endl;
       
       destData.Add(srcData);
       srcData.clear();
