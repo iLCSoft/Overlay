@@ -43,6 +43,13 @@ name that is different from all collections in the current event).
  ---------
 
  -----------
+| v00-11-02 |
+ -----------
+
+    - bug fixed in Merger.cc - undo the unnecessary comment out
+
+
+ -----------
 | v00-11-01 |
  -----------
 
