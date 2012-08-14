@@ -6,6 +6,8 @@
 #include "lcio.h"
 #include <string>
 
+#include "EVENT/LCEvent.h"
+
 #include "IO/LCReader.h"
 #include "IO/LCWriter.h"
 
@@ -74,6 +76,7 @@ class Overlay : public Processor, public EventModifier {
   std::map<std::string, std::string> _colMap;
 
   LCReader* _lcReader ;
+  LCEvent* _overlayEvent ;
 
   int _activeRunNumber;
   int _nRun ;

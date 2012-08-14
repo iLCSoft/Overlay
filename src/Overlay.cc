@@ -150,13 +150,12 @@ void Overlay::modifyEvent( LCEvent * evt ) {
   CLHEP::HepRandom::setTheSeed( eventSeed  );
 
 
-  static LCEvent* overlayEvent ;
   long num = _numOverlay;
   
   // initialise static event storage overlay Event
   if( isFirstEvent() ) {
-    overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
-    _activeRunNumber = overlayEvent->getRunNumber();
+    _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+    _activeRunNumber = _overlayEvent->getRunNumber();
   } 
   
 
@@ -164,33 +163,34 @@ void Overlay::modifyEvent( LCEvent * evt ) {
     num += CLHEP::RandPoisson::shoot(_expBG);
   }
   
-  streamlog_out( DEBUG4 ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
+  streamlog_out( DEBUG4 ) << "** Processing event nr " << evt->getEventNumber() << " run " <<  evt->getRunNumber() 
+			  << "\n**  overlaying " << num << " background events." << std::endl;
   
   
   // core - add correct number of bg events to EVT
-  // if runs are added, the loop counter i will be 
+  // if runs are added, the loop counter  will be 
   // reset to zero in every pass
   for(long i=0; i < num  ; i++ ) {
 
     // merge event from storage with EVT
     streamlog_out( DEBUG ) << "loop: " << i << std::endl;
     if (_colMap.size() == 0) {
-      Merger::merge(overlayEvent, evt);
+      Merger::merge(_overlayEvent, evt);
     } else {
-      Merger::merge(overlayEvent, evt, &_colMap);
+      Merger::merge(_overlayEvent, evt, &_colMap);
     }
 
     // load new event into storage, restart input "stream" if necessary
-    overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;  
-    if( !overlayEvent ) {
+    _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;  
+    if( !_overlayEvent ) {
       _lcReader->close() ; 
       _lcReader->open( _fileNames  ) ; 
 
       streamlog_out( WARNING4 ) << "Overlay stream has been reset to first element."
           << std::endl ;
 
-      overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
-      _activeRunNumber = overlayEvent->getRunNumber();
+      _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+      _activeRunNumber = _overlayEvent->getRunNumber();
       i = num;
     }
 
@@ -198,7 +198,7 @@ void Overlay::modifyEvent( LCEvent * evt ) {
     // check exit criteria and reset loop counter if necessary
     if (_runOverlay) {
       i=0;
-      int runNumber = overlayEvent->getRunNumber();
+      int runNumber = _overlayEvent->getRunNumber();
       if (runNumber != _activeRunNumber) {
         _activeRunNumber = runNumber;
         i=num;
