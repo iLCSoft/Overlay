@@ -5,6 +5,9 @@
 
 #ifdef MARLIN_USE_AIDA
 #include <marlin/AIDAProcessor.h>
+#include <marlin/Global.h>
+#include "marlin/ProcessorEventSeeder.h"
+
 #include <AIDA/IHistogramFactory.h>
 #include <AIDA/ICloud1D.h>
 //#include <AIDA/IHistogram1D.h>
@@ -94,7 +97,8 @@ void Overlay::init() {
 
 
   // initalisation of random number generator
-  CLHEP::HepRandom::setTheSeed(time(NULL));
+  Global::EVENTSEEDER->registerProcessor(this);
+  //  CLHEP::HepRandom::setTheSeed(time(NULL));
 
 
   // preparing colleciton map for merge
@@ -140,6 +144,12 @@ void Overlay::processRunHeader( LCRunHeader* run) {
 
 
 void Overlay::modifyEvent( LCEvent * evt ) {
+
+  // initalisation of random number generator
+  int eventSeed = Global::EVENTSEEDER->getSeed(this);
+  CLHEP::HepRandom::setTheSeed( eventSeed  );
+
+
   static LCEvent* overlayEvent ;
   long num = _numOverlay;
   
@@ -154,7 +164,7 @@ void Overlay::modifyEvent( LCEvent * evt ) {
     num += CLHEP::RandPoisson::shoot(_expBG);
   }
   
-  streamlog_out( DEBUG ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
+  streamlog_out( DEBUG4 ) << "** Processing event nr " << evt->getEventNumber() << "\n   overlaying " << num << " background events." << std::endl;
   
   
   // core - add correct number of bg events to EVT
