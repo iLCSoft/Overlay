@@ -42,6 +42,17 @@ name that is different from all collections in the current event).
  Versions:
  ---------
 
+ ----------
+|  v00-12  |
+ ----------
+   - changes to Overlay processor:
+
+    - switched to use the  Global::EVENTSEEDER mechanism for
+      reproducible random numbers 
+
+    - changed overlayEvent from static to member variable
+
+
  -----------
 | v00-11-02 |
  -----------
