@@ -172,9 +172,13 @@ class OverlayBX : public Processor, public EventModifier {
   int _maxBXs ;
   int _nRun ;
   int _nEvt ;
-  VXDLadders _vxdLadders ;
+  //  VXDLadders _vxdLadders ;
   VXDLayers  _vxdLayers ;
 
+  int _lastBXNum  ;
+  int _lastEvent  ; 
+  int _currentRdr ;
+  
 #ifdef MARLIN_USE_AIDA
    Hist1DVec _hist1DVec ;
 #endif

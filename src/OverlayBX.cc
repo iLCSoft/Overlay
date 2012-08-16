@@ -19,6 +19,8 @@
 #include <IMPL/SimCalorimeterHitImpl.h>
 #include <IMPL/LCFlagImpl.h>
 #include "UTIL/LCTOOLS.h"
+#include "UTIL/CellIDDecoder.h"
+#include "UTIL/ILDConf.h"
 #include "Merger.h"
 
 #include <marlin/Global.h>
@@ -235,6 +237,11 @@ void OverlayBX::init() {
 
   _nRun = 0 ;
   _nEvt = 0 ;
+
+
+  _lastBXNum = -1 ; 
+  _lastEvent = -1 ; 
+  _currentRdr = -1 ;
 }
 
 
@@ -248,54 +255,54 @@ void OverlayBX::processRunHeader( LCRunHeader* run) {
 
 // LCEvent*  OverlayBX::readNextEvent( int bxNum ){
   
-//   static int lastBXNum = -1 ; // fixme: make this a class variable....
-//   static int lastEvent = -1 ; 
-//   static int currentRdr = -1 ;
+//   static int _lastBXNum = -1 ; // fixme: make this a class variable....
+//   static int _lastEvent = -1 ; 
+//   static int _currentRdr = -1 ;
   
 
 
 //   streamlog_out( DEBUG2 ) << " >>>> readNextEvent( " <<  bxNum << ") called; "
-// 			  << " lastBXNum  " << lastBXNum  
-// 			  << " currentRdr  " << currentRdr  
+// 			  << " _lastBXNum  " << _lastBXNum  
+// 			  << " _currentRdr  " << _currentRdr  
 // 			  << std::endl ;
   
-//   if( bxNum != lastBXNum ) {
+//   if( bxNum != _lastBXNum ) {
     
 //     // open a new reader .....
     
 //     int nRdr = _lcReaders.size() ;
-//     int iRdr = currentRdr + 1 ; //(int) ( CLHEP::RandFlat::shoot() * nRdr ) ; 
+//     int iRdr = _currentRdr + 1 ; //(int) ( CLHEP::RandFlat::shoot() * nRdr ) ; 
 //     if( iRdr >= nRdr )
 //       iRdr = 0 ;
 
-//     if( currentRdr != -1 ) {
+//     if( _currentRdr != -1 ) {
       
-//       _lcReaders[currentRdr]->close() ; 
+//       _lcReaders[_currentRdr]->close() ; 
       
-//       streamlog_out( DEBUG ) << " >>>> closing reader " << currentRdr 
+//       streamlog_out( DEBUG ) << " >>>> closing reader " << _currentRdr 
 // 			     << " of " << nRdr  << std::endl ;
 //     }
 
 //     streamlog_out( DEBUG4 ) << " >>>> reading next BX  from reader " << iRdr 
 // 			    << " of " << nRdr  
 // 			    << " for BX : " << bxNum 
-// 			    << " [read  " << lastEvent << " evts for last BX]" 
+// 			    << " [read  " << _lastEvent << " evts for last BX]" 
 // 			    << std::endl ;
     
 
-//     currentRdr = iRdr ;
-//     _lcReaders[currentRdr]->open( _inputFileNames[currentRdr]  ) ; 
-//     lastEvent = -1 ;
+//     _currentRdr = iRdr ;
+//     _lcReaders[_currentRdr]->open( _inputFileNames[_currentRdr]  ) ; 
+//     _lastEvent = -1 ;
     
-//     lastBXNum = bxNum ;
+//     _lastBXNum = bxNum ;
 //   }
 
-//   LCEvent* evt =  _lcReaders[currentRdr]->readNextEvent( LCIO::UPDATE ) ;
+//   LCEvent* evt =  _lcReaders[_currentRdr]->readNextEvent( LCIO::UPDATE ) ;
     
 //   if( evt == 0 ) {
-//     lastBXNum = -1 ;
+//     _lastBXNum = -1 ;
 //   }else{
-//     ++lastEvent ;
+//     ++_lastEvent ;
 //   }
 
 //   return evt ;
@@ -303,53 +310,49 @@ void OverlayBX::processRunHeader( LCRunHeader* run) {
 
 LCEvent*  OverlayBX::readNextEvent( int bxNum ){
   
-  static int lastBXNum = -1 ; // fixme: make this a class variable....
-  static int lastEvent = -1 ; 
-  static int currentRdr = -1 ;
-  
 
 
   streamlog_out( DEBUG ) << " >>>> readNextEvent( " <<  bxNum << ") called; "
-			 << " lastBXNum  " << lastBXNum  
-			 << " currentRdr  " << currentRdr  
+			 << " _lastBXNum  " << _lastBXNum  
+			 << " _currentRdr  " << _currentRdr  
 			 << std::endl ;
   
-  if( bxNum != lastBXNum ) {
+  if( bxNum != _lastBXNum ) {
     
     // open a new reader .....
     
     int nRdr = _lcReaders.size() ;
     int iRdr = (int) ( CLHEP::RandFlat::shoot() * nRdr ) ; 
     
-    if( currentRdr != -1 ) {
+    if( _currentRdr != -1 ) {
       
-      _lcReaders[currentRdr]->close() ; 
+      _lcReaders[_currentRdr]->close() ; 
       
-      streamlog_out( DEBUG ) << " >>>> closing reader " << currentRdr 
+      streamlog_out( DEBUG ) << " >>>> closing reader " << _currentRdr 
 			     << " of " << nRdr  << std::endl ;
     }
     
     streamlog_out( DEBUG4 ) << " >>>> reading next BX  from reader " << iRdr 
  			    << " of " << nRdr  
  			    << " for BX : " << bxNum 
- 			    << " [read  " << lastEvent << " evts for last BX]" 
+ 			    << " [read  " << _lastEvent << " evts for last BX]" 
  			    << std::endl ;
 
-    currentRdr = iRdr ;
+    _currentRdr = iRdr ;
 
-    _lcReaders[currentRdr]->open( _inputFileNames[currentRdr]  ) ; 
+    _lcReaders[_currentRdr]->open( _inputFileNames[_currentRdr]  ) ; 
 
-    lastEvent = -1 ;
+    _lastEvent = -1 ;
 
-    lastBXNum = bxNum ;
+    _lastBXNum = bxNum ;
   }
 
-  LCEvent* evt =  _lcReaders[currentRdr]->readNextEvent( LCIO::UPDATE ) ;
+  LCEvent* evt =  _lcReaders[_currentRdr]->readNextEvent( LCIO::UPDATE ) ;
     
   if( evt == 0 ) {
-    lastBXNum = -1 ;
+    _lastBXNum = -1 ;
   }else{
-    ++lastEvent ;
+    ++_lastEvent ;
   }
 
   return evt ;
@@ -593,6 +596,8 @@ void OverlayBX::modifyEvent( LCEvent * evt ) {
 
 int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol , int bxNum ) {
   
+  static CellIDDecoder<SimTrackerHit> idDec( ILDCellID0::encoder_string ) ;
+
   // the hits are simply overlaid - no shift in r-phi along the ladder 
   // is applied; this should be ok if the ladders are not read out along z
   // - in reality the innermost ladders will have faster readout than outermost ladders
@@ -625,8 +630,11 @@ int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol
 
       vxdBGCol->removeElementAt(i);
 
-      int layer = ( bgHit->getCellID() & 0xff )  ;
-      
+
+      //      int layer = ( bgHit->getCellID() & 0xff )  ;
+      int layer =  idDec( bgHit )[ ILDCellID0::layer ] ;
+
+
       if( bxNum < _vxdLayers[ layer-1 ].nBX  ) {
 	
 	// explicitly set a null pointer as MCParticle collection is not merged 
@@ -772,6 +780,8 @@ int OverlayBX::mergeTPCColsFromBX( LCCollection* tpcCol , LCCollection* tpcBGCol
 
 void OverlayBX::check( LCEvent * evt ) { 
 
+  static CellIDDecoder<SimTrackerHit> idDec( ILDCellID0::encoder_string ) ;
+
 
 #ifdef MARLIN_USE_AIDA
   struct H1D{
@@ -839,7 +849,7 @@ void OverlayBX::check( LCEvent * evt ) {
       SimTrackerHit* sth = dynamic_cast<SimTrackerHit*>(  vxdCol->getElementAt(i) ) ;
 
 
-      int layer = ( sth->getCellID() & 0xff )  ;
+      int layer =  idDec( sth )[ ILDCellID0::layer ] ;
       
       if( layer == 1 ) nHitL1++ ; 
       else if( layer == 2 ) nHitL2++ ; 
@@ -930,20 +940,22 @@ void OverlayBX::init_geometry(){
 
   }
 
-  _vxdLadders.resize( layerVXD.getNLayers() ) ; 
+  //  _vxdLadders.resize( layerVXD.getNLayers() ) ; 
   _vxdLayers.resize(  layerVXD.getNLayers() ) ; 
 
 
   
-  streamlog_out( DEBUG ) << " initializing VXD ladder geometry ... " << std::endl ;
-    
-  // get the ladder's geometry parameters
+  streamlog_out( DEBUG ) << " initializing VXD ladder geometry ... for " << layerVXD.getNLayers()  << " layers " << std::endl ;
+
+  streamlog_out( DEBUG ) << " sizeof(VXDLadder) : " <<  sizeof(VXDLadder)   << " sizeof(CLHEP::Hep2Vector) " <<  sizeof(CLHEP::Hep2Vector)  <<   std::endl ;
+  
+
   for( int i=0 ; i <  layerVXD.getNLayers() ; i++ ) {
     
     double 	phi0 = layerVXD.getPhi0 (i) ;    
-    double 	dist = layerVXD.getSensitiveDistance (i) ;
+    //    double 	dist = layerVXD.getSensitiveDistance (i) ;
     
-    double 	thick = layerVXD.getSensitiveThickness (i) ;
+    //    double 	thick = layerVXD.getSensitiveThickness (i) ;
     double 	offs =  layerVXD.getSensitiveOffset (i) ;
     double 	width = layerVXD.getSensitiveWidth (i) ;
     
@@ -966,52 +978,54 @@ void OverlayBX::init_geometry(){
 			   << " nBX : " << _vxdLayers[i].nBX
 			   << std::endl ;
 
+    streamlog_out( DEBUG ) << "      .... layer " << i << " has  "  << nLad  << " ladders " << std::endl ;
+ 
+    // _vxdLadders[i].resize( nLad ) ;
 
-    _vxdLadders[i].resize( nLad ) ;
+    // for( int j=0 ; j < nLad ; j++ ) {
 
-    for( int j=0 ; j < nLad ; j++ ) {
+    //   double phi = phi0 + j *  ( 2 * M_PI ) /  nLad  ; 
 
-      double phi = phi0 + j *  ( 2 * M_PI ) /  nLad  ; 
-
-      // point in middle of sensitive ladder  (w/o offset)
-      CLHEP::Hep2Vector pM ;
-      pM.setPolar(  dist + thick / 2. , phi ) ;
+    //   // point in middle of sensitive ladder  (w/o offset)
+    //   CLHEP::Hep2Vector pM ;
+    //   pM.setPolar(  dist + thick / 2. , phi ) ;
       
-      // direction vector along ladder in rphi (negative) 
-      CLHEP::Hep2Vector v0 ;
-      v0.setPolar( width /2. + offs  ,  phi +  M_PI / 2.) ;
+    //   // direction vector along ladder in rphi (negative) 
+    //   CLHEP::Hep2Vector v0 ;
+    //   v0.setPolar( width /2. + offs  ,  phi +  M_PI / 2.) ;
 
-      // v0.setPolar(   - (width / 2.  - offs ) ,  phi +  M_PI / 2.) ;
-      // point p1:   'lower left corner of sensitive surface' (seen from outside)
-      // gear::Vector3D p1 = p0 + v0 ;    
+    //   // v0.setPolar(   - (width / 2.  - offs ) ,  phi +  M_PI / 2.) ;
+    //   // point p1:   'lower left corner of sensitive surface' (seen from outside)
+    //   // gear::Vector3D p1 = p0 + v0 ;    
       
       
-      CLHEP::Hep2Vector  p0 = pM + v0 ;  
+    //   CLHEP::Hep2Vector  p0 = pM + v0 ;  
 
-      // v1: direction along  rphi
-      CLHEP::Hep2Vector v1 ;
-      v1.setPolar( width ,  phi - M_PI/2.) ;
+    //   // v1: direction along  rphi
+    //   CLHEP::Hep2Vector v1 ;
+    //   v1.setPolar( width ,  phi - M_PI/2.) ;
 
-      // other end of ladder
-      CLHEP::Hep2Vector  p1 = p0 + v1 ;  
+    //   // other end of ladder
+    //   CLHEP::Hep2Vector  p1 = p0 + v1 ;  
 
 
-      VXDLadder& l = _vxdLadders[i][j] ;
-      l.phi = phi ;
-      l.p0 = p0 ;
-      l.p1 = p1 ;
-      l.u  = v1.unit()  ;
-      
-      streamlog_out( DEBUG ) << " layer: " << i << " - ladder: " << j 
-			     << " phi : " << l.phi
-			     << " p0 : "  << l.p0 
-			     << " p1 : "  << l.p1 
-			     << " u  : "  << l.u 
-			     << " width: " << v1.mag() 
-			     << " dist: " << pM.r() 
-                             << std::endl ;
+    //   VXDLadder& l = _vxdLadders.at(i).at(j) ; //_vxdLadders[i][j] ;
+    //   l.phi = phi ;
+    //   l.p0 = p0 ;
+    //   l.p1 = p1 ;
+    //   l.u  = v1.unit()  ;
 
-    }
+    //   streamlog_out( DEBUG ) << " layer: " << i << " - ladder: " << j 
+    //   			     << " phi : " << l.phi
+    //   			     << " p0 : "  << l.p0 
+    //   			     << " p1 : "  << l.p1 
+    //   			     << " u  : "  << l.u 
+    //   			     << " width: " << v1.mag() 
+    //   			     << " dist: " << pM.r() 
+    //   			     << std::endl ;
+
+    // }
+
   }
   
   return ;
