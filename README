@@ -43,6 +43,17 @@ name that is different from all collections in the current event).
  ---------
 
  ----------
+|  v00-13  |
+ ----------
+
+  -  fixed seg fault (removed unneeded code in init_geometry()
+     and _vxdLadders )
+  -  fixed extraction of layer from cellID
+     using ILDCellID0::encoder_string
+
+
+
+ ----------
 |  v00-12  |
  ----------
    - changes to Overlay processor:
