@@ -940,17 +940,23 @@ void OverlayBX::init_geometry(){
 
   }
 
+ streamlog_out( DEBUG ) << "   _vxdLayers.size() - before resize : " << _vxdLayers.size() 
+			 << std::endl ;
+
   //  _vxdLadders.resize( layerVXD.getNLayers() ) ; 
-  _vxdLayers.resize(  layerVXD.getNLayers() ) ; 
+  unsigned nLayer = layerVXD.getNLayers() ; 
+  unsigned NN = nLayer/2 ;
+  _vxdLayers.resize(  NN ) ; 
+
+  streamlog_out( DEBUG ) << "   _vxdLayers.size() - after calling resize("  << NN << ") : " << _vxdLayers.size() 
+			 << std::endl ;
 
 
-  
-  streamlog_out( DEBUG ) << " initializing VXD ladder geometry ... for " << layerVXD.getNLayers()  << " layers " << std::endl ;
 
   streamlog_out( DEBUG ) << " sizeof(VXDLadder) : " <<  sizeof(VXDLadder)   << " sizeof(CLHEP::Hep2Vector) " <<  sizeof(CLHEP::Hep2Vector)  <<   std::endl ;
   
 
-  for( int i=0 ; i <  layerVXD.getNLayers() ; i++ ) {
+  for( int i=0 ; i <  nLayer ; i++ ) {
     
     double 	phi0 = layerVXD.getPhi0 (i) ;    
     //    double 	dist = layerVXD.getSensitiveDistance (i) ;

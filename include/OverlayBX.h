@@ -36,6 +36,7 @@ struct VXDLayer{
   double width ;
   double ladderArea ;
   int nLadders ;
+  VXDLayer(): nBX(0), width(0), ladderArea(0), nLadders(0) {}
 };
 typedef std::vector< VXDLayer >  VXDLayers ;
 
