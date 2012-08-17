@@ -635,7 +635,7 @@ int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol
       int layer =  idDec( bgHit )[ ILDCellID0::layer ] ;
 
 
-      if( bxNum < _vxdLayers[ layer-1 ].nBX  ) {
+      if( bxNum < _vxdLayers[ layer ].nBX  ) {
 	
 	// explicitly set a null pointer as MCParticle collection is not merged 
 	bgHit->setMCParticle( 0 ) ;
@@ -851,12 +851,12 @@ void OverlayBX::check( LCEvent * evt ) {
 
       int layer =  idDec( sth )[ ILDCellID0::layer ] ;
       
-      if( layer == 1 ) nHitL1++ ; 
-      else if( layer == 2 ) nHitL2++ ; 
-      else if( layer == 3 ) nHitL3++ ; 
-      else if( layer == 4 ) nHitL4++ ; 
-      else if( layer == 5 ) nHitL5++ ; 
-      else if( layer == 6 ) nHitL6++ ; 
+      if     ( layer == 0 ) nHitL1++ ; 
+      else if( layer == 1 ) nHitL2++ ; 
+      else if( layer == 2 ) nHitL3++ ; 
+      else if( layer == 3 ) nHitL4++ ; 
+      else if( layer == 4 ) nHitL5++ ; 
+      else if( layer == 5 ) nHitL6++ ; 
       
 
       MCParticle* mcp = sth->getMCParticle() ;
@@ -910,7 +910,7 @@ void OverlayBX::end(){
     streamlog_out( MESSAGE ) << " -> average number of hits:  " 
 			     <<  _hist1DVec[ i ]->mean() 
 			     << " -    hits/ mm " <<  _hist1DVec[ i ]->mean() / area  
-			     << " -    occupancy (25mu) " << _hist1DVec[ i ]->mean() / area / 160. 
+			     << " -    occupancy (25mu) " << _hist1DVec[ i ]->mean() / area / 1600. 
 			     << std::endl ;
 
 #endif
@@ -945,10 +945,9 @@ void OverlayBX::init_geometry(){
 
   //  _vxdLadders.resize( layerVXD.getNLayers() ) ; 
   unsigned nLayer = layerVXD.getNLayers() ; 
-  unsigned NN = nLayer/2 ;
-  _vxdLayers.resize(  NN ) ; 
+  _vxdLayers.resize(  nLayer ) ; 
 
-  streamlog_out( DEBUG ) << "   _vxdLayers.size() - after calling resize("  << NN << ") : " << _vxdLayers.size() 
+  streamlog_out( DEBUG ) << "   _vxdLayers.size() - after calling resize("  << nLayer << ") : " << _vxdLayers.size() 
 			 << std::endl ;
 
 
@@ -956,7 +955,7 @@ void OverlayBX::init_geometry(){
   streamlog_out( DEBUG ) << " sizeof(VXDLadder) : " <<  sizeof(VXDLadder)   << " sizeof(CLHEP::Hep2Vector) " <<  sizeof(CLHEP::Hep2Vector)  <<   std::endl ;
   
 
-  for( int i=0 ; i <  nLayer ; i++ ) {
+  for( unsigned i=0 ; i <  nLayer ; i++ ) {
     
     double 	phi0 = layerVXD.getPhi0 (i) ;    
     //    double 	dist = layerVXD.getSensitiveDistance (i) ;

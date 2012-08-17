@@ -1,6 +1,6 @@
 <!--
   example steering file for background overlay ....  
---
+-->
 
 
 <marlin>
@@ -15,30 +15,30 @@
 
    <global>
       <parameter name="LCIOInputFiles">
-       /afs/desy.de/group/it/ilcsoft/v01-06/StandardConfig/v01-01/mc2008/M06-07-p01_ppr004_bbcssc_w17789_500_ILD_00_LCP_ep+1.0_em-1.0_Slac_SM_0050_3evt.slcio
+       /afs/desy.de/group/flc/pool/gaede/empty.slcio
       </parameter>
-      <parameter name="GearXMLFile" value="gear_ILD_00.xml"/>
+      <parameter name="GearXMLFile" value="GearOutput.xml"/>
       <parameter name="MaxRecordNumber" value="2"/>
       <parameter name="SkipNEvents" value="0"/>
       <parameter name="SupressCheck" value="false"/>
       <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT">  DEBUG2 MESSAGE </parameter>
    </global>
 
- <processor name="MyOverlayBX" type="OverlayBX">
+ <processor name="XXXMyOverlayBX" type="OverlayBX">
  <!--Overlays background lcio files for many bunch crossings -->
 <!--Name of the lcio input file(s) with background - assume one file per bunch crossing.-->
  <parameter name="BackgroundFileNames" type="StringVec">
-  /scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run001.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run002.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run003.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run004.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run005.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run006.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run007.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run008.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run009.slcio
-/scratch/lustre-1.6/ilc/mc-2008/pair_bkgs_nominalparams_cms500/pairs_nominal_500GeV_run010.slcio
-<!-- .... many more input files needed .... -->
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0000.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0001.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0002.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0003.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0004.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0005.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0006.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0007.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0008.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0009.slcio
+  <!-- .... many more input files needed .... -->
 </parameter>
    <!--time between bunch crossings [s] - default 3.0e-7 (300 ns)-->
   <parameter name="BunchCrossingTime" type="float">3e-07 </parameter>
@@ -46,7 +46,7 @@
   <!--maximum of BXs to be overlayed for the TPC; -1: compute from length and BXtime; default 10-->
   <parameter name="MaxBXsTPC" type="int"> 100 </parameter>
   <!--Pairs of collection with one bx to be overlayed (merged)-->
-  <parameter name="MergeCollections" type="StringVec">
+  <parameter name="XXXMergeCollections" type="StringVec">
     ETDCollection              ETDCollection  
     FTDCollection              FTDCollection  
     SETCollection              SETCollection  
@@ -84,12 +84,53 @@
   <!--parameter name="VXDLayerReadOutTimes" type="FloatVec">25 25 100 100 100 100  </parameter-->
   <!-- for debugging - run w/o VXD overaly: -->
   <parameter name="VXDLayerReadOutTimes" type="FloatVec">0.3 0.3 0.3 0.3   0.3   0.3  </parameter>
+  <parameter name="Verbosity" > DEBUG </parameter>
 </processor>
+
+ <processor name="MyOverlayBX" type="OverlayBX">
+ <!--Overlays background lcio files for many bunch crossings -->
+  <!--Name of the lcio input file(s) with background - assume one file per bunch crossing.-->
+  <parameter name="BackgroundFileNames" type="StringVec">
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0001.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0002.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0003.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0004.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0005.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0006.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0007.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0008.slcio
+    /afs/desy.de/group/flc/pool/gaede/pairs/sv01-14-p00.mILD_o1_v05.E1000-B1b_ws.PBeamstr-pairs.I210000.0009.slcio
+  </parameter>
+  <!--time between bunch crossings [s] - default 3.0e-7 (300 ns)-->
+  <parameter name="BunchCrossingTime" type="float"> 3e-5  3e-07 </parameter>
+  <!--maximum of BXs to be overlayed for the TPC; -1: compute from length and BXtime; default 10-->
+  <parameter name="MaxBXsTPC" type="int">10 </parameter>
+  <!--Max number of events to read from one file - default: -1, i.e. one file per BX.-->
+  <parameter name="MaxNumberOfEventsPerFile" type="int">-1 </parameter>
+  <!--Pairs of collection names with one bx to be overlayed (BG name first)-->
+  <!--parameter name="MergeCollections" type="StringVec">mcParticlesBG mcParticles  </parameter-->
+  <!--if true, rotate the bg events by a random azimuthal angle - default false-->
+  <parameter name="PhiRotateTPCHits" type="bool">false </parameter>
+  <!--random seed - default 42-->
+  <parameter name="RandomSeed" type="int">42 </parameter>
+  <!--Pairs of TPC collection names to be overlayed (BG name first)-->
+  <parameter name="TPCCollections" type="StringVec">TPCCollection TPCCollection  </parameter>
+  <!--[mm/s] (float) - default 5.0e+7 (5cm/us)-->
+  <parameter name="TPCDriftvelocity" type="float">5e+07 </parameter>
+  <!--collection of VXD SimTrackerHits-->
+  <parameter name="VXDCollection" type="string">VXDCollection </parameter>
+  <!--readout time per layer in us - default 50. 50. 200. 200. 200. 200-->
+  <parameter name="VXDLayerReadOutTimes" type="FloatVec">50 50 200 200 200 200  </parameter>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <parameter name="Verbosity" type="string">MESSAGE DEBUG </parameter>
+</processor>
+
+
 
  <processor name="MyLCIOOutputProcessor" type="LCIOOutputProcessor">
   <!--   standard output: full reconstruction keep all collections -->
   <parameter name="LCIOOutputFile" type="string" >
-       /scratch/lustre-1.6/ilc/gaede/overlaybx/M06-07-p01_ppr004_bbcssc_w17789_500_ILD_00_LCP_ep+1.0_em-1.0_Slac_SM_0050_3evt_BG.slcio
+    /afs/desy.de/group/flc/pool/gaede/pair_bg.slcio
   </parameter>
   <parameter name="LCIOWriteMode" type="string" value="WRITE_NEW"/>
   <!--parameter name="SplitFileSizekB" type="int" value="1992294"/-->
