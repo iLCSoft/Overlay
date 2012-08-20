@@ -40,6 +40,8 @@
 using namespace lcio ;
 using namespace marlin ;
 
+namespace overlay{
+
 
 OverlayBX aOverlayBX ;
 
@@ -943,14 +945,13 @@ void OverlayBX::init_geometry(){
  streamlog_out( DEBUG ) << "   _vxdLayers.size() - before resize : " << _vxdLayers.size() 
 			 << std::endl ;
 
-  //  _vxdLadders.resize( layerVXD.getNLayers() ) ; 
-  unsigned nLayer = layerVXD.getNLayers() ; 
-  _vxdLayers.resize(  nLayer ) ; 
+ unsigned nLayer = layerVXD.getNLayers() ; 
+ _vxdLayers.resize(  nLayer ) ; 
 
-  streamlog_out( DEBUG ) << "   _vxdLayers.size() - after calling resize("  << nLayer << ") : " << _vxdLayers.size() 
-			 << std::endl ;
-
-
+ streamlog_out( DEBUG ) << "   _vxdLayers.size() - after calling resize("  << nLayer << ") : " << _vxdLayers.size() 
+			<< std::endl ;
+ 
+ 
 
   streamlog_out( DEBUG ) << " sizeof(VXDLadder) : " <<  sizeof(VXDLadder)   << " sizeof(CLHEP::Hep2Vector) " <<  sizeof(CLHEP::Hep2Vector)  <<   std::endl ;
   
@@ -1035,3 +1036,6 @@ void OverlayBX::init_geometry(){
   
   return ;
 }
+
+
+}// namespace 

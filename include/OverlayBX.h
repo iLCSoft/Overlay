@@ -21,6 +21,9 @@ using namespace marlin ;
 
 #include "CLHEP/Vector/TwoVector.h"
 
+
+namespace overlay{
+
 /** Helper struct for VXD ladder geometry */
 struct VXDLadder{
   double phi ;   // phi off ladder 
@@ -185,6 +188,9 @@ class OverlayBX : public Processor, public EventModifier {
 #endif
 
 } ;
+
+} // namespace 
+
 
 #endif
 
