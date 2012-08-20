@@ -50,7 +50,8 @@ name that is different from all collections in the current event).
     
     -  fixed seg fault (removed unneeded code in init_geometry()
        and _vxdLadders )
-    -  fixed extraction of layer from cellID
+    - added namespace (name clash w/ helper classes VXDLayer in MarlinReco)
+   -  fixed extraction of layer from cellID
         using ILDCellID0::encoder_string
    
    - changes to Overlay processor:
