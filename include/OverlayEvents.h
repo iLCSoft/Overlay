@@ -9,63 +9,64 @@
 
 #include "IO/LCWriter.h"
 
-using namespace lcio ;
-using namespace marlin ;
+namespace overlay {
 
-/** OverlayEvents processor allows to merge a number of events in 
- * a LCIO file into 1 event.
- * See Merger.cc for the collection types that can be merged.
- * 
- * @author D. Kamai, Tohoku univ.
- * 
- * @param mergedCollectionNames (StringVec) The names (with absolute or relative pathes) of collection which will be merged.(not type of colletion)
- * @param OutputFileName (strign) The name of output file.\\
- */
-class OverlayEvents : public Processor , public EventModifier {
-  
- public:
-  
-  virtual Processor*  newProcessor() { return new OverlayEvents ; }
-  
-  
-  OverlayEvents() ;
-  
-  virtual const std::string & name() const { return Processor::name() ; }
-  
-  virtual void modifyEvent( LCEvent * evt ) ;
-
-
-  /** Called at the begin of the job before anything is read.
-   * Use to initialize the processor, e.g. book histograms.
+  /** OverlayEvents processor allows to merge a number of events in 
+   * a LCIO file into 1 event.
+   * See Merger.cc for the collection types that can be merged.
+   * 
+   * @author D. Kamai, Tohoku univ.
+   * 
+   * @param mergedCollectionNames (StringVec) The names (with absolute or relative pathes) of collection which will be merged.(not type of colletion)
+   * @param OutputFileName (strign) The name of output file.\\
    */
-  virtual void init() ;
+  class OverlayEvents : public marlin::Processor , public  marlin::EventModifier {
   
-  /** Called for every run.
-   */
-  virtual void processRunHeader( LCRunHeader* run ) ;
+  public:
   
-  virtual void check( LCEvent * evt ) ; 
+    virtual  marlin::Processor*  newProcessor() { return new OverlayEvents ; }
   
   
-  /** Called after data processing for clean up.
-   */
-  virtual void end() ;
+    OverlayEvents() ;
   
+    virtual const std::string & name() const { return Processor::name() ; }
   
- protected:
+    virtual void modifyEvent( LCEvent * evt ) ;
 
-  std::string _outfileName ;
 
-  LCEventImpl* outEvt ;
+    /** Called at the begin of the job before anything is read.
+     * Use to initialize the processor, e.g. book histograms.
+     */
+    virtual void init() ;
   
-  double    _expBG;
-  StringVec _mergedCollectionNames;
+    /** Called for every run.
+     */
+    virtual void processRunHeader( LCRunHeader* run ) ;
   
-  LCWriter* _lcWriter ;
+    virtual void check( LCEvent * evt ) ; 
   
-  int _activeRunNumber;
-  int _nRun ;
-  int _nEvt ;
-} ;
+  
+    /** Called after data processing for clean up.
+     */
+    virtual void end() ;
+  
+  
+  protected:
+
+    std::string _outfileName ;
+
+    LCEventImpl* outEvt ;
+  
+    double    _expBG;
+    StringVec _mergedCollectionNames;
+  
+    LCWriter* _lcWriter ;
+  
+    int _activeRunNumber;
+    int _nRun ;
+    int _nEvt ;
+  } ;
+
+} // namespace 
 
 #endif

@@ -19,9 +19,11 @@
 // using namespace marlin ;
 
 // #include <iostream>
-// using namespace std ;
+
+ using namespace std ;
 #include <algorithm>
 
+namespace overlay{
   
   inline long long cellID2long(int id0, int id1) { return ((long long) id0 << 32) | id1; }
     
@@ -292,3 +294,5 @@
     streamlog_out( DEBUG ) << "merge not possible for this type" << endl;
     return;
   }
+
+}
