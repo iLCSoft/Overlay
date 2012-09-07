@@ -6,9 +6,13 @@
 #include "IMPL/LCCollectionVec.h"
 #include "IMPL/SimCalorimeterHitImpl.h"
 #include "IMPL/CalorimeterHitImpl.h"
+#include "IMPL/MCParticleImpl.h"
+
 
 #include "UTIL/LCTOOLS.h"
-// #include "IMPL/CalorimeterHitImpl.h"
+#include "UTIL/Operators.h"
+#include "UTIL/BitSet32.h"
+
 // #include "IMPL/TrackerHitImpl.h" 
 
 // #include "IMPL/SimTrackerHitImpl.h" 
@@ -182,24 +186,50 @@ namespace overlay{
       return;
     }
     
-    streamlog_out( DEBUG ) << "merging collection of type: " << destType << " --- ";
+    streamlog_out( DEBUG4 ) << "merging collection of type: " << destType << " --- \n";
     
-    // ** GENERAL **
-    if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::MCPARTICLE) || (destType == LCIO::TRACKERHIT))  {
-      streamlog_out( DEBUG ) << "merging" << endl;
-      
+    // ** "TRACKERHITS" **
+    if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::TRACKERHIT))  {
+
       // running trough all the elements in the collection.
       nElementsSrc = src->getNumberOfElements();
+
+      streamlog_out( DEBUG4 ) << "merging ...  nElements = " << nElementsSrc << endl;
+      
       for (int i=nElementsSrc-1; i>=0; i--) {
+
         dest->addElement( src->getElementAt(i) );
-        src->removeElementAt(i);
+	src->removeElementAt(i);
+
+      }
+      return;
+    }
+    // **MCPARTICLE  **
+    if ( destType == LCIO::MCPARTICLE  )  {
+
+      // running trough all the elements in the collection.
+      nElementsSrc = src->getNumberOfElements();
+
+      streamlog_out( DEBUG2 ) << "merging ... nMCParticles = " << nElementsSrc << endl;
+      
+      for (int i=nElementsSrc-1; i>=0; i--) {
+	
+	MCParticleImpl* p =  dynamic_cast<MCParticleImpl*>( src->getElementAt(i) ) ;
+	
+	p->setSimulatorStatus( set_bit(  p->getSimulatorStatus() ,  BITOverlay  )  ) ;
+
+	streamlog_out( DEBUG2 ) << " --- " <<  lcshort( (MCParticle*) p , src )   ; // <<  BitSet32(  p->getSimulatorStatus() )  ;
+	
+        dest->addElement( p );
+	src->removeElementAt(i);
+
       }
       return;
     }
     
     // ** LCGENERICOBJECT-VTXPixelHits **
     if( destType == LCIO::LCGENERICOBJECT){
-      streamlog_out( DEBUG ) << "merging" << endl;
+      streamlog_out( DEBUG4 ) << "merging" << endl;
       int nLayer = 6;
       int maxLadder = 17;
       FPCCDData srcData( nLayer, maxLadder);

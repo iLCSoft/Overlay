@@ -54,7 +54,7 @@ namespace overlay{
    *     guineapig files are ordered.</b>
    * 
    *  @author F. Gaede DESY (based on Overlay processor by N. Chiapolini)
-   *  @version $Id: OverlayBX.h,v 1.4 2009-05-20 09:18:34 gaede Exp $
+   *  @version $Id$
    * 
    *  @param BackgroundFileNames (StringVec) The names (with absolute or relative pathes) of the files from 
    *  which the background should be read. Events are read in random order from the files in the list with 

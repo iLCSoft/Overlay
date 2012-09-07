@@ -8,13 +8,16 @@ namespace EVENT{
   class LCCollection ;
 }
 
+// should go to EVENT::MCParticle ...
+#define BITOverlay 15
+
 namespace overlay {
 
   /**Basic utility to merge two events or collections. So far only 
    * simulation collections are supported.
    * 
    * @author N. Chiapolini, DESY
-   * @version $Id: Merger.h,v 1.5 2007-09-14 23:52:46 chiapoli Exp $
+   * @version $Id$
    */
   class Merger{
     

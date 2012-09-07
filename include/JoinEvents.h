@@ -13,7 +13,7 @@ namespace overlay{
    *  collection names from the joined event in order to avoid name clashes.
    * 
    * @author F. Gaede, DESY
-   * @version $Id: JoinEvents.h,v 1.2 2007-11-07 20:24:10 gaede Exp $
+   * @version $Id$
    * 
    * @param InputFileName: the names (with absolute or relative pathes) of the one input file that 
    * is searched for events with the same run and event number.
