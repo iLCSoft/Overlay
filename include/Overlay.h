@@ -103,6 +103,7 @@ namespace overlay{
     int _activeRunNumber;
     int _nRun ;
     int _nEvt ;
+    int _nOverlayEvt ;
     IntVec    _events ;
   } ;
 

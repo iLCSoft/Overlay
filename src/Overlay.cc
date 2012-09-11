@@ -44,6 +44,7 @@ namespace overlay{
 		       _activeRunNumber(0 ) ,
 		       _nRun(0 ) ,
 		       _nEvt(0 ) ,
+		       _nOverlayEvt( 0 ), 
 		       _events(0 ) {
     
     // modify processor description
@@ -230,6 +231,8 @@ namespace overlay{
 
 	continue ;
       } 
+      
+      ++_nOverlayEvt ;
 
       streamlog_out( DEBUG6 ) << "loop: " << i << " will overlay event " << _overlayEvent->getEventNumber() << " - run " << _overlayEvent->getRunNumber() << std::endl ;
 
@@ -288,6 +291,11 @@ namespace overlay{
 
 
   void Overlay::end(){ 
+
+    streamlog_out( MESSAGE ) << " --- Overlay::end overlayed " << _nOverlayEvt << " background events on " << _nEvt << " physics events.\n"
+			     << "      -> mean " << double(_nOverlayEvt ) / double( _nEvt ) << "\n"
+			     << std::endl ;
+
   }
 
 
