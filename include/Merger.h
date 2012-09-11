@@ -8,8 +8,6 @@ namespace EVENT{
   class LCCollection ;
 }
 
-// should go to EVENT::MCParticle ...
-#define BITOverlay 15
 
 namespace overlay {
 

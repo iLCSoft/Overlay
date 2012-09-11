@@ -24,6 +24,7 @@
 #include "Merger.h"
 
 #include "CLHEP/Random/RandPoisson.h"
+#include "CLHEP/Random/RandFlat.h"
 // #include <time.h>
 
 using namespace lcio ;
@@ -36,7 +37,14 @@ namespace overlay{
   
   
   
-  Overlay::Overlay() : Processor("Overlay") {
+  Overlay::Overlay() : Processor("Overlay"), 
+		       _nSkipEventsRandom(0 ) ,
+		       _lcReader(0 ) ,
+		       _overlayEvent(0 ) ,
+		       _activeRunNumber(0 ) ,
+		       _nRun(0 ) ,
+		       _nEvt(0 ) ,
+		       _events(0 ) {
     
     // modify processor description
     _description = "Opens a second (chain of) lcio file(s) and overlays events..." ;
@@ -72,6 +80,13 @@ namespace overlay{
 				"Add additional background events according to a poisson distribution with this expectation value. (non, if parameter not set)" ,
 				_expBG ,
 				exp ) ;
+    
+    
+    registerProcessorParameter( "NSkipEventsRandom" ,
+				"Maximum number of events to skip between overlayd events (choosen from flat intervall [0,NSkipEventsRandom] )" ,
+				_nSkipEventsRandom ,
+				int(0) ) ;
+
 
     StringVec map;
     map.push_back( "mcParticles mcParticlesBG" );
@@ -81,6 +96,10 @@ namespace overlay{
 				_colVec ,
 				map ) ;
   
+
+
+
+
   }
 
 
@@ -97,9 +116,21 @@ namespace overlay{
     printParameters() ;
   
     // opening background input
-    _lcReader = LCFactory::getInstance()->createLCReader() ;
-    streamlog_out( DEBUG ) << " opening first file for overlay : " << _fileNames[0]  << std::endl ;
+    _lcReader = LCFactory::getInstance()->createLCReader( LCReader::directAccess ) ;
+
     _lcReader->open( _fileNames  ) ; 
+
+    streamlog_out( DEBUG6 ) << "*** opened files for overlay - first file : " << _fileNames[0] 
+			    << "    has " << _lcReader->getNumberOfEvents() << "  events. "  << std::endl ;
+    
+    
+    if( _fileNames.size() == 1 ){
+
+      // if we have only one file, we can use direct access to random events
+      _lcReader->getEvents( _events ) ;
+
+      streamlog_out( DEBUG6 ) << "    will use direct access from " << _events.size() / 2 << "  events. "  << std::endl ;
+    }
 
 
     // initalisation of random number generator
@@ -107,7 +138,7 @@ namespace overlay{
     //  CLHEP::HepRandom::setTheSeed(time(NULL));
 
 
-    // preparing colleciton map for merge
+    // preparing collection map for merge
     StringVec::iterator it;
     StringVec::iterator endIt = _colVec.end();
   
@@ -153,56 +184,88 @@ namespace overlay{
 
     // initalisation of random number generator
     int eventSeed = Global::EVENTSEEDER->getSeed(this);
+
+
     CLHEP::HepRandom::setTheSeed( eventSeed  );
 
 
     long num = _numOverlay;
   
-    // initialise static event storage overlay Event
-    if( isFirstEvent() ) {
-      _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
-      _activeRunNumber = _overlayEvent->getRunNumber();
-    } 
+    if ( parameterSet(BGNAME) && !_runOverlay ) {
+      num += CLHEP::RandPoisson::shoot( _expBG );
+    }
+
+
+    streamlog_out( DEBUG6 ) << "** Processing event nr " << evt->getEventNumber() << " run " <<  evt->getRunNumber() 
+     			    << "\n**  overlaying " << num << " background events. \n " 
+			    << " ( seeded CLHEP::HepRandom with seed = " << eventSeed  << ") " 
+			    << std::endl;
   
 
-    if (parameterSet(BGNAME) && !_runOverlay) {
-      num += CLHEP::RandPoisson::shoot(_expBG);
-    }
+    // // initialise static event storage overlay Event
+    // if( isFirstEvent() ) {
+    //   int nSkip = CLHEP::RandFlat::shoot( double(_nSkipEventsRandom ) ) ;
+    //   streamlog_out( DEBUG5 ) << "   will skip " << nSkip << " events ... " << std::endl ;
+    //   _lcReader->skipNEvents( nSkip ) ;
+    //   _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+    //   _activeRunNumber = _overlayEvent->getRunNumber();
+    // } 
   
-    streamlog_out( DEBUG4 ) << "** Processing event nr " << evt->getEventNumber() << " run " <<  evt->getRunNumber() 
-			    << "\n**  overlaying " << num << " background events." << std::endl;
-  
-  
+
     // core - add correct number of bg events to EVT
     // if runs are added, the loop counter  will be 
     // reset to zero in every pass
     for(long i=0; i < num  ; i++ ) {
 
-      // merge event from storage with EVT
-      streamlog_out( DEBUG ) << "loop: " << i << std::endl;
-      if (_colMap.size() == 0) {
-	Merger::merge(_overlayEvent, evt);
-      } else {
-	Merger::merge(_overlayEvent, evt, &_colMap);
-      }
+      if( _events.size() == 0 ) {   // in order to be reproduceable, we have to reset the file stream when using the skip mechanism
 
-      // load new event into storage, restart input "stream" if necessary
-      _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;  
-      if( !_overlayEvent ) {
 	_lcReader->close() ; 
 	_lcReader->open( _fileNames  ) ; 
-
-	streamlog_out( WARNING4 ) << "Overlay stream has been reset to first element."
-				  << std::endl ;
-
-	_overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
-	_activeRunNumber = _overlayEvent->getRunNumber();
-	i = num;
       }
+
+      _overlayEvent = readNextEvent() ;
+
+      if( !_overlayEvent ) {
+
+	streamlog_out( ERROR ) << "loop: " << i << " ++++++++++ Nothing to overlay +++++++++++ \n " ;
+
+	continue ;
+      } 
+
+      streamlog_out( DEBUG6 ) << "loop: " << i << " will overlay event " << _overlayEvent->getEventNumber() << " - run " << _overlayEvent->getRunNumber() << std::endl ;
+
+      // merge event from storage with EVT
+
+      if ( _colMap.empty() ) {
+	
+	Merger::merge( _overlayEvent, evt );
+	
+      } else {
+	
+	Merger::merge( _overlayEvent, evt, &_colMap );
+      }
+
+      // //      int nSkip = CLHEP::RandPoisson::shoot(  double(_nSkipEventsRandom ) ) ;  
+      // int nSkip = CLHEP::RandFlat::shoot(  double(_nSkipEventsRandom ) ) ; 
+      // streamlog_out( DEBUG5 ) << "   will skip " << nSkip << " events ... " << std::endl ;
+      // _lcReader->skipNEvents( nSkip ) ;
+      // // load new event into storage, restart input "stream" if necessary
+      // _overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;  
+      
+      // if( !_overlayEvent ) {
+      // 	_lcReader->close() ; 
+      // 	_lcReader->open( _fileNames  ) ; 
+      // 	streamlog_out( WARNING4 ) << "Overlay stream has been reset to first element."
+      // 				  << std::endl ;
+      // 	_overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+      // 	_activeRunNumber = _overlayEvent->getRunNumber();
+      // 	i = num;
+      // }
+
 
       // if processing runs: 
       // check exit criteria and reset loop counter if necessary
-      if (_runOverlay) {
+      if ( _runOverlay ) {
 	i=0;
 	int runNumber = _overlayEvent->getRunNumber();
 	if (runNumber != _activeRunNumber) {
@@ -227,5 +290,62 @@ namespace overlay{
 
   void Overlay::end(){ 
   }
+
+
+  //===========================================================================================================================
+
+  LCEvent* Overlay::readNextEvent() {
+    
+    LCEvent* overlayEvent = 0 ;
+    
+    // if we are reading from more than one file, we need to use the skipNEvents method,
+    // otherwise we can directly access a random event
+    
+    int nEvts = _events.size() / 2 ;
+    
+    streamlog_out( DEBUG3 ) << "  --- Overlay::readNextEvent()  ---- will use "  << ( nEvts ?  " direct access " : " skipNEvents " )    << std::endl ;
+    
+    if( nEvts > 0 ){
+      
+      int iEvt = CLHEP::RandFlat::shoot( nEvts  ) ;
+
+      int runNum = _events[ 2 * iEvt     ] ;
+      int evtNum = _events[ 2 * iEvt + 1 ] ;
+
+      streamlog_out( DEBUG3 ) << "   will read event " << evtNum << "  from  run " <<  runNum << std::endl ;
+      
+      overlayEvent = _lcReader->readEvent(  runNum , evtNum , LCIO::UPDATE ) ;
+
+      if( !overlayEvent ) {
+
+	streamlog_out( ERROR ) << "   +++++++++ could not read event " << evtNum << "  from  run " <<  runNum << std::endl ;
+	return 0 ;
+      }
+
+    } else { 
+      
+      int nSkip = CLHEP::RandFlat::shoot( double(_nSkipEventsRandom ) ) ;
+      
+      streamlog_out( DEBUG3 ) << "   will skip " << nSkip << " events ... " << std::endl ;
+      
+      _lcReader->skipNEvents( nSkip ) ;
+      
+      overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+      
+      if( !overlayEvent ) {
+	
+	_lcReader->close() ; 
+	_lcReader->open( _fileNames  ) ; 
+
+	streamlog_out( DEBUG3 ) << "Overlay stream has been reset to first element." << std::endl ;
+	
+	overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
+      }
+    }
+    _activeRunNumber = overlayEvent->getRunNumber();
+    
+    return overlayEvent ;
+  }
+  
 
 } // end namespace 

@@ -216,7 +216,8 @@ namespace overlay{
 	
 	MCParticleImpl* p =  dynamic_cast<MCParticleImpl*>( src->getElementAt(i) ) ;
 	
-	p->setSimulatorStatus( set_bit(  p->getSimulatorStatus() ,  BITOverlay  )  ) ;
+	//	p->setSimulatorStatus( set_bit(  p->getSimulatorStatus() ,  BITOverlay  )  ) ;
+	p->setOverlay( true ) ;
 
 	streamlog_out( DEBUG2 ) << " --- " <<  lcshort( (MCParticle*) p , src )   ; // <<  BitSet32(  p->getSimulatorStatus() )  ;
 	
