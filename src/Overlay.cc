@@ -292,8 +292,10 @@ namespace overlay{
 
   void Overlay::end(){ 
 
-    streamlog_out( MESSAGE ) << " --- Overlay::end overlayed " << _nOverlayEvt << " background events on " << _nEvt << " physics events.\n"
-			     << "      -> mean " << double(_nOverlayEvt ) / double( _nEvt ) << "\n"
+    streamlog_out( MESSAGE ) << " ------------------------------------------ " 
+			     << "   Overlay processor " << _nOverlayEvt << " background events on " << _nEvt << " physics events.\n"
+			     << "      -> mean = " << double(_nOverlayEvt ) / double( _nEvt ) 
+			     << "  ±  " <<   double(_nOverlayEvt ) / double( _nEvt ) / sqrt( _nEvt ) << "\n"
 			     << std::endl ;
 
   }
