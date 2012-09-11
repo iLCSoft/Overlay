@@ -3,6 +3,8 @@
 #include "OverlayBX.h"
 #include <iostream>
 
+#include <marlin/Global.h>
+#include "marlin/ProcessorEventSeeder.h"
 #ifdef MARLIN_USE_AIDA
 #include <marlin/AIDAProcessor.h>
 #include <AIDA/IHistogramFactory.h>
@@ -25,12 +27,11 @@
 #include "UTIL/ILDConf.h"
 #include "Merger.h"
 
-#include <marlin/Global.h>
+
 #include <gear/GEAR.h>
 #include <gear/VXDParameters.h>
 #include <gear/VXDLayerLayout.h>
 #include <gear/TPCParameters.h>
-
 #include <gearimpl/Vector3D.h>
 
 
@@ -164,7 +165,7 @@ namespace overlay{
 
 
     // initalisation of random number generator
-    CLHEP::HepRandom::setTheSeed( _ranSeed ) ;
+    Global::EVENTSEEDER->registerProcessor(this);
 
 
     // create readers for background input files
@@ -388,6 +389,12 @@ namespace overlay{
 
   void OverlayBX::modifyEvent( LCEvent * evt ) {
   
+    // initalisation of random number generator
+    int eventSeed = Global::EVENTSEEDER->getSeed(this)  + _ranSeed  ;
+
+    CLHEP::HepRandom::setTheSeed( eventSeed  );
+
+
     if( streamlog::out.write< streamlog::DEBUG3 >() ) 
       LCTOOLS::dumpEvent( evt ) ;
   

@@ -185,7 +185,6 @@ namespace overlay{
     // initalisation of random number generator
     int eventSeed = Global::EVENTSEEDER->getSeed(this);
 
-
     CLHEP::HepRandom::setTheSeed( eventSeed  );
 
 

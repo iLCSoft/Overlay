@@ -43,6 +43,32 @@ name that is different from all collections in the current event).
  ---------
 
  ----------
+|  v00-13  |
+ ----------
+   - changes in Overlay processor:
+
+       - updated to use MCParticle::setOverlay() 
+       
+       - added method Overlay::readNextEvent() to properly
+         read the next event - either with direct access (only one
+         input file given ) or with skipNEvents
+       
+       - fixed logic to ensure same event gets same overlay
+         events - regardless of SkipNEvents parameter
+
+   - changes to OverlayBX processor:
+
+       - switched to use  Global::EVENTSEEDER mechanism for
+         reproducible random numbers 
+
+   - introduced namespace overlay in all classes
+
+   - removed using namespace from header files
+
+   - added propset Id
+
+
+ ----------
 |  v00-12  |
  ----------
 
