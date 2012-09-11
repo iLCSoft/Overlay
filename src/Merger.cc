@@ -61,6 +61,10 @@ namespace overlay{
     catch (DataNotAvailableException& e) {   // if (does_not_exist(mcDestCollection)) {
       LCCollectionVec* mcVec = new LCCollectionVec( LCIO::MCPARTICLE )  ;
       destEvent->addCollection( mcVec , mcDestString ) ;
+
+      LCCollection* srccol = srcEvent->getCollection(mcSrcString) ;
+      if( srccol ) srccol->setFlag( srccol->getFlag() ) ;
+	    
     }
      
     try {
@@ -71,6 +75,7 @@ namespace overlay{
       return;
     }
     srcEvent->removeCollection(mcSrcString);
+
     Merger::merge(srcEvent, destEvent);
     return;
   }
@@ -157,6 +162,8 @@ namespace overlay{
 	  
 	destEvent->addCollection( destCol , (*it).second ) ;
       }
+      
+      destCol->setFlag( srcCol->getFlag() ) ;
       
       Merger::merge(srcCol, destCol);
       
