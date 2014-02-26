@@ -89,7 +89,7 @@ namespace overlay{
     StringVec   _tmpInputFileNames ; // not read same file twice or more.
     int         _eventsPerBX;
     int         _numBX ;
- 
+    bool        _removeVTX; 
   
     std::string _vxdCollection ;
     std::string _vtxPixelHitsCollection ;

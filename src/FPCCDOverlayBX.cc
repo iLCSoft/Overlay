@@ -32,7 +32,6 @@
 using namespace lcio ;
 using namespace marlin ;
 
-
 namespace overlay {
 
   FPCCDOverlayBX aFPCCDOverlayBX ;
@@ -42,6 +41,11 @@ namespace overlay {
 
     // modify processor description
     _description = "Overlays LCGeneVTXPixelHits of background lcio files for many bunch crossings " ;
+
+    registerProcessorParameter( "removeOptionForVTX" , 
+				"True: remove VTXPixelhit Collection. False: leave it."  ,
+				_removeVTX ,
+				bool(false) ) ;
 
 
     StringVec files ;
@@ -293,9 +297,10 @@ namespace overlay {
 	  theBkg.clear();
 	
 	  nElementsSrc = vxdBGCol->getNumberOfElements();
-
-	  for(int i=nElementsSrc-1 ; i>=0 ; i--){
-	    vxdBGCol->removeElementAt(i);
+    if(_removeVTX == true){
+	    for(int i=nElementsSrc-1 ; i>=0 ; i--){
+	      vxdBGCol->removeElementAt(i);
+	    }
 	  }
 	
 	} catch( DataNotAvailableException& e) {}
@@ -306,8 +311,10 @@ namespace overlay {
     theBkg.clear();
   
     nElementsDest = vxdCol->getNumberOfElements();
-    for(int i=nElementsDest-1 ; i>=0 ; i--){
-      vxdCol->removeElementAt(i);
+    if(_removeVTX == true){
+      for(int i=nElementsDest-1 ; i>=0 ; i--){
+        vxdCol->removeElementAt(i);
+      }
     }
   
     theSignal.packPixelHits(*vxdCol);
