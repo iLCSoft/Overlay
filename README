@@ -43,6 +43,13 @@ name that is different from all collections in the current event).
  ---------
 
  ----------
+|  v00-14  |
+ ----------
+
+   - An option to remove VTXPixelHits Collection is added. (A.Miyamoto)
+
+
+ ----------
 |  v00-13  |
  ----------
    - changes in Overlay processor:
