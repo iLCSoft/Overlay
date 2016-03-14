@@ -65,10 +65,6 @@ ENDIF()
 
 ### LIBRARY #################################################################
 
-# definitions to pass to the compiler
-ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
-ADD_DEFINITIONS( "-Wno-long-long" )
-
 # include directories
 INCLUDE_DIRECTORIES( ./include )
 #INSTALL_DIRECTORY( ./include DESTINATION . FILES_MATCHING PATTERN "*.h" )
