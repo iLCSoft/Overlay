@@ -85,6 +85,7 @@ namespace overlay {
     unsigned int overlay_file_list;
     float _BeamCal_int,_ETD_int, _EcalBarrel_int, _EcalBarrelPreShower_int, _EcalEndcap_int, _EcalEndcapPreShower_int, _EcalEndcapRing_int, _EcalEndcapRingPreShower_int;
     float _FTD_int, _HcalBarrelReg_int, _HcalEndCapRings_int, _HcalEndCaps_int, _LHcal_int, _LumiCal_int, _MuonBarrel_int, _MuonEndCap_int, _SET_int, _SIT_int, _VXD_int;
+    float _EcalPlug_int, _VXDB_int, _VXDE_int, _ITB_int, _ITE_int, _OTB_int, _OTE_int;
     float _TPC_int, _TPCSpacePoint_int;
 
     IO::LCReader* overlay_Eventfile_reader;

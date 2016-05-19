@@ -92,29 +92,52 @@ namespace overlay {
 			       _BeamCal_int,
 			       float(10));
 
-    registerProcessorParameter("ETDCollection_Integration_Time",
-			       "Integration time for the ETDCollection",
-			       _ETD_int,
+    registerProcessorParameter("LumiCalCollection_Integration_Time",
+			       "Integration time for the LumiCalCollection",
+			       _LumiCal_int,
 			       float(10));
 
     registerProcessorParameter("EcalBarrelCollection_Integration_Time",
-			       "Integration time for the EcalBarrelCollection",
+			       "Integration time for the EcalBarrelCollection / ECalBarrelCollection",
 			       _EcalBarrel_int,
 			       float(10));
 
-    registerProcessorParameter("EcalBarrelPreShowerCollection_Integration_Time",
-			       "Integration time for the EcalBarrelPreShowerCollection",
-			       _EcalBarrelPreShower_int,
-			       float(10));
-
     registerProcessorParameter("EcalEndcapCollection_Integration_Time",
-			       "Integration time for the EcalEndcapCollection",
+			       "Integration time for the EcalEndcapCollection / ECalEndcapCollection",
 			       _EcalEndcap_int,
 			       float(10));
 
-    registerProcessorParameter("EcalEndcapPreShowerCollection_Integration_Time",
-			       "Integration time for the EcalEndcapPreShowerCollection",
-			       _EcalEndcapPreShower_int,
+    registerProcessorParameter("HcalBarrelRegCollection_Integration_Time",
+			       "Integration time for the HcalBarrelRegCollection / HCalBarrelCollection",
+			       _HcalBarrelReg_int,
+			       float(10));
+
+    registerProcessorParameter("HcalEndCapsCollection_Integration_Time",
+			       "Integration time for the HcalEndCapsCollection / HCalEndcapCollection",
+			       _HcalEndCaps_int,
+			       float(10));
+
+    registerProcessorParameter("HcalEndCapRingsCollection_Integration_Time",
+			       "Integration time for the HcalEndCapRingsCollection / HCalRingCollection",
+			       _HcalEndCapRings_int,
+			       float(10));
+
+    registerProcessorParameter("MuonBarrelCollection_Integration_Time",
+			       "Integration time for the MuonBarrelCollection / YokeBarrelCollection",
+			       _MuonBarrel_int,
+			       float(10));
+
+    registerProcessorParameter("MuonEndCapCollection_Integration_Time",
+			       "Integration time for the MuonEndCapCollection / YokeEndcapCollection",
+			       _MuonEndCap_int,
+			       float(10));
+
+
+    // ILD specific
+
+    registerProcessorParameter("LHcalCollection_Integration_Time",
+			       "Integration time for the LHcalCollection",
+			       _LHcal_int,
 			       float(10));
 
     registerProcessorParameter("EcalEndcapRingCollection_Integration_Time",
@@ -122,49 +145,29 @@ namespace overlay {
 			       _EcalEndcapRing_int,
 			       float(10));
 
+    registerProcessorParameter("EcalBarrelPreShowerCollection_Integration_Time",
+			       "Integration time for the EcalBarrelPreShowerCollection",
+			       _EcalBarrelPreShower_int,
+			       float(10));
+
+    registerProcessorParameter("EcalEndcapPreShowerCollection_Integration_Time",
+			       "Integration time for the EcalEndcapPreShowerCollection",
+			       _EcalEndcapPreShower_int,
+			       float(10));
+
     registerProcessorParameter("EcalEndcapRingPreShowerCollection_Integration_Time",
 			       "Integration time for the  EcalEndcapRingPreShowerCollection",
 			       _EcalEndcapRingPreShower_int,
+			       float(10));
+    
+    registerProcessorParameter("ETDCollection_Integration_Time",
+			       "Integration time for the ETDCollection",
+			       _ETD_int,
 			       float(10));
 
     registerProcessorParameter("FTDCollection_Integration_Time",
 			       "Integration time for the FTDCollection",
 			       _FTD_int,
-			       float(10));
-
-    registerProcessorParameter("HcalBarrelRegCollection_Integration_Time",
-			       "Integration time for the HcalBarrelRegCollection",
-			       _HcalBarrelReg_int,
-			       float(10));
-
-    registerProcessorParameter("HcalEndCapRingsCollection_Integration_Time",
-			       "Integration time for the HcalEndCapRingsCollection",
-			       _HcalEndCapRings_int,
-			       float(10));
-
-    registerProcessorParameter("HcalEndCapsCollection_Integration_Time",
-			       "Integration time for the HcalEndCapsCollection",
-			       _HcalEndCaps_int,
-			       float(10));
-
-    registerProcessorParameter("LHcalCollection_Integration_Time",
-			       "Integration time for the LHcalCollection",
-			       _LHcal_int,
-			       float(10));
-
-    registerProcessorParameter("LumiCalCollection_Integration_Time",
-			       "Integration time for the LumiCalCollection",
-			       _LumiCal_int,
-			       float(10));
-
-    registerProcessorParameter("MuonBarrelCollection_Integration_Time",
-			       "Integration time for the MuonBarrelCollection",
-			       _MuonBarrel_int,
-			       float(10));
-
-    registerProcessorParameter("MuonEndCapCollection_Integration_Time",
-			       "Integration time for the MuonEndCapCollection",
-			       _MuonEndCap_int,
 			       float(10));
 
     registerProcessorParameter("SETCollection_Integration_Time",
@@ -191,6 +194,46 @@ namespace overlay {
 			       "Integration time for the TPCSpacePointCollection",
 			       _TPCSpacePoint_int,
 			       float(10));
+
+    
+    // CLIC specific
+
+    registerProcessorParameter("EcalPlugCollection_Integration_Time",
+			       "Integration time for the ECalPlugCollection",
+			       _EcalPlug_int,
+			       float(10));
+
+    registerProcessorParameter("VertexBarrelCollection_Integration_Time",
+			       "Integration time for the VertexBarrelCollection",
+			       _VXDB_int,
+			       float(10));
+
+    registerProcessorParameter("VertexEndcapCollection_Integration_Time",
+			       "Integration time for the VertexEndcapCollection",
+			       _VXDE_int,
+			       float(10));
+
+    registerProcessorParameter("InnerTrackerBarrelCollection_Integration_Time",
+			       "Integration time for the InnerTrackerBarrelCollection",
+			       _ITB_int,
+			       float(10));
+
+    registerProcessorParameter("InnerTrackerEndcapCollection_Integration_Time",
+			       "Integration time for the InnerTrackerEndcapCollection",
+			       _ITE_int,
+			       float(10));
+
+    registerProcessorParameter("OuterTrackerBarrelCollection_Integration_Time",
+			       "Integration time for the OuterTrackerBarrelCollection",
+			       _OTB_int,
+			       float(10));
+
+    registerProcessorParameter("OuterTrackerEndcapCollection_Integration_Time",
+			       "Integration time for the OuterTrackerEndcapCollection",
+			       _OTE_int,
+			       float(10));
+
+
   }
 
   //------------------------------------------------------------------------------------------------------------------------------------------
@@ -431,28 +474,53 @@ namespace overlay {
 
     this_stop = std::numeric_limits<float>::max(); // provide default values for collections not named below;
     TPC_hits = false;
-
+    
+    // CLIC / ILD common name collections  
     if ( Collection_name == "BeamCalCollection")                      {this_stop = _BeamCal_int;                 TPC_hits = false;}
-    else if ( Collection_name == "ETDCollection")                     {this_stop = _ETD_int;                     TPC_hits = false;}
+    else if ( Collection_name == "LumiCalCollection")                 {this_stop = _LumiCal_int;                 TPC_hits = false;}
+
+    // ILD
+    // calo
     else if ( Collection_name == "EcalBarrelCollection")              {this_stop = _EcalBarrel_int;              TPC_hits = false;}
     else if ( Collection_name == "EcalBarrelPreShowerCollection")     {this_stop = _EcalBarrelPreShower_int;     TPC_hits = false;}
     else if ( Collection_name == "EcalEndcapCollection")              {this_stop = _EcalEndcap_int;              TPC_hits = false;}
     else if ( Collection_name == "EcalEndcapPreShowerCollection")     {this_stop = _EcalEndcapPreShower_int;     TPC_hits = false;}
     else if ( Collection_name == "EcalEndcapRingCollection")          {this_stop = _EcalEndcapRing_int;          TPC_hits = false;}
     else if ( Collection_name == "EcalEndcapRingPreShowerCollection") {this_stop = _EcalEndcapRingPreShower_int; TPC_hits = false;}
-    else if ( Collection_name == "FTDCollection")                     {this_stop = _FTD_int;                     TPC_hits = false;}
     else if ( Collection_name == "HcalBarrelRegCollection")           {this_stop = _HcalBarrelReg_int;           TPC_hits = false;}
     else if ( Collection_name == "HcalEndCapRingsCollection")         {this_stop = _HcalEndCapRings_int;         TPC_hits = false;}
     else if ( Collection_name == "HcalEndCapsCollection")             {this_stop = _HcalEndCaps_int;             TPC_hits = false;}
     else if ( Collection_name == "LHcalCollection")                   {this_stop = _LHcal_int;                   TPC_hits = false;}
-    else if ( Collection_name == "LumiCalCollection")                 {this_stop = _LumiCal_int;                 TPC_hits = false;}
+    // muon system 
     else if ( Collection_name == "MuonBarrelCollection")              {this_stop = _MuonBarrel_int;              TPC_hits = false;}
     else if ( Collection_name == "MuonEndCapCollection")              {this_stop = _MuonEndCap_int;              TPC_hits = false;}
+    // tracker
+    else if ( Collection_name == "ETDCollection")                     {this_stop = _ETD_int;                     TPC_hits = false;}
+    else if ( Collection_name == "FTDCollection")                     {this_stop = _FTD_int;                     TPC_hits = false;}
     else if ( Collection_name == "SETCollection")                     {this_stop = _SET_int;                     TPC_hits = false;}
     else if ( Collection_name == "SITCollection")                     {this_stop = _SIT_int;                     TPC_hits = false;}
     else if ( Collection_name == "VXDCollection")                     {this_stop = _VXD_int;                     TPC_hits = false;}
     else if ( Collection_name == "TPCCollection")                     {this_start = -_TPC_int/2;                     this_stop =  _TPC_int/2; TPC_hits = true;}
     else if ( Collection_name == "TPCSpacePointCollection")           {this_start = -_TPCSpacePoint_int/2; this_stop =  _TPCSpacePoint_int/2; TPC_hits = true;}
+
+    // CLIC
+    // calo 
+    else if ( Collection_name == "ECalBarrelCollection")              {this_stop = _EcalBarrel_int;              TPC_hits = false;}
+    else if ( Collection_name == "ECalEndcapCollection")              {this_stop = _EcalEndcap_int;              TPC_hits = false;}
+    else if ( Collection_name == "ECalPlugCollection")                {this_stop = _EcalPlug_int;                TPC_hits = false;}
+    else if ( Collection_name == "HCalBarrelCollection")              {this_stop = _HcalBarrelReg_int;           TPC_hits = false;}
+    else if ( Collection_name == "HCalEndcapCollection")              {this_stop = _HcalEndCaps_int;             TPC_hits = false;}
+    else if ( Collection_name == "HCalRingCollection")                {this_stop = _HcalEndCapRings_int;         TPC_hits = false;}
+    // muon system
+    else if ( Collection_name == "YokeBarrelCollection")              {this_stop = _MuonBarrel_int;              TPC_hits = false;}
+    else if ( Collection_name == "YokeEndcapCollection")              {this_stop = _MuonEndCap_int;              TPC_hits = false;}
+    // tracker 
+    else if ( Collection_name == "VertexBarrelCollection")            {this_stop = _VXDB_int;                    TPC_hits = false;}
+    else if ( Collection_name == "VertexEndcapCollection")            {this_stop = _VXDE_int;                    TPC_hits = false;}
+    else if ( Collection_name == "InnerTrackerBarrelCollection")      {this_stop = _ITB_int;                     TPC_hits = false;}
+    else if ( Collection_name == "InnerTrackerEndcapCollection")      {this_stop = _ITE_int;                     TPC_hits = false;}
+    else if ( Collection_name == "OuterTrackerBarrelCollection")      {this_stop = _OTB_int;                     TPC_hits = false;}
+    else if ( Collection_name == "OuterTrackerEndcapCollection")      {this_stop = _OTE_int;                     TPC_hits = false;}
   }
 
   //------------------------------------------------------------------------------------------------------------------------------------------
