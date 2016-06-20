@@ -337,7 +337,8 @@ namespace overlay{
       
       streamlog_out( DEBUG3 ) << "   will skip " << nSkip << " events ... " << std::endl ;
       
-      _lcReader->skipNEvents( nSkip ) ;
+      if( nSkip > 0 ) 
+        _lcReader->skipNEvents( nSkip ) ;
       
       overlayEvent = _lcReader->readNextEvent( LCIO::UPDATE ) ;
       
