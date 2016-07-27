@@ -132,6 +132,17 @@ namespace overlay{
 				"collection of VXD SimTrackerHits" ,
 				_vxdCollection,
 				std::string("VXDCollection") ) ;
+
+
+    registerProcessorParameter( "MCParticle" , 
+				"collection of MCParticles" ,
+				_mcpCollection,
+				std::string("MCParticle") ) ;
+
+    registerProcessorParameter("keepPairsMCPinfo",
+			       "keep MCP info for pair bkg particles studies",
+			       _keepPairsTruthInfo,
+			       bool(false));
   
     registerProcessorParameter( "RandomSeed" , 
 				"random seed - default 42" ,
@@ -453,6 +464,28 @@ namespace overlay{
 			      << std::endl;
 
     }
+
+    //------------------------------------------------------------
+    // loop over all MCParticle collection names and create collection if needed...
+    
+    LCCollection* mcpCol = 0 ; 
+    
+    try { 
+      
+      mcpCol = evt->getCollection( _mcpCollection ) ;
+    
+    } catch( DataNotAvailableException& e) {
+      
+      // make sure there is a MCParticle collection in the event
+      streamlog_out( DEBUG1 ) << " created new mcparticle collection " <<  _mcpCollection 
+			      << std::endl ;
+      
+      mcpCol = new LCCollectionVec( LCIO::MCPARTICLE )  ;
+      evt->addCollection(  mcpCol , _mcpCollection  ) ;
+    }
+
+    //------------------------------------------------------------
+  
   
     //------------------------------------------------------------
     LCCollection* vxdCol = 0 ; 
@@ -519,6 +552,17 @@ namespace overlay{
 			       << olEvt->getRunNumber()  << "  - "
 			       << olEvt->getEventNumber()  
 			       << std::endl;
+
+	// try to merge mcparticle collections - for now we merge such bkg events as the slower det. requires...
+	try { 
+	
+	  LCCollection* mcpBGCol = olEvt->getCollection( _mcpCollection ) ;
+	
+	  if( i < numBX )
+	    Merger::mergeMC( olEvt, evt,  _mcpCollection ) ;  
+ 
+	} catch( DataNotAvailableException& e) {}
+
       
 	try { 
 	
@@ -571,7 +615,9 @@ namespace overlay{
 	      
 		for (int i=0; i<nHits; i++){
 		  SimTrackerHitImpl* bgHit = dynamic_cast<SimTrackerHitImpl*>( srcCol->getElementAt(i) ) ;
-		  bgHit->setMCParticle( 0 ) ;
+		  if (  _keepPairsTruthInfo == false ) {
+		    bgHit->setMCParticle( 0 ) ;
+		  }
 		}
 	      }
 	      // FIXME .....	  
@@ -650,7 +696,9 @@ namespace overlay{
 	if( bxNum < _vxdLayers[ layer ].nBX  ) {
 	
 	  // explicitly set a null pointer as MCParticle collection is not merged 
-	  bgHit->setMCParticle( 0 ) ;
+	  if (  _keepPairsTruthInfo == false ) {
+	    bgHit->setMCParticle( 0 ) ;
+	  }
 	  vxdCol->addElement( bgHit );
 
 	} else {

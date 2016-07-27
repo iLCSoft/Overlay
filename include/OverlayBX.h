@@ -149,12 +149,15 @@ namespace overlay{
     float       _tpcVdrift_mm_s ;
     int         _maxBXsTPC ;
 
+    bool        _keepPairsTruthInfo ;
     bool        _phiRotateTPCHits ;
 
     FloatVec    _vxdLayerReadOutTimes ;
 
     StringVec   _tpcCollections ;
     //  std::string _tpcCollection ;
+
+    std::string _mcpCollection ;
   
     std::string _vxdCollection ;
     StringVec   _mergeCollections ;

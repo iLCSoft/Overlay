@@ -43,6 +43,20 @@ name that is different from all collections in the current event).
  ---------
 
  ----------
+|  v00-15  |
+ ----------
+
+F. Gaede
+   - protect against calling LCReader::skipNEvents() with 0 ( now also fixed in LCIO trunk )
+
+R. Simoniello
+   - new collections added for CLIC
+
+A. Sailer
+   - Remove Ansi and other definitions, allow compiling with different standard
+
+
+ ----------
 |  v00-14  |
  ----------
 
