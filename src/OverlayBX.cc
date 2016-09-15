@@ -468,20 +468,23 @@ namespace overlay{
     //------------------------------------------------------------
     // loop over all MCParticle collection names and create collection if needed...
     
-    LCCollection* mcpCol = 0 ; 
+    if (_keepPairsTruthInfo == true){
+
+      LCCollection* mcpCol = 0 ; 
     
-    try { 
+      try { 
       
-      mcpCol = evt->getCollection( _mcpCollection ) ;
+	mcpCol = evt->getCollection( _mcpCollection ) ;
     
-    } catch( DataNotAvailableException& e) {
+      } catch( DataNotAvailableException& e) {
       
-      // make sure there is a MCParticle collection in the event
-      streamlog_out( DEBUG1 ) << " created new mcparticle collection " <<  _mcpCollection 
-			      << std::endl ;
+	// make sure there is a MCParticle collection in the event
+	streamlog_out( DEBUG1 ) << " created new mcparticle collection " <<  _mcpCollection 
+				<< std::endl ;
       
-      mcpCol = new LCCollectionVec( LCIO::MCPARTICLE )  ;
-      evt->addCollection(  mcpCol , _mcpCollection  ) ;
+	mcpCol = new LCCollectionVec( LCIO::MCPARTICLE )  ;
+	evt->addCollection(  mcpCol , _mcpCollection  ) ;
+      }
     }
 
     //------------------------------------------------------------
@@ -554,15 +557,16 @@ namespace overlay{
 			       << std::endl;
 
 	// try to merge mcparticle collections - for now we merge such bkg events as the slower det. requires...
-	try { 
-	
-	  LCCollection* mcpBGCol = olEvt->getCollection( _mcpCollection ) ;
-	
-	  if( i < numBX )
-	    Merger::mergeMC( olEvt, evt,  _mcpCollection ) ;  
- 
-	} catch( DataNotAvailableException& e) {}
-
+	if ( _keepPairsTruthInfo == true ) {
+	  try { 
+	    
+	    LCCollection* mcpBGCol = olEvt->getCollection( _mcpCollection ) ;
+	    
+	    if( i < numBX )
+	      Merger::mergeMC( olEvt, evt,  _mcpCollection ) ;  
+	    
+	  } catch( DataNotAvailableException& e) {}
+	}
       
 	try { 
 	

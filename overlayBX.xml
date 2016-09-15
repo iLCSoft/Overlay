@@ -121,6 +121,8 @@
   <parameter name="VXDCollection" type="string">VXDCollection </parameter>
   <!--readout time per layer in us - default 50. 50. 200. 200. 200. 200-->
   <parameter name="VXDLayerReadOutTimes" type="FloatVec">50 50 200 200 200 200  </parameter>
+  <!--keep MCP info for pair bkg particles studies-->
+  <parameter name="keepPairsMCPinfo" type="bool"> false </parameter>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
   <parameter name="Verbosity" type="string">MESSAGE DEBUG </parameter>
 </processor>
