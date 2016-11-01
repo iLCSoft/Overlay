@@ -42,6 +42,13 @@ name that is different from all collections in the current event).
  Versions:
  ---------
 
+ ---------
+| v00-16  |
+ ---------
+ Y.Voutsinas
+   - add parameter 'KeepPairsMCPinfo' tp OverlayBX 
+     ( already partly implemented in v00-15 )
+ 
 
  ----------
 |  v00-15  |
