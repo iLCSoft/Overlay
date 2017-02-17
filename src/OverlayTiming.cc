@@ -327,9 +327,9 @@ namespace overlay {
     if ((_inputFileNames.size() > 0) && (_NOverlay > 0.))
       {
         //Now overlay the background evnts to each bunchcrossing in the bunch train
-        for (int i = 0; i < _nBunchTrain; ++i)
+        for (int bxInTrain = 0; bxInTrain < _nBunchTrain; ++bxInTrain)
 	  {
-            const int BX_number_in_train = permutation->at(i);
+            const int BX_number_in_train = permutation->at(bxInTrain);
             int NOverlay_to_this_BX = 0;
 
             if (_Poisson)
