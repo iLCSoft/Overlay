@@ -7,6 +7,7 @@
 #include "lcio.h"
 
 #include <cmath>
+#include <limits>
 
 namespace overlay {
 
@@ -49,6 +50,8 @@ namespace overlay {
     virtual marlin::Processor*  newProcessor();
 
     OverlayTiming();
+    OverlayTiming( OverlayTiming const&) = delete;
+    OverlayTiming& operator=(OverlayTiming const&) = delete;
 
     virtual void init();
 
@@ -73,38 +76,62 @@ namespace overlay {
 
     long long cellID2long(int id0, int id1) const;
 
-    float _T_diff;
-    int _nBunchTrain;
+    float _T_diff = 0.5;
+    int _nBunchTrain = 1;
 
-    unsigned int _nRun ;
-    unsigned int _nEvt ;
-    StringVec _inputFileNames ; 
+    unsigned int _nRun = 0;
+    unsigned int _nEvt = 0;
+    StringVec _inputFileNames{};
 
-    int _BX_phys;
-    float _NOverlay;
-    unsigned int overlay_file_list;
-    float _BeamCal_int,_ETD_int, _EcalBarrel_int, _EcalBarrelPreShower_int, _EcalEndcap_int, _EcalEndcapPreShower_int, _EcalEndcapRing_int, _EcalEndcapRingPreShower_int;
-    float _FTD_int, _HcalBarrelReg_int, _HcalEndCapRings_int, _HcalEndCaps_int, _LHcal_int, _LumiCal_int, _MuonBarrel_int, _MuonEndCap_int, _SET_int, _SIT_int, _VXD_int;
-    float _EcalPlug_int, _VXDB_int, _VXDE_int, _ITB_int, _ITE_int, _OTB_int, _OTE_int;
-    float _TPC_int, _TPCSpacePoint_int;
+    int _BX_phys = 1;
+    float _NOverlay = 1 ;
 
-    IO::LCReader* overlay_Eventfile_reader;
+    float _BeamCal_int = 10;
+    float _ETD_int = 10;
+    float _EcalBarrel_int = 10;
+    float _EcalBarrelPreShower_int = 10;
+    float _EcalEndcap_int = 10;
+    float _EcalEndcapPreShower_int = 10;
+    float _EcalEndcapRing_int = 10;
+    float _EcalEndcapRingPreShower_int = 10;
+    float _FTD_int = 10;
+    float _HcalBarrelReg_int = 10;
+    float _HcalEndCapRings_int = 10;
+    float _HcalEndCaps_int = 10;
+    float _LHcal_int = 10;
+    float _LumiCal_int = 10;
+    float _MuonBarrel_int = 10;
+    float _MuonEndCap_int = 10;
+    float _SET_int = 10;
+    float _SIT_int = 10;
+    float _VXD_int = 10;
+    float _EcalPlug_int = 10;
+    float _VXDB_int = 10;
+    float _VXDE_int = 10;
+    float _ITB_int = 10;
+    float _ITE_int = 10;
+    float _OTB_int = 10;
+    float _OTE_int = 10;
+    float _TPC_int = 10;
+    float _TPCSpacePoint_int = 10;
 
-    float this_start;
-    float this_stop;
-    int _ranSeed;
+    IO::LCReader* overlay_Eventfile_reader = NULL;
 
-    std::string _mcParticleCollectionName;
-    std::string _mcPhysicsParticleCollectionName;
-    std::string currentDest;
-    bool TPC_hits;
+    float this_start = -0.25;
+    float this_stop = std::numeric_limits<float>::max();
+    int _ranSeed = 42;
 
-    float _tpcVdrift_mm_ns ;
-    bool _randomBX, _Poisson;
+    std::string _mcParticleCollectionName = "";
+    std::string _mcPhysicsParticleCollectionName = "";
+    std::string currentDest = "";
+    bool TPC_hits = false;
+
+    float _tpcVdrift_mm_ns = 5.0e-2 ;
+    bool _randomBX = false, _Poisson = false;
 
     typedef std::map<long long, EVENT::SimCalorimeterHit*> DestMap;
     typedef std::map<std::string, DestMap> CollDestMap;
-    CollDestMap collDestMap;
+    CollDestMap collDestMap{};
   };
 
   //------------------------------------------------------------------------------------------------------------------------------------------
