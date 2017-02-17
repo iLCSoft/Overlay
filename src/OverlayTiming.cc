@@ -257,7 +257,7 @@ namespace overlay {
 
   //------------------------------------------------------------------------------------------------------------------------------------------
 
-  void OverlayTiming::processRunHeader(EVENT::LCRunHeader *run)
+  void OverlayTiming::processRunHeader(EVENT::LCRunHeader*)
   {
     _nRun++;
   }
@@ -749,7 +749,7 @@ namespace overlay {
 
   //------------------------------------------------------------------------------------------------------------------------------------------
 
-  void OverlayTiming::check(EVENT::LCEvent *evt)
+  void OverlayTiming::check(EVENT::LCEvent* )
   {
 
   }
