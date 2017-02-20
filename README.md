@@ -19,7 +19,7 @@ i.e events from an additional input file  are read and all
 collections are added to the current event (provided they have a 
 name that is different from all collections in the current event).
 
-
+[![Build Status](https://travis-ci.org/iLCSoft/Overlay.svg?branch=master)](https://travis-ci.org/iLCSoft/Overlay)
 
  Build instructions:
  -------------------
