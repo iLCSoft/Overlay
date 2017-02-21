@@ -184,7 +184,6 @@ namespace overlay{
   
   
   void Merger::merge(LCCollection* src, LCCollection* dest) {
-    int nElementsSrc, nElementsDest;
     const string destType = dest->getTypeName();
     
     // check if collections have the same type
@@ -199,7 +198,7 @@ namespace overlay{
     if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::TRACKERHIT))  {
 
       // running trough all the elements in the collection.
-      nElementsSrc = src->getNumberOfElements();
+      int nElementsSrc = src->getNumberOfElements();
 
       streamlog_out( DEBUG4 ) << "merging ...  nElements = " << nElementsSrc << endl;
       
@@ -215,7 +214,7 @@ namespace overlay{
     if ( destType == LCIO::MCPARTICLE  )  {
 
       // running trough all the elements in the collection.
-      nElementsSrc = src->getNumberOfElements();
+      int nElementsSrc = src->getNumberOfElements();
 
       streamlog_out( DEBUG2 ) << "merging ... nMCParticles = " << nElementsSrc << endl;
       
@@ -267,8 +266,8 @@ namespace overlay{
       SimCalorimeterHitImpl *srcHit, *destHit;
       
       streamlog_out( DEBUG ) << "merging" << endl;
-      nElementsSrc = src->getNumberOfElements();
-      nElementsDest = dest->getNumberOfElements();
+      int nElementsSrc = src->getNumberOfElements();
+      int nElementsDest = dest->getNumberOfElements();
       
       // create a map of dest Collection
       map<long long, SimCalorimeterHitImpl*> destMap;
@@ -303,8 +302,8 @@ namespace overlay{
       CalorimeterHitImpl *srcHit, *destHit;
     
       streamlog_out( DEBUG ) << "merging" << endl;
-      nElementsSrc = src->getNumberOfElements();
-      nElementsDest = dest->getNumberOfElements();
+      int nElementsSrc = src->getNumberOfElements();
+      int nElementsDest = dest->getNumberOfElements();
       
       // create a map of dest Collection
       map<long long, CalorimeterHitImpl *> destMap;
