@@ -28,6 +28,8 @@ namespace overlay {
   
   
     OverlayEvents() ;
+    OverlayEvents( OverlayEvents const&) = delete;
+    OverlayEvents& operator=(OverlayEvents const&) = delete;
   
     virtual const std::string & name() const { return Processor::name() ; }
   
@@ -53,18 +55,16 @@ namespace overlay {
   
   protected:
 
-    std::string _outfileName ;
+    std::string _outfileName = "";
 
-    LCEventImpl* outEvt ;
+    LCEventImpl* outEvt = NULL;
   
-    double    _expBG;
-    StringVec _mergedCollectionNames;
+    StringVec _mergedCollectionNames{};
   
-    LCWriter* _lcWriter ;
+    LCWriter* _lcWriter{};
   
-    int _activeRunNumber;
-    int _nRun ;
-    int _nEvt ;
+    int _nRun = 0;
+    int _nEvt = 0;
   } ;
 
 } // namespace 
