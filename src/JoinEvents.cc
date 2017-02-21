@@ -61,7 +61,7 @@ namespace overlay {
 
 
 
-  void JoinEvents::processRunHeader( LCRunHeader* run) { 
+  void JoinEvents::processRunHeader( LCRunHeader* ) {
   
     _nRun++ ;
   } 
@@ -149,7 +149,7 @@ namespace overlay {
 
 
 
-  void JoinEvents::check( LCEvent * evt ) { 
+  void JoinEvents::check( LCEvent * ) {
     // nothing to check here - could be used to fill checkplots in reconstruction processor
   }
 
