@@ -51,7 +51,9 @@ namespace overlay{
   
   
     Overlay() ;
-  
+    Overlay( Overlay const&) = delete;
+    Overlay& operator=(Overlay const&) = delete;
+
     virtual const std::string & name() const { return Processor::name() ; }
   
     virtual void modifyEvent( EVENT::LCEvent * evt ) ; 
@@ -88,23 +90,23 @@ namespace overlay{
 
     /** Input file names.
      */
-    StringVec _fileNames ;
-    int       _numOverlay;
-    double    _expBG;
-    bool      _runOverlay;
-    int       _nSkipEventsRandom ;
+    StringVec _fileNames{};
+    int       _numOverlay = 0;
+    double    _expBG = 1;
+    bool      _runOverlay = false;
+    int       _nSkipEventsRandom = 0 ;
 
-    StringVec _colVec;
-    std::map<std::string, std::string> _colMap;
+    StringVec _colVec{};
+    std::map<std::string, std::string> _colMap{};
 
-    IO::LCReader* _lcReader ;
-    EVENT::LCEvent* _overlayEvent ;
+    IO::LCReader* _lcReader = NULL;
+    EVENT::LCEvent* _overlayEvent = NULL;
 
-    int _activeRunNumber;
-    int _nRun ;
-    int _nEvt ;
-    int _nOverlayEvt ;
-    IntVec    _events ;
+    int _activeRunNumber = 0;
+    int _nRun = 0;
+    int _nEvt = 0;
+    int _nOverlayEvt = 0;
+    IntVec _events{};
   } ;
 
 }

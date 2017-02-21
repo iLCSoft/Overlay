@@ -37,15 +37,7 @@ namespace overlay{
   
   
   
-  Overlay::Overlay() : Processor("Overlay"), 
-		       _nSkipEventsRandom(0 ) ,
-		       _lcReader(0 ) ,
-		       _overlayEvent(0 ) ,
-		       _activeRunNumber(0 ) ,
-		       _nRun(0 ) ,
-		       _nEvt(0 ) ,
-		       _nOverlayEvt( 0 ), 
-		       _events(0 ) {
+  Overlay::Overlay() : Processor("Overlay") {
     
     // modify processor description
     _description = "Opens a second (chain of) lcio file(s) and overlays events..." ;
@@ -173,7 +165,7 @@ namespace overlay{
 
 
 
-  void Overlay::processRunHeader( LCRunHeader* run) { 
+  void Overlay::processRunHeader( LCRunHeader* ) {
   
     _nRun++ ;
   } 
@@ -285,7 +277,7 @@ namespace overlay{
 
 
 
-  void Overlay::check( LCEvent * evt ) { 
+  void Overlay::check( LCEvent * ) {
     // nothing to check here - could be used to fill checkplots in reconstruction processor
   }
 
