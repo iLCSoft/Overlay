@@ -90,7 +90,7 @@ namespace overlay{
 
   void OverlayEvents::modifyEvent( LCEvent * evt ) {
   
-    _activeRunNumber = evt->getRunNumber();
+    //int activeRunNumber = evt->getRunNumber();
     const std::vector<std::string>* overlayEventColNames = evt->getCollectionNames();
     unsigned int nOverlayCollection = overlayEventColNames->size();
     unsigned int nMergedCollection = _mergedCollectionNames.size();  
@@ -116,7 +116,7 @@ namespace overlay{
 
 
 
-  void OverlayEvents::check( LCEvent * evt ) { 
+  void OverlayEvents::check( LCEvent * ) {
     // nothing to check here - could be used to fill checkplots in reconstruction processor
   }
 
