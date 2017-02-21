@@ -27,7 +27,8 @@ namespace overlay{
   
   
     JoinEvents() ;
-  
+    JoinEvents( JoinEvents const& ) = delete;
+    JoinEvents& operator=(const overlay::JoinEvents&) = delete;
     virtual const std::string & name() const { return Processor::name() ; }
   
 
@@ -55,16 +56,16 @@ namespace overlay{
   protected:
 
     /** Input file names. */
-    std::string _fileName ;
+    std::string _fileName = "";
 
     /** post fix for collection names. */
-    std::string _postFix ;
+    std::string _postFix = "";
 
-    LCReader* _lcReader ;
+    LCReader* _lcReader = NULL;
 
     //  int _activeRunNumber;
-    int _nRun ;
-    int _nEvt ;
+    int _nRun = 0;
+    int _nEvt = 0;
   } ;
 
 } // namespace 
