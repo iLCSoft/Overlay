@@ -49,7 +49,9 @@ namespace overlay{
   
   
     FPCCDOverlayBX() ;
-  
+    FPCCDOverlayBX( FPCCDOverlayBX const&) = delete;
+    FPCCDOverlayBX& operator=(FPCCDOverlayBX const&) = delete;
+
     virtual const std::string & name() const { return Processor::name() ; }
 
     virtual void modifyEvent( LCEvent * evt ) ; 
@@ -85,34 +87,34 @@ namespace overlay{
     void init_geometry() ;
 
     // ---- variables for processor parameters ----- 
-    StringVec   _inputFileNames ;
-    StringVec   _tmpInputFileNames ; // not read same file twice or more.
-    int         _eventsPerBX;
-    int         _numBX ;
-    bool        _removeVTX; 
+    StringVec   _inputFileNames{};
+    StringVec   _tmpInputFileNames{}; // not read same file twice or more.
+    int         _eventsPerBX = -1;
+    int         _numBX = 100;
+    bool        _removeVTX = false;
   
-    std::string _vxdCollection ;
-    std::string _vtxPixelHitsCollection ;
-    StringVec   _mergeCollections ;
-    int         _nLayer;
-    int         _maxLadder;  
+    std::string _vxdCollection = "VXDCollection";
+    std::string _vtxPixelHitsCollection = "VTXPixelHits" ;
+    StringVec   _mergeCollections{"VTXPixelHits", "VTXPixelHits"} ;
+    int         _nLayer = 0;
+    int         _maxLadder = 0;
     //---- class member variables ------
     typedef std::map<std::string, std::string> StrMap ;
-    StrMap _colMap;
+    StrMap _colMap{};
     //  std::map<std::string, std::string> _colMap;
 
-    std::vector< LCReader* > _lcReaders ;
-    int _maxBXs ;
-    int _nRun ;
-    int _nEvt ;
+    std::vector< LCReader* > _lcReaders{};
+    //int _maxBXs ;
+    int _nRun = 0;
+    int _nEvt = 0;
 
     struct GeoData_t {
       int nladder;
     };
-    std::vector<GeoData_t> _geodata;
+    std::vector<GeoData_t> _geodata{};
 
 #ifdef MARLIN_USE_AIDA
-    Hist1DVec _hist1DVec ;
+    Hist1DVec _hist1DVec{};
 #endif
 
   } ;

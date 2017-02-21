@@ -138,7 +138,7 @@ namespace overlay {
 
 
 
-  void FPCCDOverlayBX::processRunHeader( LCRunHeader* run) { 
+  void FPCCDOverlayBX::processRunHeader( LCRunHeader* ) {
 
     _nRun++ ;
   } 
@@ -263,25 +263,22 @@ namespace overlay {
     FPCCDData theSignal(_nLayer,_maxLadder);
     FPCCDData theBkg(_nLayer,_maxLadder);
   
-    int nSignalhit;
-    int nBkghit;
+    // int nSignalhit = theSignal.unpackPixelHits( *vxdCol );
     int nElementsSrc;
     int nElementsDest;
-
-    nSignalhit = theSignal.unpackPixelHits( *vxdCol );
   
     LCEvent* olEvt = 0;
-    for(int i = 0  ; i < numBX  ; i++ ) {
+    for(int ii = 0  ; ii < numBX  ; ii++ ) {
     
       // loop over events in one BX ......
       for(long j=0; j < _eventsPerBX  ; j++ ) {
       
-	olEvt =  readNextEvent(i);
+	olEvt =  readNextEvent(ii);
 
 	if( olEvt == 0 ) 
 	  break ;
       
-	streamlog_out( DEBUG ) << " merge bg event for BX  " << i << " :" 
+	streamlog_out( DEBUG ) << " merge bg event for BX  " << ii << " :"
 			       << olEvt->getRunNumber()  << "  - "
 			       << olEvt->getEventNumber()  
 			       << std::endl;
@@ -290,14 +287,14 @@ namespace overlay {
 
 	  vxdBGCol = olEvt->getCollection( _vtxPixelHitsCollection ) ;
 
-	  nBkghit = theBkg.unpackPixelHits(*vxdBGCol);
+	  // int nBkghit = theBkg.unpackPixelHits(*vxdBGCol);
 
 	  theSignal.Add(theBkg);	
 	
 	  theBkg.clear();
 	
 	  nElementsSrc = vxdBGCol->getNumberOfElements();
-    if(_removeVTX == true){
+	  if(_removeVTX == true){
 	    for(int i=nElementsSrc-1 ; i>=0 ; i--){
 	      vxdBGCol->removeElementAt(i);
 	    }
@@ -334,7 +331,7 @@ namespace overlay {
 
 
 
-  void FPCCDOverlayBX::check( LCEvent * evt ) { 
+  void FPCCDOverlayBX::check( LCEvent * ) {
 
   }
 
