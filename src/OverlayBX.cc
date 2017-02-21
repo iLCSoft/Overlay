@@ -263,7 +263,7 @@ namespace overlay{
 
 
 
-  void OverlayBX::processRunHeader( LCRunHeader* run) { 
+  void OverlayBX::processRunHeader( LCRunHeader* ) {
 
     _nRun++ ;
   } 
@@ -560,7 +560,7 @@ namespace overlay{
 	if ( _keepPairsTruthInfo == true ) {
 	  try { 
 	    
-	    LCCollection* mcpBGCol = olEvt->getCollection( _mcpCollection ) ;
+	    //LCCollection* mcpBGCol = olEvt->getCollection( _mcpCollection ) ;
 	    
 	    if( i < numBX )
 	      Merger::mergeMC( olEvt, evt,  _mcpCollection ) ;  
@@ -617,8 +617,8 @@ namespace overlay{
 		streamlog_out( DEBUG1 ) << " --- setting MCParticle to 0 for : " << nHits  
 					<< " hits from collection " << (*it).first << endl;
 	      
-		for (int i=0; i<nHits; i++){
-		  SimTrackerHitImpl* bgHit = dynamic_cast<SimTrackerHitImpl*>( srcCol->getElementAt(i) ) ;
+		for (int iHit=0; iHit<nHits; iHit++){
+		  SimTrackerHitImpl* bgHit = dynamic_cast<SimTrackerHitImpl*>( srcCol->getElementAt(iHit) ) ;
 		  if (  _keepPairsTruthInfo == false ) {
 		    bgHit->setMCParticle( 0 ) ;
 		  }

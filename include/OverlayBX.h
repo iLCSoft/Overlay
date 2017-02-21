@@ -99,7 +99,9 @@ namespace overlay{
   
   
     OverlayBX() ;
-  
+    OverlayBX( OverlayBX const&) = delete;
+    OverlayBX& operator=(OverlayBX const&) = delete;
+
     virtual const std::string & name() const { return Processor::name() ; }
   
     virtual void modifyEvent( LCEvent * evt ) ; 
@@ -143,45 +145,45 @@ namespace overlay{
     int mergeTPCColsFromBX( LCCollection* tpcCol , LCCollection* tpcBGCol , float zPosShift ) ;
 
     // ---- variables for processor parameters ----- 
-    StringVec   _inputFileNames ;
-    int         _eventsPerBX;
-    float       _bxTime_s ;
-    float       _tpcVdrift_mm_s ;
-    int         _maxBXsTPC ;
+    StringVec   _inputFileNames{};
+    int         _eventsPerBX = -1;
+    float       _bxTime_s = 3.0e-7;
+    float       _tpcVdrift_mm_s = 5.0e7;
+    int         _maxBXsTPC = 10;
 
-    bool        _keepPairsTruthInfo ;
-    bool        _phiRotateTPCHits ;
+    bool        _keepPairsTruthInfo = false;
+    bool        _phiRotateTPCHits = false;
 
-    FloatVec    _vxdLayerReadOutTimes ;
+    FloatVec    _vxdLayerReadOutTimes{};
 
-    StringVec   _tpcCollections ;
+    StringVec   _tpcCollections{};
     //  std::string _tpcCollection ;
 
-    std::string _mcpCollection ;
+    std::string _mcpCollection = "";
   
-    std::string _vxdCollection ;
-    StringVec   _mergeCollections ;
-    int         _ranSeed  ;
+    std::string _vxdCollection = "";
+    StringVec   _mergeCollections{};
+    int         _ranSeed = 42;
 
     //---- class member variables ------
     typedef std::map<std::string, std::string> StrMap ;
-    StrMap _tpcMap;
-    StrMap _colMap;
+    StrMap _tpcMap{};
+    StrMap _colMap{};
     //  std::map<std::string, std::string> _colMap;
 
-    std::vector< LCReader* > _lcReaders ;
-    int _maxBXs ;
-    int _nRun ;
-    int _nEvt ;
+    std::vector< LCReader* > _lcReaders{};
+    //int _maxBXs ;
+    int _nRun = 0;
+    int _nEvt = 0;
     //  VXDLadders _vxdLadders ;
-    VXDLayers  _vxdLayers ;
+    VXDLayers  _vxdLayers{};
 
-    int _lastBXNum  ;
-    int _lastEvent  ; 
-    int _currentRdr ;
+    int _lastBXNum = -1;
+    int _lastEvent = -1;
+    int _currentRdr = -1;
   
 #ifdef MARLIN_USE_AIDA
-    Hist1DVec _hist1DVec ;
+    Hist1DVec _hist1DVec{};
 #endif
 
   } ;
