@@ -75,15 +75,11 @@ namespace overlay {
 				"collection of VTX PixelHits" ,
 				_vtxPixelHitsCollection,
 				std::string("VTXPixelHits") ) ;
-  
-    StringVec exMap;
-    exMap.push_back( "VTXPixelHits VTXPixelHits" );
-
 
     registerOptionalParameter( "MergeCollections" , 
 			       "Pairs of collection names with one bx to be overlayed (BG name first)"  ,
 			       _mergeCollections ,
-			       exMap ) ;
+			       {"VTXPixelHits", "VTXPixelHits"} ) ;
 
   }
 
