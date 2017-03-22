@@ -24,7 +24,7 @@
 #include <IMPL/LCFlagImpl.h>
 #include "UTIL/LCTOOLS.h"
 #include "UTIL/CellIDDecoder.h"
-#include "UTIL/ILDConf.h"
+#include "UTIL/LCTrackerConf.h"
 #include "Merger.h"
 
 
@@ -658,7 +658,7 @@ namespace overlay{
 
   int OverlayBX::mergeVXDColsFromBX( LCCollection* vxdCol , LCCollection* vxdBGCol , int bxNum ) {
   
-    static CellIDDecoder<SimTrackerHit> idDec( ILDCellID0::encoder_string ) ;
+    static CellIDDecoder<SimTrackerHit> idDec( LCTrackerCellID::encoding_string() ) ;
 
     // the hits are simply overlaid - no shift in r-phi along the ladder 
     // is applied; this should be ok if the ladders are not read out along z
@@ -694,7 +694,7 @@ namespace overlay{
 
 
 	//      int layer = ( bgHit->getCellID() & 0xff )  ;
-	int layer =  idDec( bgHit )[ ILDCellID0::layer ] ;
+	int layer =  idDec( bgHit )[ LCTrackerCellID::layer() ] ;
 
 
 	if( bxNum < _vxdLayers[ layer ].nBX  ) {
@@ -844,7 +844,7 @@ namespace overlay{
 
   void OverlayBX::check( LCEvent * evt ) { 
 
-    static CellIDDecoder<SimTrackerHit> idDec( ILDCellID0::encoder_string ) ;
+    static CellIDDecoder<SimTrackerHit> idDec( LCTrackerCellID::encoding_string() ) ;
 
 
 #ifdef MARLIN_USE_AIDA
@@ -913,7 +913,7 @@ namespace overlay{
 	SimTrackerHit* sth = dynamic_cast<SimTrackerHit*>(  vxdCol->getElementAt(i) ) ;
 
 
-	int layer =  idDec( sth )[ ILDCellID0::layer ] ;
+	int layer =  idDec( sth )[ LCTrackerCellID::layer() ] ;
       
 	if     ( layer == 0 ) nHitL1++ ; 
 	else if( layer == 1 ) nHitL2++ ; 
