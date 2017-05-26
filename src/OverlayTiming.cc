@@ -676,9 +676,9 @@ namespace overlay {
                 SimCalorimeterHit *CalorimeterHit = dynamic_cast<SimCalorimeterHit*>(source_collection->getElementAt(k));
                 const float _time_of_flight = time_of_flight(CalorimeterHit->getPosition()[0], CalorimeterHit->getPosition()[1], CalorimeterHit->getPosition()[2]);
 
-                //check whether there is already a hit at this position 
-                DestMap::const_iterator destMapIt =  collDestMap[currentDest].find(cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1()));
-
+                //check whether there is already a hit at this position
+                const unsigned long long lookfor = cellID2long(CalorimeterHit->getCellID0(), CalorimeterHit->getCellID1());
+                DestMap::const_iterator destMapIt = collDestMap[currentDest].find(lookfor);
                 if (destMapIt == collDestMap[currentDest].end())
 		  {
                     // There is no Hit at this position -- the new hit can be added, if it is not outside the window
@@ -732,6 +732,12 @@ namespace overlay {
 		    
 		    
 		      //		      std::exit(1);
+		      streamlog_out(ERROR) << "ID1New  " << cellID2long(newCalorimeterHit->getCellID0(),
+                                                                        newCalorimeterHit->getCellID1())
+                                           << "   Old  " << cellID2long(CalorimeterHit->getCellID0(),
+                                                                        CalorimeterHit->getCellID1())
+                                           << std::endl;
+
 		    }
 		    for (int j = 0; j < CalorimeterHit->getNMCContributions(); ++j)
 		      {
