@@ -60,7 +60,7 @@ namespace overlay {
 				float(5.0e-2) );
 
     registerProcessorParameter( "RandomBx", 
-				"Place the physics event at an random position in the train -- overrides PhysicsBX",
+				"Place the physics event at an random position in the train: overrides PhysicsBX",
 				_randomBX,
 				bool(false) );
 
