@@ -82,7 +82,7 @@ namespace overlay {
 
     void merge_collections(EVENT::LCCollection *source_collection, EVENT::LCCollection *dest_collection, float time_offset);
 
-    long long cellID2long(int id0, int id1) const;
+    unsigned long long cellID2long(unsigned int id0, unsigned int id1) const;
 
     float _T_diff = 0.5;
     int _nBunchTrain = 1;
@@ -137,7 +137,7 @@ namespace overlay {
     float _tpcVdrift_mm_ns = 5.0e-2 ;
     bool _randomBX = false, _Poisson = false;
 
-    typedef std::map<long long, EVENT::SimCalorimeterHit*> DestMap;
+    typedef std::map<unsigned long long, EVENT::SimCalorimeterHit*> DestMap;
     typedef std::map<std::string, DestMap> CollDestMap;
     CollDestMap collDestMap{};
   };
@@ -167,9 +167,10 @@ namespace overlay {
 
   //------------------------------------------------------------------------------------------------------------------------------------------
 
-  inline long long OverlayTiming::cellID2long(int id0, int id1) const
+  inline unsigned long long OverlayTiming::cellID2long(unsigned int id0, unsigned int id1) const
   {
-    return ((long long) id0 << 32) | id1;
+    const unsigned long long newID = ((unsigned long long)(id0) << sizeof(unsigned int)*8 | (unsigned long long)id1);
+    return newID;
   }
 
 } // namespace
