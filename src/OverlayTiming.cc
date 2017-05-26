@@ -387,6 +387,11 @@ namespace overlay {
                     LCCollection *Collection_in_overlay_Evt = overlay_Evt->getCollection(Collection_name);
                     LCCollection *Collection_in_Physics_Evt = 0;
 
+                    //Skip the MCParticle collection
+                    if( Collection_name == _mcParticleCollectionName ) {
+                      continue;
+                    }
+
                     define_time_windows(Collection_name);
 
                     //the event can only make contributions to the readout, if the bx does not happen after the integration time stopped.
