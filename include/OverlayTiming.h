@@ -9,6 +9,13 @@
 #include <cmath>
 #include <limits>
 
+namespace EVENT{
+  class SimCalorimeterHit;
+  class LCRunHeader;
+  class LCEvent;
+  class LCCollection;
+}
+
 namespace overlay {
 
   /** OverlayTiming processor for overlaying background to each bunch crossing of a bunch train.
@@ -50,6 +57,7 @@ namespace overlay {
     virtual marlin::Processor*  newProcessor();
 
     OverlayTiming();
+    OverlayTiming(std::string const& name);
     OverlayTiming( OverlayTiming const&) = delete;
     OverlayTiming& operator=(OverlayTiming const&) = delete;
 
@@ -68,7 +76,7 @@ namespace overlay {
   protected:
     float time_of_flight(float x, float y, float z) const;
 
-    void define_time_windows(const std::string &Collection_name);
+    virtual void define_time_windows(const std::string &Collection_name);
 
     void crop_collection(EVENT::LCCollection *collection);
 
@@ -136,14 +144,14 @@ namespace overlay {
 
   //------------------------------------------------------------------------------------------------------------------------------------------
 
-  marlin::Processor *OverlayTiming::newProcessor()
+  inline marlin::Processor *OverlayTiming::newProcessor()
   {
     return new OverlayTiming;
   }
 
   //------------------------------------------------------------------------------------------------------------------------------------------
 
-  const std::string &OverlayTiming::name() const
+  inline const std::string &OverlayTiming::name() const
   {
     return marlin::Processor::name();
   }
