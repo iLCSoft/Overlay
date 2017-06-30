@@ -772,6 +772,8 @@ namespace overlay {
 
   void OverlayTiming::end()
   {
+    delete overlay_Eventfile_reader;
+    overlay_Eventfile_reader = nullptr;
   }
 
 
