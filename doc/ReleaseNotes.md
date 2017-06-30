@@ -1,3 +1,37 @@
+# v00-18
+
+* 2017-05-29 Andre Sailer ([PR#6](https://github.com/iLCSoft/Overlay/pull/6))
+  - New processor OverlayTimingGeneric: Same as OverlayTiming, but easier configuration of the collections to be merged. No more hard coding of parameters for each parameter name. 
+  Shares most of the code and parameters with OverlayTiming
+  To configure collections and integration times:
+    ```
+     <parameter name="Collection_IntegrationTimes" type="StringVec" >
+        VertexBarrelCollection        10
+        VertexEndcapCollection        10
+  
+        InnerTrackerBarrelCollection  10
+        InnerTrackerEndcapCollection  10
+  
+        OuterTrackerBarrelCollection  10
+        OuterTrackerEndcapCollection  10
+  
+        ECalBarrelCollection          10
+        ECalEndcapCollection          10
+        ECalPlugCollection            10
+  
+        HCalBarrelCollection          10
+        HCalEndcapCollection          10
+        HCalRingCollection            10
+  
+        YokeBarrelCollection          10
+        YokeEndcapCollection          10
+  
+        LumiCalCollection             10
+        BeamCalCollection             10
+      </parameter>
+    ```
+  - Fix bug in OverlayTiming::cellID2long which returned the same `long long` for different cellID pairs
+
 # v00-17
 
 # v00-16
