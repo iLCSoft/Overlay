@@ -320,7 +320,7 @@ namespace overlay {
                 colPhysicsMc->setSubset(true);
                 for (int k = 0; k < number_of_elements; ++k)
 		  {
-                    MCParticle *pMc = dynamic_cast<MCParticle*>(Collection_in_Physics_Evt->getElementAt(k));
+                    MCParticle *pMc = static_cast<MCParticle*>(Collection_in_Physics_Evt->getElementAt(k));
                     colPhysicsMc->addElement(pMc);
 		  }
                 evt->addCollection(colPhysicsMc,_mcPhysicsParticleCollectionName.c_str());
@@ -544,7 +544,7 @@ namespace overlay {
 	  {
             for (int k = number_of_elements - 1; k >= 0; --k)
 	      {
-                SimTrackerHit *TrackerHit = dynamic_cast<SimTrackerHit*>(collection->getElementAt(k));
+                SimTrackerHit *TrackerHit = static_cast<SimTrackerHit*>(collection->getElementAt(k));
                 const float _time_of_flight = time_of_flight(TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
                 if (!((TrackerHit->getTime() > (this_start + _time_of_flight)) && (TrackerHit->getTime() < (this_stop + _time_of_flight))))
 		  {
@@ -558,7 +558,7 @@ namespace overlay {
             //we count from top to bottom, in order not to get confused when removing and adding elements!
             for (int i =  number_of_elements - 1; i >= 0; --i) 
 	      {
-                SimCalorimeterHit *CalorimeterHit = dynamic_cast<SimCalorimeterHit*>(collection->getElementAt(i));
+                SimCalorimeterHit *CalorimeterHit = static_cast<SimCalorimeterHit*>(collection->getElementAt(i));
                 int not_within_time_window = 0;
 
                 // check whether all entries are within the time window
@@ -628,7 +628,7 @@ namespace overlay {
 	  {
             for (int i = number_of_elements - 1; i >= 0; --i)
 	      {
-                MCParticleImpl *MC_Part = dynamic_cast<MCParticleImpl*>(source_collection->getElementAt(i));
+                MCParticleImpl *MC_Part = static_cast<MCParticleImpl*>(source_collection->getElementAt(i));
                 MC_Part->setTime(MC_Part->getTime() + time_offset);
                 dest_collection->addElement(MC_Part);
                 source_collection->removeElementAt(i);
@@ -638,7 +638,7 @@ namespace overlay {
 	  {
             for (int k = number_of_elements - 1; k >= 0; --k)
 	      {
-                SimTrackerHitImpl *TrackerHit = dynamic_cast<SimTrackerHitImpl*>(source_collection->getElementAt(k));
+                SimTrackerHitImpl *TrackerHit = static_cast<SimTrackerHitImpl*>(source_collection->getElementAt(k));
                 const float _time_of_flight = time_of_flight(TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
 
                 if (((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight)) && ((TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight)))
@@ -653,7 +653,7 @@ namespace overlay {
 	  {
             for (int k = number_of_elements - 1; k >= 0; --k) 
 	      {
-                SimTrackerHitImpl *TrackerHit = dynamic_cast<SimTrackerHitImpl*>(source_collection->getElementAt (k));
+                SimTrackerHitImpl *TrackerHit = static_cast<SimTrackerHitImpl*>(source_collection->getElementAt (k));
                 const float _time_of_flight = time_of_flight(TrackerHit->getPosition()[0], TrackerHit->getPosition()[1], TrackerHit->getPosition()[2]);
 
                 if (((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight)) && ((TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight)))
@@ -679,7 +679,7 @@ namespace overlay {
             // create a map of dest Collection
             for (int k =  number_of_elements - 1; k >= 0; --k) 
 	      {
-                SimCalorimeterHit *CalorimeterHit = dynamic_cast<SimCalorimeterHit*>(source_collection->getElementAt(k));
+                SimCalorimeterHit *CalorimeterHit = static_cast<SimCalorimeterHit*>(source_collection->getElementAt(k));
                 const float _time_of_flight = time_of_flight(CalorimeterHit->getPosition()[0], CalorimeterHit->getPosition()[1], CalorimeterHit->getPosition()[2]);
 
                 //check whether there is already a hit at this position
@@ -716,7 +716,7 @@ namespace overlay {
                 else
 		  {
 		    // there is already a hit at this position.... 
-		    SimCalorimeterHitImpl *newCalorimeterHit = dynamic_cast <SimCalorimeterHitImpl*>(destMapIt->second);
+		    SimCalorimeterHitImpl *newCalorimeterHit = static_cast <SimCalorimeterHitImpl*>(destMapIt->second);
 		    ++mergedN;
 		    if((newCalorimeterHit->getPosition()[0]-CalorimeterHit->getPosition()[0])*
 		       (newCalorimeterHit->getPosition()[0]-CalorimeterHit->getPosition()[0])+
