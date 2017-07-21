@@ -3,6 +3,9 @@
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandPoisson.h"
 
+#include <marlin/Global.h>
+#include <marlin/ProcessorEventSeeder.h>
+
 OverlayTimingGeneric aOverlayTimingGeneric;
 
 OverlayTimingGeneric::OverlayTimingGeneric(): OverlayTiming("OverlayTimingGeneric")
@@ -52,11 +55,6 @@ OverlayTimingGeneric::OverlayTimingGeneric(): OverlayTiming("OverlayTimingGeneri
                               _Poisson,
                               bool(false) );
 
-  registerProcessorParameter( "RandomSeed",
-                              "random seed - default 42",
-                              _ranSeed,
-                              int(42) );
-
   registerProcessorParameter("MCParticleCollectionName",
                              "The MC Particle Collection Name",
                              _mcParticleCollectionName,
@@ -85,7 +83,7 @@ void OverlayTimingGeneric::init()
                          << " files in the list of background files to overlay. Make sure that the total number of background events is sufficiently large for your needs!!"
                          << std::endl;
 
-  CLHEP::HepRandom::setTheSeed(_ranSeed);
+  marlin::Global::EVENTSEEDER->registerProcessor(this);
 
   _nRun = 0;
   _nEvt = 0;

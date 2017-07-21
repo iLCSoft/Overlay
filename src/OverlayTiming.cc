@@ -1,3 +1,5 @@
+#include "OverlayTiming.h"
+
 #include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandPoisson.h"
 
@@ -12,7 +14,8 @@
 #include <IMPL/SimCalorimeterHitImpl.h>
 #include <IMPL/SimTrackerHitImpl.h>
 
-#include "OverlayTiming.h"
+#include <marlin/Global.h>
+#include <marlin/ProcessorEventSeeder.h>
 
 #include <algorithm>
 #include <limits>
@@ -73,11 +76,6 @@ namespace overlay {
 				"Draw random number of Events to overlay from Poisson distribution with  mean value NumberBackground",
 				_Poisson,
 				bool(false) );
-
-    registerProcessorParameter( "RandomSeed", 
-				"random seed - default 42",
-				_ranSeed,
-				int(42) );
 
     registerProcessorParameter("MCParticleCollectionName",
 			       "The MC Particle Collection Name",
@@ -252,7 +250,7 @@ namespace overlay {
 			   << " files in the list of background files to overlay. Make sure that the total number of background events is sufficiently large for your needs!!"
 			   << std::endl;
 
-    CLHEP::HepRandom::setTheSeed(_ranSeed);
+    Global::EVENTSEEDER->registerProcessor(this);
 
     _nRun = 0;
     _nEvt = 0;
@@ -269,6 +267,9 @@ namespace overlay {
 
   void OverlayTiming::modifyEvent(EVENT::LCEvent *evt)
   {
+
+    CLHEP::HepRandom::setTheSeed( Global::EVENTSEEDER->getSeed(this) );
+
     if (_randomBX) 
       {
         _BX_phys = int(CLHEP::RandFlat::shoot(_nBunchTrain));
