@@ -288,7 +288,7 @@ namespace overlay {
 
     int random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size() - 1));
     //Make sure we have filenames to open and that we really want to overlay something
-    if ((random_file > -1) && (_NOverlay > 0.))
+    if ((random_file > -1) && (_NOverlay > 0.) && overlay_Evt == nullptr)
       {
         overlay_Eventfile_reader->open(_inputFileNames.at(random_file));
         streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
@@ -349,7 +349,7 @@ namespace overlay {
 
             for (int k = 0; k < NOverlay_to_this_BX; ++k)
 	      {
-                LCEvent *overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
+                overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
 
                 //if there are no events left in the actual file, open the next one.
                 if (overlay_Evt == 0)
@@ -458,7 +458,6 @@ namespace overlay {
 		  }
 	      }
 	  }
-        overlay_Eventfile_reader->close();
       } //If we have any files, and more than 0 events to overlay end 
 
     delete permutation;
