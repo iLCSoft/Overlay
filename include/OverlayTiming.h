@@ -124,6 +124,7 @@ namespace overlay {
     float _TPCSpacePoint_int = 10;
 
     IO::LCReader* overlay_Eventfile_reader = NULL;
+    LCEvent* overlay_Evt = nullptr;
 
     float this_start = -0.25;
     float this_stop = std::numeric_limits<float>::max();
