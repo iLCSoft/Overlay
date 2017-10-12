@@ -1,3 +1,11 @@
+# v00-19
+
+* 2017-07-07 Andre Sailer ([PR#7](https://github.com/iLCSoft/Overlay/pull/7))
+  - OverlayTiming[Generic]: clean the LCReader instance at the end
+
+* 2017-07-24 Andre Sailer ([PR#8](https://github.com/iLCSoft/Overlay/pull/8))
+  - OverlayTiming[Generic]: get random seed from eventSeeder
+
 # v00-18
 
 * 2017-05-29 Andre Sailer ([PR#6](https://github.com/iLCSoft/Overlay/pull/6))
