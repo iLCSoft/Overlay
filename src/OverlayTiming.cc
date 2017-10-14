@@ -276,7 +276,7 @@ namespace overlay {
         streamlog_out(DEBUG) << "Physics Event was placed in the " << _BX_phys << " bunch crossing!" << std::endl;
       }
 
-    //define a permutation for the events to overlay -- the physics event is [er definition at position 0
+    //define a permutation for the events to overlay -- the physics event is per definition at position 0
     std::vector<int> *permutation = new std::vector<int>;
 
     for (int i = -(_BX_phys - 1); i < _nBunchTrain - (_BX_phys - 1); ++i)
