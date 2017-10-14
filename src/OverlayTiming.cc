@@ -272,7 +272,7 @@ namespace overlay {
 
     if (_randomBX) 
       {
-        _BX_phys = int(CLHEP::RandFlat::shoot(_nBunchTrain));
+        _BX_phys = CLHEP::RandFlat::shootInt(_nBunchTrain);
         streamlog_out(DEBUG) << "Physics Event was placed in the " << _BX_phys << " bunch crossing!" << std::endl;
       }
 
@@ -284,9 +284,9 @@ namespace overlay {
         permutation->push_back(i);
       }
 
-    random_shuffle(permutation->begin(), permutation->end());
+    random_shuffle(permutation->begin(), permutation->end(), [](int n){ return CLHEP::RandFlat::shootInt(n); } );
 
-    int random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size() - 1));
+    int random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
     //Make sure we have filenames to open and that we really want to overlay something
     if ((random_file > -1) && (_NOverlay > 0.) && overlay_Evt == nullptr)
       {
@@ -355,7 +355,7 @@ namespace overlay {
                 if (overlay_Evt == 0)
 		  {
                     overlay_Eventfile_reader->close();
-                    random_file = int(CLHEP::RandFlat::shoot(_inputFileNames.size()-1));
+                    random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
                     overlay_Eventfile_reader->open (_inputFileNames.at(random_file));
                     overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
                     streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
