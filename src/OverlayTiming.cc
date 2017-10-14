@@ -291,7 +291,7 @@ namespace overlay {
     if ((random_file > -1) && (_NOverlay > 0.) && overlay_Evt == nullptr)
       {
         overlay_Eventfile_reader->open(_inputFileNames.at(random_file));
-        streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
+        streamlog_out(MESSAGE) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
       }
 
     //We have the physics event in evt. Now we merge the new overlay events with it.
@@ -358,7 +358,7 @@ namespace overlay {
                     random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
                     overlay_Eventfile_reader->open (_inputFileNames.at(random_file));
                     overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
-                    streamlog_out(DEBUG) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
+                    streamlog_out(MESSAGE) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
 		  }
 
                 // the overlay_Event is now open, start to merge its collections with the ones of the accumulated overlay events collections
