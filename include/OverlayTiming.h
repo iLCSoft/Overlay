@@ -125,10 +125,13 @@ namespace overlay {
 
     IO::LCReader* overlay_Eventfile_reader = NULL;
     LCEvent* overlay_Evt = nullptr;
+    int m_eventCounter = 0;
+    int m_currentFileIndex = 0;
+    int m_startWithBackgroundFile = -1;
+    int m_startWithBackgroundEvent = -1;
 
     float this_start = -0.25;
     float this_stop = std::numeric_limits<float>::max();
-    int _ranSeed = 42;
 
     std::string _mcParticleCollectionName = "";
     std::string _mcPhysicsParticleCollectionName = "";
