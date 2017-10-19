@@ -70,6 +70,17 @@ OverlayTimingGeneric::OverlayTimingGeneric(): OverlayTiming("OverlayTimingGeneri
                              "Integration times for the Collections",
                              _collectionTimesVec,
                              _collectionTimesVec);
+
+    registerOptionalParameter("StartBackgroundFileIndex",
+			       "Which background file to startWith",
+			       m_startWithBackgroundFile,
+			       m_startWithBackgroundFile);
+
+    registerOptionalParameter("StartBackgroundEventIndex",
+			       "Which background event to startWith",
+			       m_startWithBackgroundEvent,
+			       m_startWithBackgroundEvent);
+
 }
 
 void OverlayTimingGeneric::init()

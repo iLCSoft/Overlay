@@ -234,6 +234,16 @@ namespace overlay {
 			       _OTE_int,
 			       float(10));
 
+    registerOptionalParameter("StartBackgroundFileIndex",
+			       "Which background file to startWith",
+			       m_startWithBackgroundFile,
+			       m_startWithBackgroundFile);
+
+    registerOptionalParameter("StartBackgroundEventIndex",
+			       "Which background event to startWith",
+			       m_startWithBackgroundEvent,
+			       m_startWithBackgroundEvent);
+
 
   }
 
@@ -287,12 +297,33 @@ namespace overlay {
     random_shuffle(permutation->begin(), permutation->end(), [](int n){ return CLHEP::RandFlat::shootInt(n); } );
 
     int random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
+    if( m_startWithBackgroundFile >= 0 ) {
+      random_file = m_startWithBackgroundFile;
+      m_startWithBackgroundFile = -1;
+    }
     //Make sure we have filenames to open and that we really want to overlay something
     if ((random_file > -1) && (_NOverlay > 0.) && overlay_Evt == nullptr)
       {
         overlay_Eventfile_reader->open(_inputFileNames.at(random_file));
+        m_currentFileIndex = random_file;
+        m_eventCounter = -1;
         streamlog_out(MESSAGE) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
       }
+
+    // read events until we get the event we want to start with
+    if( m_startWithBackgroundEvent >= 0 ) {
+      streamlog_out(MESSAGE) << "Skipping to event: " << m_startWithBackgroundEvent << std::endl;
+      while(  m_eventCounter < m_startWithBackgroundEvent ) {
+        overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
+        ++m_eventCounter;
+      }
+      m_startWithBackgroundEvent = -1;
+    }
+
+    streamlog_out(MESSAGE) << "Using background file: " << " [ " << m_currentFileIndex << " ] "
+                           << _inputFileNames.at(m_currentFileIndex)
+                           << std::endl;
+    streamlog_out(MESSAGE) << "Starting at event: " << m_eventCounter << std::endl;
 
     //We have the physics event in evt. Now we merge the new overlay events with it.
     //First cut the collections in the physics event to the defined time windows
@@ -350,14 +381,15 @@ namespace overlay {
             for (int k = 0; k < NOverlay_to_this_BX; ++k)
 	      {
                 overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
-
+                ++m_eventCounter;
                 //if there are no events left in the actual file, open the next one.
                 if (overlay_Evt == 0)
 		  {
                     overlay_Eventfile_reader->close();
-                    random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
+                    m_currentFileIndex = random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
                     overlay_Eventfile_reader->open (_inputFileNames.at(random_file));
                     overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
+                    m_eventCounter = 0; // this has to be zero, because we just read the first event of the file!
                     streamlog_out(MESSAGE) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
 		  }
 
