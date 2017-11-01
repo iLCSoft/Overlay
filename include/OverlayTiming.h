@@ -129,6 +129,7 @@ namespace overlay {
     int m_currentFileIndex = 0;
     int m_startWithBackgroundFile = -1;
     int m_startWithBackgroundEvent = -1;
+    bool m_allowReusingBackgroundFiles = true;
 
     float this_start = -0.25;
     float this_stop = std::numeric_limits<float>::max();

@@ -71,6 +71,11 @@ OverlayTimingGeneric::OverlayTimingGeneric(): OverlayTiming("OverlayTimingGeneri
                              _collectionTimesVec,
                              _collectionTimesVec);
 
+  registerProcessorParameter("AllowReusingBackgroundFiles",
+                             "If true the same background file can be used for the same event",
+                             m_allowReusingBackgroundFiles,
+                             m_allowReusingBackgroundFiles);
+
     registerOptionalParameter("StartBackgroundFileIndex",
 			       "Which background file to startWith",
 			       m_startWithBackgroundFile,

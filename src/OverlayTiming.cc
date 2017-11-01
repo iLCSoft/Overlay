@@ -14,11 +14,13 @@
 #include <IMPL/SimCalorimeterHitImpl.h>
 #include <IMPL/SimTrackerHitImpl.h>
 
+#include <marlin/Exceptions.h>
 #include <marlin/Global.h>
 #include <marlin/ProcessorEventSeeder.h>
 
 #include <algorithm>
 #include <limits>
+#include <set>
 
 using namespace lcio;
 using namespace marlin;
@@ -234,6 +236,11 @@ namespace overlay {
 			       _OTE_int,
 			       float(10));
 
+    registerProcessorParameter("AllowReusingBackgroundFiles",
+                               "If true the same background file can be used for the same event",
+                               m_allowReusingBackgroundFiles,
+                               m_allowReusingBackgroundFiles);
+
     registerOptionalParameter("StartBackgroundFileIndex",
 			       "Which background file to startWith",
 			       m_startWithBackgroundFile,
@@ -286,6 +293,8 @@ namespace overlay {
         streamlog_out(DEBUG) << "Physics Event was placed in the " << _BX_phys << " bunch crossing!" << std::endl;
       }
 
+    std::set<int> usedFiles;
+
     //define a permutation for the events to overlay -- the physics event is per definition at position 0
     std::vector<int> *permutation = new std::vector<int>;
 
@@ -297,6 +306,7 @@ namespace overlay {
     random_shuffle(permutation->begin(), permutation->end(), [](int n){ return CLHEP::RandFlat::shootInt(n); } );
 
     int random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
+
     if( m_startWithBackgroundFile >= 0 ) {
       random_file = m_startWithBackgroundFile;
       m_startWithBackgroundFile = -1;
@@ -309,6 +319,8 @@ namespace overlay {
         m_eventCounter = -1;
         streamlog_out(MESSAGE) << "Open background file: " << _inputFileNames.at(random_file) << std::endl;
       }
+
+    usedFiles.insert(m_currentFileIndex);
 
     // read events until we get the event we want to start with
     if( m_startWithBackgroundEvent >= 0 ) {
@@ -365,6 +377,7 @@ namespace overlay {
         for (int bxInTrain = 0; bxInTrain < _nBunchTrain; ++bxInTrain)
 	  {
             const int BX_number_in_train = permutation->at(bxInTrain);
+
             int NOverlay_to_this_BX = 0;
 
             if (_Poisson)
@@ -386,7 +399,23 @@ namespace overlay {
                 if (overlay_Evt == 0)
 		  {
                     overlay_Eventfile_reader->close();
-                    m_currentFileIndex = random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
+
+                    // used all available files
+                    if (usedFiles.size() == _inputFileNames.size()) {
+                      if (not m_allowReusingBackgroundFiles) {
+                        throw marlin::StopProcessingException(this);
+                      }
+                      usedFiles.clear();
+                      if (_inputFileNames.size() > 1) {
+                        // do not use the same file immediately if we have more than 1
+                        usedFiles.insert(m_currentFileIndex);
+                      }
+                    }
+
+                    do {
+                      m_currentFileIndex = random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
+                    } while (usedFiles.count(m_currentFileIndex) == 1);
+                    usedFiles.insert(m_currentFileIndex);
                     overlay_Eventfile_reader->open (_inputFileNames.at(random_file));
                     overlay_Evt = overlay_Eventfile_reader->readNextEvent(LCIO::UPDATE);
                     m_eventCounter = 0; // this has to be zero, because we just read the first event of the file!
