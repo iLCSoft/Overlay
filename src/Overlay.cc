@@ -81,9 +81,7 @@ namespace overlay{
 				int(0) ) ;
 
 
-    StringVec map;
-    map.push_back( "mcParticles mcParticlesBG" );
-    //   map.push_back( "" );
+    StringVec map( {"MCParticle", "MCParticle"} );
     registerProcessorParameter( "CollectionMap" , 
 				"Pairs of collection to be merged"  ,
 				_colVec ,
@@ -230,7 +228,7 @@ namespace overlay{
 
       // merge event from storage with EVT
 
-      if ( _colMap.empty() ) {
+      if ( _colMap.empty() || ! parameterSet("CollectionMap") ) {
 	
 	Merger::merge( _overlayEvent, evt );
 	
