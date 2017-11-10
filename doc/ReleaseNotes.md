@@ -1,3 +1,26 @@
+# v00-20
+
+* 2017-11-09 Ete Remi ([PR#11](https://github.com/iLCSoft/Overlay/pull/11))
+  - Overlay processor : 
+    - changed default collection names for processor parameter CollectionMap
+      - default names are MCParticle MCParticle
+    - changed condition for overlaying all collections
+      - if the parameter CollectionMap is not set then process all collections
+
+* 2017-10-20 Andre Sailer ([PR#9](https://github.com/iLCSoft/Overlay/pull/9))
+  - OverlayTiming[Generic]: exhaust all events in a file instead of opening a file for each event. Should be reproducible for when not skipping events.
+  - OverlayTiming[Generic]: add parameters that allow setting the initial state also after skipping events.
+
+* 2017-11-03 Emilia Leogrande ([PR#10](https://github.com/iLCSoft/Overlay/pull/10))
+  - OverlayTiming[Generic]: optionally prevent re-use of background files
+     * keep track of used files and only use files that haven't been used before
+     * add parameter AllowReusingBackgroundFiles (default true for backward compatibility)
+
+* 2017-11-10 Ete Remi ([PR#12](https://github.com/iLCSoft/Overlay/pull/12))
+  - Overlay processor : Open LCIO files not in init() but in modifyEvent() only if isFirstEvent() is true
+    - Allows to do not open a lcio file if the processor condition at runtime is false
+  - Overlay processor : Missing delete call for lcReader at end of processing (memory leak)
+
 # v00-19
 
 * 2017-07-07 Andre Sailer ([PR#7](https://github.com/iLCSoft/Overlay/pull/7))
