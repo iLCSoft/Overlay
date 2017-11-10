@@ -290,6 +290,7 @@ namespace overlay{
 			     << "  ±  " <<   double(_nOverlayEvt ) / double( _nEvt ) / sqrt( _nEvt ) << "\n"
 			     << std::endl ;
 
+    if( _lcReader ) delete _lcReader ;
   }
 
 
