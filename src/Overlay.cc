@@ -109,21 +109,6 @@ namespace overlay{
     // opening background input
     _lcReader = LCFactory::getInstance()->createLCReader( LCReader::directAccess ) ;
 
-    _lcReader->open( _fileNames  ) ; 
-
-    streamlog_out( DEBUG6 ) << "*** opened files for overlay - first file : " << _fileNames[0] 
-			    << "    has " << _lcReader->getNumberOfEvents() << "  events. "  << std::endl ;
-    
-    
-    if( _fileNames.size() == 1 ){
-
-      // if we have only one file, we can use direct access to random events
-      _lcReader->getEvents( _events ) ;
-
-      streamlog_out( DEBUG6 ) << "    will use direct access from " << _events.size() / 2 << "  events. "  << std::endl ;
-    }
-
-
     // initalisation of random number generator
     Global::EVENTSEEDER->registerProcessor(this);
     //  CLHEP::HepRandom::setTheSeed(time(NULL));
@@ -172,6 +157,23 @@ namespace overlay{
 
 
   void Overlay::modifyEvent( LCEvent * evt ) {
+    
+    if( isFirstEvent() ) {
+      
+      _lcReader->open( _fileNames  ) ; 
+
+      streamlog_out( DEBUG6 ) << "*** opened files for overlay - first file : " << _fileNames[0] 
+            << "    has " << _lcReader->getNumberOfEvents() << "  events. "  << std::endl ;
+      
+      
+      if( _fileNames.size() == 1 ){
+
+        // if we have only one file, we can use direct access to random events
+        _lcReader->getEvents( _events ) ;
+
+        streamlog_out( DEBUG6 ) << "    will use direct access from " << _events.size() / 2 << "  events. "  << std::endl ;
+      }
+    }
 
     // initalisation of random number generator
     int eventSeed = Global::EVENTSEEDER->getSeed(this);
