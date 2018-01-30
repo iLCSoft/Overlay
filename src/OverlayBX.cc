@@ -609,9 +609,9 @@ namespace overlay{
 	    
 	      srcCol = olEvt->getCollection((*it).first);
 	    
-	      std::string type = srcCol->getTypeName() ;
+	      std::string collectionType = srcCol->getTypeName() ;
 	    
-	      if( type == LCIO::SIMTRACKERHIT ) {
+	      if( collectionType == LCIO::SIMTRACKERHIT ) {
 		int nHits = srcCol->getNumberOfElements();
 	      
 		streamlog_out( DEBUG1 ) << " --- setting MCParticle to 0 for : " << nHits  
