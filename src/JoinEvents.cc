@@ -97,14 +97,14 @@ namespace overlay {
     const StringVec* colNames = joinEvt->getCollectionNames()  ;
 
     StringVec::const_iterator it ;
-    StringVec::const_iterator end = colNames->end() ;
+    StringVec::const_iterator endIter = colNames->end() ;
 
-    for( it = colNames->begin() ; it != end ; ++it ) {
+    for( it = colNames->begin() ; it != endIter ; ++it ) {
     
-      std::string name( *it ) ;
+      std::string collectionName( *it ) ;
 
 
-      LCCollection* col =  joinEvt->getCollection( name )  ;
+      LCCollection* col =  joinEvt->getCollection( collectionName )  ;
 
       if( col != 0 ) {
 
@@ -112,10 +112,10 @@ namespace overlay {
 
 	
 	  if( parameterSet( "ColNamePostFix" ) ) {
-	    name += _postFix ;
+	    collectionName += _postFix ;
 	  }
 
-	  evt->addCollection( col , name ) ;
+	  evt->addCollection( col , collectionName ) ;
 
 	  joinEvt->takeCollection( *it ) ; // remove the collection from the join-event 
 
@@ -129,7 +129,7 @@ namespace overlay {
 
 	} catch( EventException& e) {
 	
-	  streamlog_out( MESSAGE ) << " collection " << name 
+	  streamlog_out( MESSAGE ) << " collection " << collectionName 
 				   << " allready exists in event " 
 				   << evt->getRunNumber()   << " " 
 				   << evt->getEventNumber() << " - not added " << std::endl ;
@@ -138,7 +138,7 @@ namespace overlay {
 
       } else {
 
-	streamlog_out( ERROR ) << " collection " << name 
+	streamlog_out( ERROR ) << " collection " << collectionName 
 			       << " dynamic_cast<LCCollectionVec*> failed  " << std::endl ;
 	
       }
