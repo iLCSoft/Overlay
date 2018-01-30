@@ -29,7 +29,7 @@ namespace overlay {
 
   OverlayTiming aOverlayTiming;
 
-  OverlayTiming::OverlayTiming( std::string const& name) : Processor(name)
+  OverlayTiming::OverlayTiming( std::string const& procName) : Processor(procName)
   {}
 
   OverlayTiming::OverlayTiming() : Processor("OverlayTiming")
