@@ -207,6 +207,9 @@ namespace overlay{
     // core - add correct number of bg events to EVT
     // if runs are added, the loop counter  will be 
     // reset to zero in every pass
+    
+    int nOverlaidEvents(0);
+    
     for(long i=0; i < num  ; i++ ) {
 
       if( _events.size() == 0 ) {   // in order to be reproduceable, we have to reset the file stream when using the skip mechanism
@@ -225,6 +228,7 @@ namespace overlay{
       } 
       
       ++_nOverlayEvt ;
+      ++nOverlaidEvents ;
 
       streamlog_out( DEBUG6 ) << "loop: " << i << " will overlay event " << _overlayEvent->getEventNumber() << " - run " << _overlayEvent->getRunNumber() << std::endl ;
 
@@ -268,7 +272,13 @@ namespace overlay{
 	}
       }
     }
-
+    
+    std::string paramName = "Overlay." + this->name() + ".nEvents";
+    evt->parameters().setValue(paramName, nOverlaidEvents);
+    
+    int totalOverlay = evt->parameters().getIntVal("Overlay.nTotalEvents"); // returns 0 if the key doesn't exists
+    totalOverlay += nOverlaidEvents;
+    evt->parameters().setValue("Overlay.nTotalEvents", totalOverlay);
   
 #ifdef MARLIN_USE_AIDA
 #endif
