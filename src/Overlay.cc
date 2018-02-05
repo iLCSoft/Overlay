@@ -198,6 +198,7 @@ namespace overlay {
 			    << std::endl;
   
     int nOverlaidEvents(0);
+    EVENT::FloatVec overlaidEventIDs, overlaidRunIDs;
     
     for(unsigned int i=0 ; i < nEventsToOverlay ; i++ ) {
 
@@ -207,6 +208,9 @@ namespace overlay {
 	       streamlog_out( ERROR ) << "loop: " << i << " ++++++++++ Nothing to overlay +++++++++++ \n " ;
 	       continue ;
       } 
+      
+      overlaidEventIDs.push_back( overlayEvent->getEventNumber() );
+      overlaidRunIDs.push_back( overlayEvent->getRunNumber() );
       
       ++nOverlaidEvents ;
 
@@ -233,6 +237,10 @@ namespace overlay {
     // Write info to event parameters
     std::string paramName = "Overlay." + this->name() + ".nEvents";
     evt->parameters().setValue(paramName, nOverlaidEvents);
+    paramName = "Overlay." + this->name() + ".eventIDs";
+    evt->parameters().setValues(paramName, overlaidEventIDs);
+    paramName = "Overlay." + this->name() + ".runIDs";
+    evt->parameters().setValues(paramName, overlaidRunIDs);
     
     int totalOverlay = evt->parameters().getIntVal("Overlay.nTotalEvents"); // returns 0 if the key doesn't exists
     totalOverlay += nOverlaidEvents;
