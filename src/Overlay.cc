@@ -212,13 +212,20 @@ namespace overlay {
 
       streamlog_out( DEBUG6 ) << "loop: " << i << " will overlay event " << overlayEvent->getEventNumber() << " - run " << overlayEvent->getRunNumber() << std::endl ;
 
-      // merge event from storage with EVT
+      std::map<std::string, std::string> collectionMap;
+      
       if ( ( _overlayCollectionMap.empty() || ! parameterSet("CollectionMap") ) ) {
-	       Merger::merge( overlayEvent, evt );
-      } 
-      else {
-	       Merger::merge( overlayEvent, evt, &_overlayCollectionMap );
+        auto collectionNames = overlayEvent->getCollectionNames();
+        for ( auto collection : *collectionNames ) {
+          collectionMap[collection] = collection;
+          streamlog_out( DEBUG6 ) << "Collection map -> " << collection << std::endl;
+        }
       }
+      else {
+        collectionMap = _overlayCollectionMap;
+      }
+
+	     Merger::merge( overlayEvent, evt, &collectionMap );
     }
     
     _nTotalOverlayEvents += nOverlaidEvents;
@@ -256,9 +263,11 @@ namespace overlay {
     const unsigned int eventIndex = CLHEP::RandFlat::shoot( static_cast<double>( _nAvailableEvents ) ) ;
     unsigned int currentEventIndex(0);
     
+    streamlog_out( DEBUG ) << "Overlay::readNextEvent: index = " << eventIndex  << " over " << _nAvailableEvents << std::endl ;
+    
     for ( auto &handler : _lcFileHandlerList ) {
       
-      if ( currentEventIndex < eventIndex && eventIndex < currentEventIndex + handler.getNumberOfEvents() ) {
+      if ( currentEventIndex <= eventIndex && eventIndex < currentEventIndex + handler.getNumberOfEvents() ) {
         
         const int eventNumber = handler.getEventNumber( eventIndex-currentEventIndex ) ;
         const int runNumber = handler.getRunNumber( eventIndex-currentEventIndex ) ;
