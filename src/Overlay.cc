@@ -115,6 +115,11 @@ namespace overlay {
 				"Pairs of collection to be merged"  ,
 				_overlayCollections ,
 				StringVec( {"MCParticle", "MCParticle"} ) ) ;
+        
+    registerProcessorParameter( "AvoidCollectionMap" , 
+        "List of collections to avoid merging"  ,
+        _avoidCollections ,
+        StringVec() ) ;
   }
   
   //===========================================================================================================================
@@ -227,6 +232,16 @@ namespace overlay {
       }
       else {
         collectionMap = _overlayCollectionMap;
+      }
+      
+      // Remove collections to avoid from the collection map
+      if(not _avoidCollections.empty()) {
+        for ( auto avoidCol : _avoidCollections ) {
+          auto findIter = collectionMap.find( avoidCol );
+          if( collectionMap.end() != findIter ) {
+            collectionMap.erase( findIter );
+          }
+        }
       }
 
 	     Merger::merge( overlayEvent, evt, &collectionMap );
