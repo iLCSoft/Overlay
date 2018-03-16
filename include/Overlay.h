@@ -91,7 +91,10 @@ namespace overlay {
    *
    * @param expBG (double)             If this value is set, a random number of background will be added to each physics event. 
    *                                   The Random numbers will be thrown according to a Poisson distribution with this expectation value.
-   *                                   If set, NumberOverlayEvents will be added to the random number.                                  
+   *                                   If set, NumberOverlayEvents will be added to the random number.  
+   * @param AvoidCollectionMap (StringVec) List of collection to avoid a merging. This is particularly useful when you just want to avoid a few collections.
+   *                                   One doesn't have to specify all collections to overlay in the CollectionMap parameter minus the collection to avoid, 
+   *                                   but just the ones to avoid. Priority is given to this list over the CollectionMap.                             
    */
   class Overlay final : public marlin::Processor, public marlin::EventModifier {
     // Deleted member functions : no copy
@@ -155,6 +158,7 @@ namespace overlay {
     EVENT::StringVec                      _overlayCollections {} ;    ///< The list of pair of collections to overlay (see class description)
     int                                   _numOverlay {0} ;           ///< The additional number of events to overlay
     double                                _expBG {1} ;                ///< The mean value of the poisson distribution when randomly picking events
+    EVENT::StringVec                      _avoidCollections {};       ///< The list of collection to avoid to overlay
     
     // internal members
     unsigned int                          _nAvailableEvents {0} ;     ///< The total number of available overlay events from input files
