@@ -116,9 +116,9 @@ namespace overlay {
 				_overlayCollections ,
 				StringVec( {"MCParticle", "MCParticle"} ) ) ;
         
-    registerProcessorParameter( "AvoidCollectionMap" , 
-        "List of collections to avoid merging"  ,
-        _avoidCollections ,
+    registerProcessorParameter( "ExcludeCollectionMap" , 
+        "List of collections to exclude for merging"  ,
+        _excludeCollections ,
         StringVec() ) ;
   }
   
@@ -234,10 +234,10 @@ namespace overlay {
         collectionMap = _overlayCollectionMap;
       }
       
-      // Remove collections to avoid from the collection map
-      if(not _avoidCollections.empty()) {
-        for ( auto avoidCol : _avoidCollections ) {
-          auto findIter = collectionMap.find( avoidCol );
+      // Remove collections to exclude from the collection map
+      if(not _excludeCollections.empty()) {
+        for ( auto excludeCol : _excludeCollections ) {
+          auto findIter = collectionMap.find( excludeCol );
           if( collectionMap.end() != findIter ) {
             collectionMap.erase( findIter );
           }
