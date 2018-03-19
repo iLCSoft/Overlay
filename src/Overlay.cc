@@ -116,7 +116,7 @@ namespace overlay {
 				_overlayCollections ,
 				StringVec( {"MCParticle", "MCParticle"} ) ) ;
         
-    registerProcessorParameter( "ExcludeCollectionMap" , 
+    registerProcessorParameter( "ExcludeCollections" , 
         "List of collections to exclude for merging"  ,
         _excludeCollections ,
         StringVec() ) ;
