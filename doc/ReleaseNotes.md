@@ -1,3 +1,26 @@
+# v00-21
+
+* 2018-01-31 Ete Remi ([PR#14](https://github.com/iLCSoft/Overlay/pull/14))
+  - Overlay processor
+     - Added number of overlaid events in event parameters
+     - Added total number of overlaid events in event parameters
+  - Fixed compiler warnings
+
+* 2018-02-12 Ete Remi ([PR#15](https://github.com/iLCSoft/Overlay/pull/15))
+  - Complete re-write of Overlay processor
+     - Removed processor parameters (RunOverlay and NSkipEventsRandom)
+     - Overlay of multiple files work as for a single file
+     - If no collection specified in config, overlay all present collections 
+     - Write in the event parameters: 
+        - Overlaid run and event numbers
+        - Number of overlaid events per processor and from all processors
+     - Code documented and c++11 styled
+     - Methods and class members cleaned-up
+
+* 2018-03-21 Ete Remi ([PR#16](https://github.com/iLCSoft/Overlay/pull/16))
+  - Overlay processor: 
+     - Added new processor parameter: list of collections to avoid to overlay
+
 # v00-20
 
 * 2017-11-09 Ete Remi ([PR#11](https://github.com/iLCSoft/Overlay/pull/11))
