@@ -194,22 +194,9 @@ namespace overlay{
     
     streamlog_out( DEBUG4 ) << "merging collection of type: " << destType << " --- \n";
     
-    // ** "TRACKERHITS" **
-    if ((destType == LCIO::SIMTRACKERHIT) || (destType == LCIO::TRACKERHIT))  {
-
-      // running trough all the elements in the collection.
-      int nElementsSrc = src->getNumberOfElements();
-
-      streamlog_out( DEBUG4 ) << "merging ...  nElements = " << nElementsSrc << endl;
-      
-      for (int i=nElementsSrc-1; i>=0; i--) {
-
-        dest->addElement( src->getElementAt(i) );
-	src->removeElementAt(i);
-
-      }
-      return;
-    }
+    // JL, May 22 2019: revert logic such that first the special cases are taken care of, 
+    // and then everything else is treated like the tracker hits, i.e. a simple copy
+    
     // **MCPARTICLE  **
     if ( destType == LCIO::MCPARTICLE  )  {
 
@@ -231,11 +218,10 @@ namespace overlay{
 	src->removeElementAt(i);
 
       }
-      return;
     }
     
     // ** LCGENERICOBJECT-VTXPixelHits **
-    if( destType == LCIO::LCGENERICOBJECT){
+    else if( destType == LCIO::LCGENERICOBJECT){
       streamlog_out( DEBUG4 ) << "merging" << endl;
       int nLayer = 6;
       int maxLadder = 17;
@@ -258,11 +244,10 @@ namespace overlay{
 	src->removeElementAt(i);
       }
       destData.packPixelHits( *dest );
-      return;
     }
     
     // ** SIMCALORIMETERHIT **
-    if (destType == LCIO::SIMCALORIMETERHIT ) {
+    else if (destType == LCIO::SIMCALORIMETERHIT ) {
       SimCalorimeterHitImpl *srcHit, *destHit;
       
       streamlog_out( DEBUG ) << "merging" << endl;
@@ -294,11 +279,10 @@ namespace overlay{
         }
         src->removeElementAt(i);
       }
-      return;
     }
     
     // ** CALORIMETERHIT **
-    if (destType == LCIO::CALORIMETERHIT ) {
+    else if (destType == LCIO::CALORIMETERHIT ) {
       CalorimeterHitImpl *srcHit, *destHit;
     
       streamlog_out( DEBUG ) << "merging" << endl;
@@ -324,11 +308,24 @@ namespace overlay{
         }
         src->removeElementAt(i);
       }
-      return;
     }
     
-    // ** DEFAULT **
-    streamlog_out( DEBUG ) << "merge not possible for this type" << endl;
+    // ** "TRACKERHITS" **
+    else {
+
+      // running trough all the elements in the collection.
+      int nElementsSrc = src->getNumberOfElements();
+
+      streamlog_out( DEBUG4 ) << "merging ...  nElements = " << nElementsSrc << endl;
+      
+      for (int i=nElementsSrc-1; i>=0; i--) {
+
+        dest->addElement( src->getElementAt(i) );
+	src->removeElementAt(i);
+
+      }
+    }
+    
     return;
   }
 
