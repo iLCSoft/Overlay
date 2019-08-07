@@ -304,8 +304,7 @@ namespace overlay {
         permutation->push_back(i);
       }
 
-    std::random_device rng;
-    std::mt19937 urng(rng());
+    std::mt19937 urng( Global::EVENTSEEDER->getSeed(this)  );
     std::shuffle(permutation->begin(), permutation->end(), urng );
 //    random_shuffle(permutation->begin(), permutation->end(), [](int n){ return CLHEP::RandFlat::shootInt(n); } );
 
