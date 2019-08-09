@@ -18,9 +18,9 @@
 #include <marlin/Global.h>
 #include <marlin/ProcessorEventSeeder.h>
 
-#include <random>
 #include <algorithm>
 #include <limits>
+#include <random>
 #include <set>
 
 using namespace lcio;
@@ -306,7 +306,6 @@ namespace overlay {
 
     std::mt19937 urng( Global::EVENTSEEDER->getSeed(this)  );
     std::shuffle(permutation->begin(), permutation->end(), urng );
-//    random_shuffle(permutation->begin(), permutation->end(), [](int n){ return CLHEP::RandFlat::shootInt(n); } );
 
     int random_file = CLHEP::RandFlat::shootInt(_inputFileNames.size());
 
