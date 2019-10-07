@@ -406,7 +406,7 @@ namespace overlay{
     CLHEP::HepRandom::setTheSeed( eventSeed  );
 
 
-    if( streamlog::out.write< streamlog::DEBUG3 >() ) 
+    if( streamlog_level(DEBUG3) ) 
       LCTOOLS::dumpEvent( evt ) ;
   
     //  long num = _eventsPerBX;
@@ -648,7 +648,7 @@ namespace overlay{
 			    << std::endl ;
     
 
-    if( streamlog::out.write< streamlog::DEBUG3 >() ) 
+    if( streamlog_level(DEBUG3) ) 
       LCTOOLS::dumpEvent( evt ) ;
 
 

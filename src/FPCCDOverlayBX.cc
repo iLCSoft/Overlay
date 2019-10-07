@@ -212,7 +212,7 @@ namespace overlay {
     _colMap.clear();
     _colMap.insert(  std::map<std::string, std::string>::value_type(_vtxPixelHitsCollection, _vtxPixelHitsCollection));
 
-    if( streamlog::out.write< streamlog::DEBUG3 >() ) 
+    if( streamlog_level(DEBUG3) ) 
       LCTOOLS::dumpEvent( evt ) ;
   
     //-----------------------------------
@@ -316,7 +316,7 @@ namespace overlay {
     streamlog_out( DEBUG3 ) << " total number of VXD bg hits: " << nVXDHits 
 			    << std::endl ;
   
-    if( streamlog::out.write< streamlog::DEBUG3 >() )
+    if( streamlog_level(DEBUG3) )
       LCTOOLS::dumpEvent( evt ) ;
   
     _nEvt ++ ;
