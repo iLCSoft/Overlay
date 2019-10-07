@@ -1,10 +1,11 @@
 #include "Overlay.h"
 #include <iostream>
 
-#ifdef MARLIN_USE_AIDA
-#include <marlin/AIDAProcessor.h>
 #include <marlin/Global.h>
 #include "marlin/ProcessorEventSeeder.h"
+
+#ifdef MARLIN_USE_AIDA
+#include <marlin/AIDAProcessor.h>
 
 #include <AIDA/IHistogramFactory.h>
 #include <AIDA/ICloud1D.h>
