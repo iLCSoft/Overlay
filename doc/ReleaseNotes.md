@@ -1,3 +1,18 @@
+# v00-22
+
+* 2019-10-07 Remi Ete ([PR#19](https://github.com/iLCSoft/Overlay/pull/19))
+  - Fixed streamlog usage using pre-processor macro from streamlog
+  - Fixed marlin includes inside `MARLIN_USE_AIDA` condition
+
+* 2019-08-13 Frank Gaede ([PR#18](https://github.com/iLCSoft/Overlay/pull/18))
+  - make compatible w/ c++17
+      - replace std::random_shuffle w/ std::shuffle in OverlayTiming
+      - use std::mt19937 rather than CLHEP::RandFlat
+
+* 2019-05-27 Jenny List ([PR#17](https://github.com/iLCSoft/Overlay/pull/17))
+  - modified `Merger::merge(LCCollection* , LCCollection* )` to be able to merge any type of collection. 
+  - by default a collection is treated as tracker hits previously, namely a simple copy.
+
 # v00-21
 
 * 2018-01-31 Ete Remi ([PR#14](https://github.com/iLCSoft/Overlay/pull/14))
