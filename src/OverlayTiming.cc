@@ -314,7 +314,7 @@ namespace overlay {
       m_startWithBackgroundFile = -1;
     }
     //Make sure we have filenames to open and that we really want to overlay something
-    if ((random_file > -1) && (_NOverlay > 0.) && overlay_Evt == nullptr)
+    if ((random_file > -1) && (_NOverlay > 0.) && (overlay_Evt == nullptr) && (_inputFileNames.size() > 0))
       {
         overlay_Eventfile_reader->open(_inputFileNames.at(random_file));
         m_currentFileIndex = random_file;
@@ -334,9 +334,14 @@ namespace overlay {
       m_startWithBackgroundEvent = -1;
     }
 
-    streamlog_out(MESSAGE) << "Using background file: " << " [ " << m_currentFileIndex << " ] "
-                           << _inputFileNames.at(m_currentFileIndex)
-                           << std::endl;
+    if (_inputFileNames.size() > 0) {
+      streamlog_out(MESSAGE) << "Using background file: " << " [ " << m_currentFileIndex << " ] "
+                             << _inputFileNames.at(m_currentFileIndex)
+                             << std::endl;
+    } else {
+      streamlog_out(MESSAGE) << "No background file " << std::endl;
+    }
+
     streamlog_out(MESSAGE) << "Starting at event: " << m_eventCounter << std::endl;
 
     //We have the physics event in evt. Now we merge the new overlay events with it.
