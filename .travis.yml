@@ -9,7 +9,6 @@ language: cpp
 env:
   matrix:
     - COMPILER=gcc
-    - COMPILER=llvm
 
 
 before_install:
@@ -23,15 +22,22 @@ before_install:
   - sudo mv default.local /etc/cvmfs/default.local
   - sudo /etc/init.d/autofs stop
   - sudo cvmfs_config setup
+  - sudo mkdir -p /cvmfs/sft.cern.ch
+  - sudo mkdir -p /cvmfs/sft-nightlies.cern.ch
   - sudo mkdir -p /cvmfs/clicdp.cern.ch
   - sudo mkdir -p /cvmfs/geant4.cern.ch
-  - sudo mkdir -p /cvmfs/sft.cern.ch
   - sudo mount -t cvmfs clicdp.cern.ch /cvmfs/clicdp.cern.ch
-  - sudo mount -t cvmfs geant4.cern.ch /cvmfs/geant4.cern.ch
   - sudo mount -t cvmfs sft.cern.ch /cvmfs/sft.cern.ch
+  - sudo mount -t cvmfs sft-nightlies.cern.ch /cvmfs/sft-nightlies.cern.ch
+  - sudo mount -t cvmfs geant4.cern.ch /cvmfs/geant4.cern.ch
+  - export CVMFS_REPOS="-v /cvmfs/sft.cern.ch:/cvmfs/sft.cern.ch"
+  - export CVMFS_REPOS="${CVMFS_REPOS} -v /cvmfs/sft-nightlies.cern.ch:/cvmfs/sft-nightlies.cern.ch"
+  - export CVMFS_REPOS="${CVMFS_REPOS} -v /cvmfs/clicdp.cern.ch:/cvmfs/clicdp.cern.ch"
+  - export CVMFS_REPOS="${CVMFS_REPOS} -v /cvmfs/geant4.cern.ch:/cvmfs/geant4.cern.ch"
+  - ls /cvmfs/sft.cern.ch
+  - ls /cvmfs/sft-nightlies.cern.ch
   - ls /cvmfs/clicdp.cern.ch
   - ls /cvmfs/geant4.cern.ch
-  - ls /cvmfs/sft.cern.ch/lcg
 
 # command to install dependencies
 install:
@@ -48,12 +54,12 @@ install:
 
 # command to run tests
 script:
-  - docker run -it --name CI_container -v $PKGDIR:/Package -e COMPILER=$COMPILER -v /cvmfs:/cvmfs -d clicdp/cc7-lcg /bin/bash
+  - docker run -it --name CI_container -v $PKGDIR:/Package -e COMPILER=$COMPILER ${CVMFS_REPOS} -d clicdp/cc7-lcg /bin/bash
   - if [[ "${TRAVIS_EVENT_TYPE}" == "cron" && "${COMPILER}" == "gcc"  ]];
     then docker exec -it CI_container /bin/bash -c "./Package/.travis-ci.d/coverity_scan.sh";
     elif [[ "${TRAVIS_EVENT_TYPE}" == "cron" && "${COMPILER}" == "llvm"  ]];
     then echo "Running the weekly Coverity Scan, no LLVM/Clang build this time";
-    else docker exec -it CI_container /bin/bash -c "./Package/.travis-ci.d/compile_and_test.sh";
+    else docker exec -it CI_container /bin/bash -c "./Package/.travis-ci.d/coverity_scan.sh";
     fi
   - if [[ "${TRAVIS_EVENT_TYPE}" == "cron" && "${COMPILER}" == "gcc"  ]];
     then curl --form token=${COVERITY_SCAN_TOKEN} --form email=noreply@cern.ch --form file=@${PKGDIR}/build/myproject.tgz --form version="master" --form description="${description}" https://scan.coverity.com/builds?project=${COVERITY_REPO} ;
