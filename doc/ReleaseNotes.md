@@ -1,3 +1,8 @@
+# v00-22-01
+
+* 2020-07-09 Placido Fernandez Declara ([PR#20](https://github.com/iLCSoft/overlay/pull/20))
+  - OverlayTiming/OverlayTimingGeneric: Fixed accessing empty file name for background file
+
 # v00-22
 
 * 2019-10-07 Remi Ete ([PR#19](https://github.com/iLCSoft/Overlay/pull/19))
