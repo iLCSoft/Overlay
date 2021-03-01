@@ -272,7 +272,7 @@ namespace overlay{
           int numMC = srcHit->getNMCContributions();
           
           for( int j=0 ; j<numMC ; j++){
-            destMapIt->second->addMCParticleContribution( srcHit->getParticleCont(j), srcHit->getEnergyCont(j), srcHit->getTimeCont(j), srcHit->getPDGCont(j));
+	       destMapIt->second->addMCParticleContribution( srcHit->getParticleCont(j), srcHit->getEnergyCont(j), srcHit->getTimeCont(j), srcHit->getLengthCont(j), srcHit->getPDGCont(j), const_cast<float *>( srcHit->getStepPosition(j)) );
           }
           
           delete srcHit;
