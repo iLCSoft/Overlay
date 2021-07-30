@@ -1,5 +1,6 @@
 # Overlay
 [![Build](https://github.com/iLCSoft/Overlay/actions/workflows/linux.yml/badge.svg)](https://github.com/iLCSoft/Overlay/actions/workflows/linux.yml)
+[![coverity](https://scan.coverity.com/projects/11936/badge.svg)](https://scan.coverity.com/projects/ilcsoft-overlay)
 
 The package Overlay provides code for event overlay with Marlin
 
