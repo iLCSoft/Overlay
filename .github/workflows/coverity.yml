@@ -10,7 +10,9 @@ jobs:
     if: github.repository == 'iLCSoft/Overlay'
     steps:
     - uses: actions/checkout@v2
-    - uses: cvmfs-contrib/cvmfs-github-action@v2
+      with:
+        ref: add-coverity
+    - uses: cvmfs-contrib/github-action-cvmfs@v2
     - uses: aidasoft/run-lcg-view@v3
       with:
         coverity-cmake-command: 'cmake -C $ILCSoft/ILCSoft.cmake ..'
