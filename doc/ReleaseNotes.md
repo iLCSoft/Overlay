@@ -1,3 +1,11 @@
+# v00-22-03
+
+* 2021-08-27 Andre Sailer ([PR#24](https://github.com/iLCSoft/Overlay/pull/24))
+  - CI: build against LCG_99pyhon2 gcc8 and LCG_100 gcc10, clang11
+
+* 2021-08-02 Thomas Madlener ([PR#23](https://github.com/iLCSoft/Overlay/pull/23))
+  - Add coverity scan workflow that runs daily
+
 # v00-22-02
 
 * 2021-03-01 tmadlener ([PR#22](https://github.com/iLCSoft/Overlay/pull/22))
