@@ -1,3 +1,8 @@
+# v00-22-04
+
+* 2022-06-28 Thomas Madlener ([PR#25](https://github.com/iLCSoft/Overlay/pull/25))
+  - Make doxygen cmake config work with newer versions of cmake (>= 3.17)
+
 # v00-22-03
 
 * 2021-08-27 Andre Sailer ([PR#24](https://github.com/iLCSoft/Overlay/pull/24))
