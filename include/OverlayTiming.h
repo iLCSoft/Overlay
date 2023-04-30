@@ -122,6 +122,7 @@ namespace overlay {
     float _OTE_int = 10;
     float _TPC_int = 10;
     float _TPCSpacePoint_int = 10;
+    float _DefaultStart_int = -0.25;
 
     IO::LCReader* overlay_Eventfile_reader = NULL;
     LCEvent* overlay_Evt = nullptr;
