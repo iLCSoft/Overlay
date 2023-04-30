@@ -86,6 +86,10 @@ OverlayTimingGeneric::OverlayTimingGeneric(): OverlayTiming("OverlayTimingGeneri
 			       m_startWithBackgroundEvent,
 			       m_startWithBackgroundEvent);
 
+    registerProcessorParameter("Start_Integration_Time",
+                               "Starting integration time.  Should be shortly before the BX, but may need to be shifted earlier if the vertex is smeared in time.",
+                               _DefaultStart_int,
+                               float(-0.25));
 }
 
 void OverlayTimingGeneric::init()
@@ -125,7 +129,7 @@ void OverlayTimingGeneric::init()
 
 void OverlayTimingGeneric::define_time_windows( std::string const& collectionName ) {
 
-  this_start= -0.25; //the integration time shall start shortly before the BX
+  this_start= _DefaultStart_int; //the integration time shall start shortly before the BX
   //with the physics event to avoid timing problems the
   //value of -0.25 is a arbitrary number for the moment
   //but should be sufficient -- corresponds to 7.5cm of
