@@ -122,6 +122,9 @@ namespace overlay {
     float _OTE_int = 10;
     float _TPC_int = 10;
     float _TPCSpacePoint_int = 10;
+
+    // The value of -0.25 is an arbitrary number for the moment but should be sufficient -- corresponds to 7.5cm of flight at c
+    // But if vertex smearing is on, this may need to be shifted earlier.
     float _DefaultStart_int = -0.25;
 
     IO::LCReader* overlay_Eventfile_reader = NULL;

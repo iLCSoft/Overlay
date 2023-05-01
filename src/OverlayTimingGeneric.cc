@@ -129,11 +129,7 @@ void OverlayTimingGeneric::init()
 
 void OverlayTimingGeneric::define_time_windows( std::string const& collectionName ) {
 
-  this_start= _DefaultStart_int; //the integration time shall start shortly before the BX
-  //with the physics event to avoid timing problems the
-  //value of -0.25 is a arbitrary number for the moment
-  //but should be sufficient -- corresponds to 7.5cm of
-  //flight at c
+  this_start= _DefaultStart_int;
 
   this_stop= 0.0;
   TPC_hits = false;
