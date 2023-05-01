@@ -550,9 +550,7 @@ namespace overlay {
 
   void OverlayTiming::define_time_windows(const std::string &Collection_name)
   {
-    this_start = _DefaultStart_int; //the integration time shall start shortly before the BX with the physics event to avoid timing problems
-                        //the value of -0.25 is an arbitrary number for the moment but should be sufficient -- corresponds to 7.5cm of flight at c
-                        //But if vertex smearing is on, this may need to be shifted earlier.
+    this_start = _DefaultStart_int;
 
     this_stop = std::numeric_limits<float>::max(); // provide default values for collections not named below;
     TPC_hits = false;
