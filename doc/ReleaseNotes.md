@@ -1,3 +1,12 @@
+# v00-23
+
+* 2023-05-02 tmadlener ([PR#27](https://github.com/iLCSoft/Overlay/pull/27))
+  - Remove no longer available gcc8 based workflow from CI
+  - Update github actions to latest available versions
+
+* 2023-05-02 scott snyder ([PR#26](https://github.com/iLCSoft/Overlay/pull/26))
+  - OverlayTiming,OverlayTimingGeneric: Added property Start_Integration_Time to allow changing the starting integration time.  This defaults to the previously hardcoded value of -0.25, but may need to be moved earlier if vertex smearing is enabled.
+
 # v00-22-04
 
 * 2022-06-28 Thomas Madlener ([PR#25](https://github.com/iLCSoft/Overlay/pull/25))
