@@ -701,6 +701,7 @@ namespace overlay {
 	      {
                 MCParticleImpl *MC_Part = static_cast<MCParticleImpl*>(source_collection->getElementAt(i));
                 MC_Part->setTime(MC_Part->getTime() + time_offset);
+                MC_Part->setOverlay(true);
                 dest_collection->addElement(MC_Part);
                 source_collection->removeElementAt(i);
 	      }
