@@ -716,6 +716,7 @@ namespace overlay {
                 if (((TrackerHit->getTime() + time_offset) > (this_start + _time_of_flight)) && ((TrackerHit->getTime() + time_offset) < (this_stop + _time_of_flight)))
 		  {
                     TrackerHit->setTime( TrackerHit->getTime() + time_offset);
+                    TrackerHit->setOverlay(true);
                     dest_collection->addElement(TrackerHit);
                     source_collection->removeElementAt(k);
 		  }
@@ -741,6 +742,7 @@ namespace overlay {
                         ort[2] = TrackerHit->getPosition()[2] + time_offset * _tpcVdrift_mm_ns;
 		      }
                     TrackerHit->setPosition(ort);
+                    TrackerHit->setOverlay(true);
                     dest_collection->addElement(TrackerHit);
                     source_collection->removeElementAt(k);
 		  }
