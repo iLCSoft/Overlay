@@ -1,3 +1,9 @@
+# v00-23-01
+
+* 2023-07-21 Leonhard Reichenbach ([PR#28](https://github.com/ilcsoft/overlay/pull/28))
+  - OverlayTiming.cc: mark overlay particles as overlay
+  - OverlayTiming.cc: mark overlay SimTrackerHits as overlay
+
 # v00-23
 
 * 2023-05-02 tmadlener ([PR#27](https://github.com/iLCSoft/Overlay/pull/27))
