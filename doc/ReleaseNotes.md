@@ -1,3 +1,8 @@
+# v00-24
+
+* 2026-11-11 Juan Miguel Carceller ([PR#29](https://github.com/iLCSoft/Overlay/pull/29))
+  - Require CMake 3.10 to fix `Compatibility with CMake < 3.5 has been removed from CMake.`
+
 # v00-23-01
 
 * 2023-07-21 Leonhard Reichenbach ([PR#28](https://github.com/ilcsoft/overlay/pull/28))
